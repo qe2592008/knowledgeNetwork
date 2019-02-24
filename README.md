@@ -132,32 +132,73 @@
     - 包装数据类型：Byte, Short, Character, Integer
     - 枚举类型：Enum
     - 字符串类型：String（Jdk 7+ 开始支持）
-- 字符串池
+- 字符串常量池
+    字符串常量池和运行时常量池不同，后者是class文件私有的，每个class文件有一个运行时常量池，而字符串常量池是公共的，全局的。
+    JDK 1.6之前，字符串常量池位于方法区，JDK1.7开始挪到了堆内存。
+    使用字面量创建字符串，会直接在字符串常量池中查找有无指定的字符串字面值，有则直接返回其引用，没有就在池中创建一个字面量并返回其引用。
+    使用new方式创建字符串，会直接在堆内存中创建一个String对象，这个对象保存着一个字符串字面值，这时与字符串常量池无关。
+    当我们对字符串执行intern之后，将会触发下面的操作。
 - intern
+intern方法的作用是在常量池中保留字符串的一份引用或者字面值。
+- JDK 1.7
+    - 若字符串常量池中有指定的字符串常量值，则直接返回该值的地址，将new方式在堆中创建的字符串替换为这里的地址
+    - 若字符串常量池中没有指定的字符串常量值，则在常量池中创建一个同样的字符串，并将其地址返回给栈引用。
+- JDK 1.8 
+    - 同上
+    - 若字符串常量池中没有指定的字符串常量值，则在常量池中保留一份堆中字符串的引用地址。 
 ### 关键字
-- [transient原理及用法]
-- [instanceof原理及用法]
-- [volatile原理及用法]
-- [synchronized原理及用法]
-- [final原理及用法]
-- [static原理及用法]
-- [const原理及用法]
+- [Java关键字](https://www.cnblogs.com/chenglc/p/6922834.html)
+- transient原理及用法：使用于序列化机制中，用于屏蔽不想参与序列化的字段，被其修饰的字段不参与序列化与反序列化。一般使用writeObject和readObject方法来自定义其值的序列化与反序列化，通常是直接写入流中或从流中获取赋值。
+- [instanceof原理及用法]()
+- [volatile原理及用法]()
+- [synchronized原理及用法]()
+- [final原理及用法]()
+- [static原理及用法]()
+- const原理及用法：C/C++中的关键字，Java中作为保留字存在，和goto一样
 ### 集合
-常用集合类的使用、ArrayList和LinkedList和Vector的区别 、SynchronizedList和Vector的区别、HashMap、HashTable、ConcurrentHashMap区别、
-
-Set和List区别？Set如何保证元素不重复？
-
-Java 8中stream相关用法、apache集合处理工具类的使用、不同版本的JDK中HashMap的实现的区别以及原因
-
-Collection和Collections区别
-
-Arrays.asList获得的List使用时需要注意什么
-
-Enumeration和Iterator区别
-
-fail-fast 和 fail-safe
-
-CopyOnWriteArrayList、ConcurrentSkipListMap
+- 常用集合类的使用
+    - ArrayList：数组实现的列表，查找元素速度快，增删元素较慢，适用于保存偏于查询的数据
+    - LinkedList：链表实现的列表，同时也是队列，增删匀速快，查询元素慢，适用于保存偏于增删操作的数据
+    - HashMap：基于Hash实现的键值对集合，查找元素快，适用于做缓存，偏于查询，保存元素涉及扩容
+    - HashSet：基于hash实现的无序集合，用于保存不重复的数据，可用于去重
+    - TreeMap：基于红黑树实现的键值对集合，天然有序，用于保存有序的键值对数据
+    - TreeSet：基于红黑树实现的无序集合，天然有序，用于保存有序的去重数据
+    - **LinkedHashMap**：基于Hash和链表实现的键值对集合，保存了插入顺序。其实就是对HashMap的所有元素使用一个链表连起来罢了。视为一个有序的HashMap
+    - **LinkedHashSet**：同上，视为有序的HashSet
+- [ArrayList和LinkedList和Vector的区别](https://www.cnblogs.com/yw-ah/p/5841327.html)
+- SynchronizedList和Vector的区别
+    - SynchronizedList有很好的扩展和兼容功能。他可以将所有的List的子类转成线程安全的类,Vector底层固定只能是数组
+    - 使用SynchronizedList的时候，进行遍历时要手动进行同步处理
+    - SynchronizedList可以指定锁定的对象
+- HashMap、HashTable、ConcurrentHashMap区别
+    - HashMap：线程不安全的键值对集合
+    - HashTable：线程安全的键值对集合，使用synchronized加锁实现线程安全，效率较低
+    - ConcurrentHashMap：线程安全的键值对集合，使用原子操作+synchronized实现，效率更高，推荐使用
+- Set和List区别？
+    - Set特点：无序-不可重复-可保存null值但只能有一个
+    - List特点：有序-可重复-可保存多个null值
+- Set如何保证元素不重复？
+    Set一般底层以Map来实现，可以说Set就是一个value为固定值的Map，那么Set保存的值映射到Map，就是Map的key，key当然不能重复，如果key重复那么
+- [Java 8中stream相关用法]
+- [apache集合处理工具类的使用]
+- [不同版本的JDK中HashMap的实现的区别以及原因]
+- Collection和Collections区别
+    - Collection是集合的基础接口定义了一些公共的方法。
+    - Collections是集合工具类，主要用于操作集合：排序、反转、拷贝、查找、定位等功能
+- Arrays.asList获得的List使用时需要注意什么
+    - Arrays.asList获取到的ArrayList是Arrays的一个内部类，表示一个不可改变的列表，不同于JUC中的ArrayList。
+    - 前者返回的ArrayList不能添加元素
+    - 而且操作asList的时候，必须是引用类型的值（比如：Integer、Long等），不能是原始类型（比如：int、long之类）
+- Enumeration和Iterator区别
+    二者都是用来遍历集合的，前者是JDK 1.0就出现的遍历工具，实现者包括Vector、HashTable等，后者是在JDK 1.2中新增的，新的集合框架就是在其基础上扩展开来的。
+    前者只有两个方法，只能用于遍历获取元素，后者多一个方法，可以执行元素删除操作，而且后者支持fast-fail：当多个线程对同一个集合的内容进行操作时，就可能会产生fail-fast事件。
+- [fail-fast 和 fail-safe的区别](https://blog.csdn.net/u010889616/article/details/79954413)
+    fail-fast：快速失败，ju包下的集合类均是快速失败的，当多个线程对同一个集合进行操作，就可能产生fail-fast。
+    fail-safe：安全失败，所有针对同一集合结构的更改操作都会在一个复制的集合上进行。
+- CopyOnWriteArrayList
+    
+- ConcurrentSkipListMap
+    
 ### 枚举
 枚举的用法、枚举的实现、枚举与单例、Enum类
 
@@ -243,16 +284,18 @@ String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader & URLCla
 
 ## Java高级
 ### 设计模式
-设计模式的六大原则：
-
-开闭原则（Open Close Principle）、里氏代换原则（Liskov Substitution Principle）、依赖倒转原则（Dependence Inversion Principle）接口隔离原则（Interface Segregation Principle）、迪米特法则（最少知道原则）（Demeter Principle）、合成复用原则（Composite Reuse Principle）
-#### 了解23种设计模式
-创建型模式：单例模式、抽象工厂模式、建造者模式、工厂模式、原型模式。
-
-结构型模式：适配器模式、桥接模式、装饰模式、组合模式、外观模式、享元模式、代理模式。
-
-行为型模式：模版方法模式、命令模式、迭代器模式、观察者模式、中介者模式、备忘录模式、解释器模式（Interpreter模式）、状态模式、策略模式、职责链模式(责任链模式)、访问者模式。
-#### 会使用常用设计模式
+- 设计模式的六大原则：
+    - 开闭原则（Open Close Principle）
+    - 里氏代换原则（Liskov Substitution Principle）
+    - 依赖倒转原则（Dependence Inversion Principle）
+    - 接口隔离原则（Interface Segregation Principle）
+    - 迪米特法则（最少知道原则）（Demeter Principle）
+    - 合成复用原则（Composite Reuse Principle）
+- 了解23种设计模式
+    - 创建型模式：单例模式、抽象工厂模式、建造者模式、工厂模式、原型模式。
+    - 结构型模式：适配器模式、桥接模式、装饰模式、组合模式、外观模式、享元模式、代理模式。
+    - 行为型模式：模版方法模式、命令模式、迭代器模式、观察者模式、中介者模式、备忘录模式、解释器模式（Interpreter模式）、状态模式、策略模式、职责链模式(责任链模式)、访问者模式。
+- 会使用常用设计模式
 单例的七种写法：懒汉——线程不安全、懒汉——线程安全、饿汉、饿汉——变种、静态内部类、枚举、双重校验锁
 
 工厂模式、适配器模式、策略模式、模板方法模式、观察者模式、外观模式、代理模式等必会
