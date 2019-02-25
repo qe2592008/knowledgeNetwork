@@ -354,11 +354,9 @@ String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader & URLCla
 ### 动态代理
 ### 并发编程
 #### 并发与并行
-什么是并发
-
-什么是并行
-
-并发与并行的区别
+- 并发
+- 并行
+- 并发与并行的区别
 #### 线程
 线程的实现、线程的状态、优先级、线程调度、创建线程的多种方式、守护线程
 
