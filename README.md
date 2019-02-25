@@ -140,10 +140,10 @@
     当我们对字符串执行intern之后，将会触发下面的操作。
 - intern
 intern方法的作用是在常量池中保留字符串的一份引用或者字面值。
-- JDK 1.7
+- JDK 1.6
     - 若字符串常量池中有指定的字符串常量值，则直接返回该值的地址，将new方式在堆中创建的字符串替换为这里的地址
     - 若字符串常量池中没有指定的字符串常量值，则在常量池中创建一个同样的字符串，并将其地址返回给栈引用。
-- JDK 1.8 
+- JDK 1.7
     - 同上
     - 若字符串常量池中没有指定的字符串常量值，则在常量池中保留一份堆中字符串的引用地址。 
 ### 关键字
@@ -200,15 +200,38 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - ConcurrentSkipListMap
     
 ### 枚举
-枚举的用法、枚举的实现、枚举与单例、Enum类
-
-Java枚举如何比较
-
-switch对枚举的支持
-
-枚举的序列化如何实现
-
-枚举的线程安全性问题
+- [深入理解Java枚举类型(enum)](https://blog.csdn.net/javazejian/article/details/71333103)
+- 枚举的用法
+    - 枚举可以实现多个接口
+    - 可以定义新的变量
+    - 可以定义新的方法
+    - 可以定义根据具体枚举值而相异的类
+    - 可以定义抽象方法，并由枚举值实现，使用大括号（{}）来进行定义。
+- [枚举的实现原理](Java_Technology/Java_Base_Technology/枚举实现原理.md)
+    枚举是通过语法糖实现的额，枚举类被编译之后，就能看出其大致结构。
+- 枚举与单例
+    都说枚举是实现单例最简单有效的方式。确实，即使是序列化机制也不会导致多实例产生。
+- Enum类：[Enum深入解析](Java_Technology/Java_Base_Technology/Enum深入解析.md)
+- **Java枚举如何比较**：使用equals和==都可以进行比较，因为每个枚举都是单例的，是天然单例，其equals就是使用==实现的。[比较java枚举成员使用equal还是==](https://www.cnblogs.com/xiohao/p/7405423.html)
+- **switch对枚举的支持**：枚举在jdk1.5出现，switch在jdk 1.6中支持枚举。这是一种编译器的语法糖。
+    我们都知道在class文件中switch判断只支持int类型。那么枚举是怎么转换的呢？其实底层使用的是枚举类的ordinal方法，即枚举值的序列值，这和switch支持的String差不多，这也是一种语法糖，底层判断的是字符串的hashCode。
+- **枚举的序列化如何实现**：[深度分析 Java 的枚举类型：枚举的线程安全性及序列化问题](http://blog.jobbole.com/94074/)
+    枚举的序列化是由JVM所控制，禁用的定制方法，所以其实永远的单例。
+- 枚举的线程安全性问题
+### 注解
+- [深入理解Java注解类型(@Annotation)](https://blog.csdn.net/javazejian/article/details/71860633)
+- [元注解](Java_Technology/Java_Base_Technology/元注解.md)：用于标注注解的注解，标注在注解类之上的注解。定义注解的注解。
+    - @Target：指明目标注解的作用范围
+    - @Retention：指明目标注解的生命周期
+    - @Documented：指明该注解将被包含在javadoc中
+    - @Inherited：指明子类可以继承父类中的该注解
+- [自定义注解](Java_Technology/Java_Base_Technology/自定义注解.md)
+- [Java中常用注解使用](Java_Technology/Java_Base_Technology/Java中常用注解使用.md)
+    - @Override：方法重写
+    - @Deprecated：方法弃用
+    - @Suppvisewarnings：忽略警告
+- [注解与反射的结合](Java_Technology/Java_Base_Technology/注解与反射结合使用.md)
+- [Spring常用注解] 
 ### IO
 字符流、字节流、输入流、输出流、
 
@@ -216,13 +239,14 @@ switch对枚举的支持
 
 BIO、NIO和AIO的区别、三种IO的用法与原理、netty
 ### 序列化
-什么是序列化与反序列化、为什么序列化、序列化底层原理、序列化与单例模式、protobuf、为什么说序列化并不安全
+- 什么是序列化与反序列化
+- 为什么序列化
+- 序列化底层原理
+- 序列化与单例模式
+- protobuf
+- 为什么说序列化并不安全
+- 常见的序列化方式
 
-常见的序列化方式
-### 注解
-元注解、自定义注解、Java中常用注解使用、注解与反射的结合
-
-Spring常用注解
 ### JMS
 什么是Java消息服务、JMS消息传送模型
 ### JMX
