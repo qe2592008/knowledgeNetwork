@@ -207,10 +207,8 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 可以定义新的方法
     - 可以定义根据具体枚举值而相异的类
     - 可以定义抽象方法，并由枚举值实现，使用大括号（{}）来进行定义。
-- [枚举的实现原理](Java_Technology/Java_Base_Technology/枚举实现原理.md)
-    枚举是通过语法糖实现的额，枚举类被编译之后，就能看出其大致结构。
-- 枚举与单例
-    都说枚举是实现单例最简单有效的方式。确实，即使是序列化机制也不会导致多实例产生。
+- [枚举的实现原理](Java_Technology/Java_Base_Technology/枚举实现原理.md)：枚举是通过语法糖实现的额，枚举类被编译之后，就能看出其大致结构。
+- **枚举与单例**：都说枚举是实现单例最简单有效的方式。确实，即使是序列化机制也不会导致多实例产生。
 - Enum类：[Enum深入解析](Java_Technology/Java_Base_Technology/Enum深入解析.md)
 - **Java枚举如何比较**：使用equals和==都可以进行比较，因为每个枚举都是单例的，是天然单例，其equals就是使用==实现的。[比较java枚举成员使用equal还是==](https://www.cnblogs.com/xiohao/p/7405423.html)
 - **switch对枚举的支持**：枚举在jdk1.5出现，switch在jdk 1.6中支持枚举。这是一种编译器的语法糖。
@@ -232,6 +230,51 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - @Suppvisewarnings：忽略警告
 - [注解与反射的结合](Java_Technology/Java_Base_Technology/注解与反射结合使用.md)
 - [Spring常用注解] 
+### 泛型
+- **泛型**：Java编译器语法糖的一种，泛型只在编译期有效，编译器会执行类型擦除，来去掉泛型。
+- 泛型与继承
+- **类型擦除**：编译阶段，编译器在完成类型检查之后就会执行类型擦除，将泛型去除。
+- 泛型中K T V E ? Object等的含义
+    - K T V E这些其实是一样的，我们还可以使用其他任意的大写字母来替换它们，只是这几个经常使用罢了，它们表示一个具体的类型
+    - ?表示不限定类型，
+    - ? extends Father表示只能使用Father类型和其子类型。
+    - ? super Son表示只能使用Son类型和其父类型
+    - Object则表示任意类型均可以使用
+- [泛型各种用法](Java_Technology/Java_Base_Technology/泛型各种用法.md)
+- 限定通配符和非限定通配符
+    - 限定通配符：? extends XXX、? super XXX
+    - 非限定通配符：?
+- 上下界限定符extends 和 super
+    - 上界定符extends：将指定的类型作为上限，只允许使用指定类型及其子类型
+    - 下界定符super：将指定类型作为下限，只允许使用指定类型及其父类型
+- List<?>和List<Object>、List之间的区别
+    - List：原始类型，可以使用任意类型，可以添加任意类型元素。
+    - List<?>：通配符类型，形参，可以接受任何对应List<E>的参数化类型，包括List，来作为实参，形参并不能添加元素。
+    - List<Object>：类型参数为Object的参数化类型，实参，仅仅能够接受List和其本身类型，可以添加任意类型元素。
+### 异常
+- 异常类型
+    - 受检异常（编译期异常）
+    - 非受检异常（运行时异常）
+- 正确处理异常
+- 自定义异常
+- Error和Exception
+- 异常链
+- try-with-resources
+- finally和return的执行顺序
+### 时间处理
+时区、冬令时和夏令时、时间戳、Java中时间API
+
+格林威治时间、CET,UTC,GMT,CST几种常见时间的含义和关系
+
+SimpleDateFormat的线程安全性问题
+
+Java 8中的时间处理
+
+如何在东八区的计算机上获取美国时间
+### 正则表达式
+- java.lang.util.regex.Pattern：规则模型
+- java.lang.util.regex.Matcher：匹配器
+- [JAVA正则表达式：Pattern类与Matcher类详解(转)](https://www.cnblogs.com/ggjucheng/p/3423731.html)
 ### IO
 字符流、字节流、输入流、输出流、
 
@@ -247,40 +290,6 @@ BIO、NIO和AIO的区别、三种IO的用法与原理、netty
 - 为什么说序列化并不安全
 - 常见的序列化方式
 
-### JMS
-什么是Java消息服务、JMS消息传送模型
-### JMX
-java.lang.management.*、 javax.management.*
-### 泛型
-泛型与继承、类型擦除、泛型中K T V E ？ object等的含义、泛型各种用法
-
-限定通配符和非限定通配符、上下界限定符extends 和 super
-
-List和原始类型List之间的区别?
-
-List<?>和List之间的区别是什么?
-### 异常
-异常类型、正确处理异常、自定义异常
-
-Error和Exception
-
-异常链、try-with-resources
-
-finally和return的执行顺序
-### 时间处理
-时区、冬令时和夏令时、时间戳、Java中时间API
-
-格林威治时间、CET,UTC,GMT,CST几种常见时间的含义和关系
-
-SimpleDateFormat的线程安全性问题
-
-Java 8中的时间处理
-
-如何在东八区的计算机上获取美国时间
-### 正则表达式
-- java.lang.util.regex.Pattern：规则模型
-- java.lang.util.regex.Matcher：匹配器
-- [JAVA正则表达式：Pattern类与Matcher类详解(转)](https://www.cnblogs.com/ggjucheng/p/3423731.html)
 ### 第三方工具库
 commons.lang, commons.*... guava-libraries netty
 ### API&SPI
@@ -536,7 +545,14 @@ jvm相关、class/classloader相关、monitor/watch/trace相关、options、管�
 使用Arthas排查线上应用日志打满问题
 
 利用Arthas排查Spring Boot应用NoSuchMethodError
-
+### JMS
+- [JMS(Java消息服务)入门教程](https://www.cnblogs.com/chenpi/p/5559349.html)
+- **什么是Java消息服务**：两个应用程序之间进行异步通信的API，它为标准消息协议和消息服务提供了一组通用接口，包括创建、发送、读取消息等，用于支持JAVA应用程序开发。
+- JMS消息传送模型
+    - 点对点消息传送模型：消息一对一传送，一个发送者对应一个接受者
+    - 发布/订阅消息传递模型：消息一对多传送，一个发送者对应多个接受者
+### JMX
+java.lang.management.*、 javax.management.*
 ## Java框架
 ### Servlet
 生命周期
