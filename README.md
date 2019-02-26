@@ -252,80 +252,152 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - List\<?\>：通配符类型，形参，可以接受任何对应List<E>的参数化类型，包括List，来作为实参，形参并不能添加元素。
     - List\<Object\>：类型参数为Object的参数化类型，实参，仅仅能够接受List和其本身类型，可以添加任意类型元素。
 ### 异常
-- 异常类型
-    - 受检异常（编译期异常）
-    - 非受检异常（运行时异常）
+- **异常类型**
+    - 错误Error
+        - AssertionError：抛出断言失败错误
+        - OutOfMemoryError：抛出内存溢出错误，当JVM没有多余内存来存放目标对象，并且使用GC垃圾回收之后仍然无多余内存来保存目标对象
+        - StackOverflowError：堆栈溢出错误，递归太深导致堆栈溢出
+    - 异常Exception
+        - 受检异常（编译期异常）
+            - ClassNotFoundException
+            - CloneNotSupportedException
+            - FileAlreadyExistsException
+            - FileNotFoundException
+            - InterruptedException
+            - IOException
+            - SQLException
+            - TimeoutException
+            - UnknownHostException
+        - 非受检异常（运行时异常）
+            - AlreadyBoundException
+            - ClassCastException：类转换异常，将一个实例转化为非其真实类型的子类时发生异常
+            - ConcurrentModificationException：并发修改异常，多线程修改
+            - IllegalArgumentException：参数非法异常，表示方法传递了一个非法的不适合的参数
+            - IllegalStateException：非法状态异常，表示方法被在不合适的时机调用
+            - IndexOutOfBoundsException：下标越界异常
+            - NullPointerException：空指针异常，针对空对象进行方法调用的时候触发
+            - SecurityException：安全异常，由安全管理器抛出
+            - UnsupportedOperationException：不支持操作异常，表示不支持指定的操作，从而抛出异常
 - [正确处理异常]()
 - [自定义异常]()
-- Error和Exception
+- **Error和Exception**
     - Error：Throwable的子类，代表的是错误，没有恢复的可能，一般是系统性错误。
     - Exception：Throwable的子类，代表的异常，存在恢复的可能，可以进行捕捉处理。
 - **异常链**：在捕获异常处理的catch块中再次抛出一个异常，形成异常链，一般我们希望在异常链中保留原始异常的信息，这时就需要在抛出新异常时将原始异常作为参数来创建新的异常。
-- **try-with-resources**：这是编译器语法糖之一，用于自动关闭资源。
-    - 资源必须实现了AutoCloseable或者Closeable接口，表示可关闭。
-    - 如果在try块中出现了异常，同时在资源关闭也出现异常，那么资源关闭的异常将会被抑制，可通过e.getSuppressed找回被抑制的异常。
-    - 语法如下：
-```java
-    try(资源1;资源2;...资源N){
-        // doSomething
-    }catch(Exception e){
-        // 处理异常,资源关闭之后执行
-    }finally{
-        // 最后操作，资源关闭之后执行
-    }
-```
+- [try-with-resources](Java_Technology/Java_Base_Technology/try-with-resources.md)
 - **finally和return的执行顺序**：先执行try块或者catch块中的return，然后将结果保存起来，去执行finally中的代码，执行完后再将之前保存的返回结果返回即可，但是如果在finally块中定义了return，那么就坏菜了，程序会直接提前返回。所以，我们不能再finally块中加return。
-### 时间处理
-时区、冬令时和夏令时、时间戳、Java中时间API
-
-格林威治时间、CET,UTC,GMT,CST几种常见时间的含义和关系
-
-SimpleDateFormat的线程安全性问题
-
-Java 8中的时间处理
-
-如何在东八区的计算机上获取美国时间
 ### 正则表达式
 - java.lang.util.regex.Pattern：规则模型
 - java.lang.util.regex.Matcher：匹配器
 - [JAVA正则表达式：Pattern类与Matcher类详解(转)](https://www.cnblogs.com/ggjucheng/p/3423731.html)
 ### IO
-字符流、字节流、输入流、输出流、
-
-同步、异步、阻塞、非阻塞、Linux 5种IO模型
-
-BIO、NIO和AIO的区别、三种IO的用法与原理、netty
+- IO流分类：
+    - 传输格式：
+        - 字符流：
+            - Reader
+            - Writer
+        - 字节流
+            - InputStream
+            - OutputStream
+    - 传输方向：
+        - 输入流
+            - InputStream
+            - Reader
+        - 输出流
+            - OutputStream
+            - Writer
+- 四大概念理解：[聊聊同步、异步、阻塞与非阻塞](https://www.jianshu.com/p/aed6067eeac9)
+    - 同步：调用方一直等待被调用方返回结果（等待结果，需要时刻关注被调用方是否完成）
+    - 异步：调用方不等待被调用方返回结果，只要被调用方完成后主动通知调用方即可，即调用方等待的是被调用方的通知（等待通知[不等待结果-属于被动行为不需要主动触发]，不关注被调用方何时完成）
+    - 阻塞：调用方等待被调用方的结果或者通知时，不做其他任何操作（干等，线程被挂起）
+    - 非阻塞：调用方等待被调用方的结果或者通知时，兼职其他操作（不干等，先干点别的）
+- 四大组合概念理解：
+    - 同步阻塞：效率最低，等待结果，时刻关注，同时线程挂起，不执行其他内容
+    - 同步非阻塞：效率较低，等待结果，时刻关注（间断性关注），线程可以执行其他任务，但需要在关注被调用者与执行其他任务之间来回切换
+    - 异步阻塞：不等待、不关注被动用者，被动等待通知，线程挂起，不执行其他内容
+    - 异步非阻塞：效率最高，被动等待通知，线程执行其他任务
+- Linux的5种IO模型：[聊聊Linux 五种IO模型](https://www.jianshu.com/p/486b0965c296)
+    - 同步阻塞 I/O（BIO）：效率最低，等待结果，时刻关注，同时线程挂起，不执行其他内容
+    - 同步非阻塞 I/O（NIO）：效率较低，等待结果，时刻关注（间断性关注），线程可以执行其他任务，但需要在关注被调用者与执行其他任务之间来回切换
+    - 多路复用IO：同步阻塞的一种，一个进程监听多个IO操作，只要有一个准备好数据，就执行对应的操作，如果都没有准备好，那么会阻塞执行，一直等待
+    - 信号驱动I/O：不常用
+    - 异步 I/O（AIO）：效率最高
+- [BIO、NIO和AIO的区别、用法、原理](Java_Technology/Java_Base_Technology/BIO、NIO和AIO的区别、用法、原理.md)
+    - BIO：同步阻塞IO
+    - NIO：同步非阻塞IO
+    - AIO：异步非阻塞IO
+- Netty
 ### 序列化
 - 什么是序列化与反序列化
+    - 序列化：把对象转换为字节序列的过程
+    - 反序列化：把字节序列恢复为对象的过程
 - 为什么序列化
-- 序列化底层原理
-- 序列化与单例模式
-- protobuf
-- 为什么说序列化并不安全
-- 常见的序列化方式
-
+    - 为了持久化保存对象数据
+    - 为了网络传递对象数据
+- [序列化底层原理](https://blog.csdn.net/xlgen157387/article/details/79840134)
+- 序列化与单例模式：[序列化破坏单例的解决方案](Java_Technology/Java_Base_Technology/序列化破坏单例的解决方案.md)
+    - 序列化破坏单例：反序列化的时候ObjectInputStream中readObject方法中会反射调用无参构造器生成一个新的实例，这个实例不同于之前的单例，所以破坏了单例。
+    - 解决方案：在单例类重定义readResolver方法，返回单例实例，那么就会忽略上面执行而是直接返回已有的单例。
+- [protobuf理解](https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/index.html)：一种Google使用的序列化方式
+- 序列化注意事项
+    - transient关键字修饰的字段不参与序列化
+    - 静态变量不参与序列化
+    - 子类继承自实现了Serializable接口的父类：子类父类中的属性均参与序列化
+    - 子类实现了Serializable接口，父类不支持序列化：只有子类中的属性会参与序列化，父类中的被忽略，但是会调用父类的无参构造器
+    - 自定义序列化：writeObject和readObject
+- [为什么说序列化并不安全](https://www.jianshu.com/p/fa912ce0426f)：序列化后的数据容易被篡改，这样反序列化就会得到错误的数据，所以不安全。
+- 常见的序列化方式：[几种常用序列化和反序列化方法](https://blog.csdn.net/jaryle/article/details/54893086)
+    - Java原生序列化机制
+    - XML序列化
+    - Json序列化
+    - ProtoBuff序列化：[Google Protocol Buffer 的使用和原理](https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/index.html)
+    - Thrift序列化
+    - Avro序列化
 ### 第三方工具库
-commons.lang, commons.*... guava-libraries netty
+- commons.lang
+- commons.*... 
+- guava-libraries 
+- netty
+    - HashedWheelTimer：
+        - [Netty工具类HashedWheelTimer源码走读(一) ](https://my.oschina.net/haogrgr/blog/489320)
+        - [Netty工具类HashedWheelTimer源码走读(二)](https://my.oschina.net/haogrgr/blog/490266)
+        - [Netty工具类HashedWheelTimer源码走读(三)](https://my.oschina.net/haogrgr/blog/490348)
+    - 
 ### API&SPI
-API、API和SPI的关系和区别
-
-如何定义SPI、SPI的实现原理
-
-API面向的是服务调用方
-
-SPI面向的是服务实现方
+- API和SPI的关系和区别
+    - API：指的是应用对服务调用方提供的接口，用于提供某种服务、功能
+    - SPI：指的是应用对服务实现方提供的接口，用于实现某种服务、功能
+- [SPI的使用及原理](Java_Technology/Java_Base_Technology/SPI的使用及原理.md)
+- API面向的是服务调用方
+- SPI面向的是服务实现方
 ### 编码
-Unicode、有了Unicode为啥还需要UTF-8
-
-GBK、GB2312、GB18030之间的区别
-
-UTF8、UTF16、UTF32区别
-
-URL编解码、Big Endian和Little Endian
-
-如何解决乱码问题
+- Unicode
+- 有了Unicode为啥还需要UTF-8
+- GBK、GB2312、GB18030之间的区别
+- UTF-8、UTF-16、UTF-32区别
+- URL编解码、Big Endian和Little Endian
+- 如何解决乱码问题
+### 时间处理
+- 时区
+- 冬令时和夏令时
+- 时间戳
+- Java中时间API
+- 格林威治时间
+- CET,UTC,GMT,CST几种常见时间的含义和关系
+- SimpleDateFormat的线程安全性问题
+- Java 8中的时间处理
+- 如何在东八区的计算机上获取美国时间
 ### 重点接口解读
-Comparator、 Comparable、 Runnable、 Callable、 RandomAccess 等
+- Comparator：比较器，用以实现比较方式，函数式接口，一般使用Lambda方式作为参数传递
+- Comparable：可比较的，多被集合类实现，表示可以进行比较，内置的比较方式，如果存在Comparator，将会失效
+- Runnable：线程任务，一般用于定义一个线程的执行内容，函数式接口，可作为Lambda使用
+- Callable：回调接口，函数式接口，类似Runnable，但可以有返回值或者异常
+- RandomAccess：标记接口，被标记的类拥有快速随机访问，一般是数组类集合:ArrayList
+- Closeable：可被关闭，实现了该接口的资源表示其可被关闭，JDK 1.7后其继承了AutoCloseable接口，那么自动拥有AutoCloseable的功能
+- AutoCloseable：自动关闭，只有实现了该接口的资源才能使用try-with-resources方式，其会在try块执行完自动调用close方法关闭资源
+- Appendable：表示能够被追加 char 序列和值的对象。如果某个类的实例打算接收来自 Formatter 的格式化输出，那么该类必须实现 Appendable 接口，比如StringBuffer和StringBuilder
+- Flushable：可刷新流，实现了该接口的类可以将缓存中的数据刷新到流中。一般在输出流中实现
+
 ### 源码阅读
 String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader & URLClassLoader、ArrayList & LinkedList、 HashMap & LinkedHashMap & TreeMap & CouncurrentHashMap、HashSet & LinkedHashSet & TreeSet
 
@@ -349,7 +421,7 @@ String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader & URLCla
 #### 不用synchronized和lock，实现线程安全的单例模式
 #### 实现AOP
 #### 实现IOC
-#### nio和reactor设计模式
+#### NIO和reactor设计模式
 ### 反射技术
 ### 动态代理
 ### 并发编程
