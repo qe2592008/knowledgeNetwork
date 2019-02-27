@@ -101,11 +101,11 @@
 - [整型和浮点型的二进制表示形式与计算原理]
 - [什么是浮点型]
 - [什么是单精度和双精度]
-- 为什么不能用浮点型表示金额：因为使用浮点数能精确表示的小数很少，大部分都无法精确表示，这和十进制无法精确表达1/3一样。
+- **为什么不能用浮点型表示金额**：因为使用浮点数能精确表示的小数很少，大部分都无法精确表示，这和十进制无法精确表达1/3一样。
 - [浮点数为什么不精确？为什么银行的金额不能用浮点数计算](https://blog.csdn.net/keke_xin/article/details/84831024)
 ### 自动拆装箱
-- 什么是包装类型：包装类型是针对八个基本数据类型定义的包装类，用于在面向对象的Java中执行一些只有对象才能执行的操作。
-- 什么是自动拆装箱：拆装箱就是基本类型和包装类型的转换操作，由编译器来完成拆装箱操作。
+- **什么是包装类型**：包装类型是针对八个基本数据类型定义的包装类，用于在面向对象的Java中执行一些只有对象才能执行的操作。
+- **什么是自动拆装箱**：拆装箱就是基本类型和包装类型的转换操作，由编译器来完成拆装箱操作。
 - [Integer的缓存机制](Java_Technology\Java_Base_Technology\Integer的缓存机制.md)（享元模式：池）
 - [Integer的缓存机制](https://blog.csdn.net/yrwan95/article/details/82785129)
 - Byte、Short、Long的均是将-128到127缓存起来备用。
@@ -252,6 +252,8 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - List\<?\>：通配符类型，形参，可以接受任何对应List<E>的参数化类型，包括List，来作为实参，形参并不能添加元素。
     - List\<Object\>：类型参数为Object的参数化类型，实参，仅仅能够接受List和其本身类型，可以添加任意类型元素。
 ### 异常
+- [Java 中的异常和处理详解](http://www.importnew.com/26613.html)
+- [如何优雅的设计 Java 异常](http://www.importnew.com/28000.html)
 - **异常类型**
     - 错误Error
         - AssertionError：抛出断言失败错误
@@ -279,13 +281,23 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
             - SecurityException：安全异常，由安全管理器抛出
             - UnsupportedOperationException：不支持操作异常，表示不支持指定的操作，从而抛出异常
 - [正确处理异常]()
+    - 如果不手动处理异常，将会由默认的异常处理器来处理异常。
 - [自定义异常]()
+    - 自定义受检异常：继承Exception
+    - 自定义运行时异常：继承RuntimeException
+    - 自定义异常需要提供以下构造器：
+        - 无参构造器
+        - 带有一个String参数的构造器，需传递给父类构造器
+        - 带有一个Throwable参数的构造器，需传递给父类构造器
+        - 带有一个String参数、一个Throwable参数的构造器，需传递给父类构造器
 - **Error和Exception**
     - Error：Throwable的子类，代表的是错误，没有恢复的可能，一般是系统性错误。
     - Exception：Throwable的子类，代表的异常，存在恢复的可能，可以进行捕捉处理。
 - **异常链**：在捕获异常处理的catch块中再次抛出一个异常，形成异常链，一般我们希望在异常链中保留原始异常的信息，这时就需要在抛出新异常时将原始异常作为参数来创建新的异常。
 - [try-with-resources](Java_Technology/Java_Base_Technology/try-with-resources.md)
 - **finally和return的执行顺序**：先执行try块或者catch块中的return，然后将结果保存起来，去执行finally中的代码，执行完后再将之前保存的返回结果返回即可，但是如果在finally块中定义了return，那么就坏菜了，程序会直接提前返回。所以，我们不能再finally块中加return。
+- **异常注意事项**
+子类重写父类带有throws申明异常的时候，子类只能抛出小于等于父类方法中的异常数量，而且类型必须是父类方法申明异常类型或者其子类型
 ### 正则表达式
 - java.lang.util.regex.Pattern：规则模型
 - java.lang.util.regex.Matcher：匹配器
@@ -350,6 +362,8 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - Java原生序列化机制
     - XML序列化
     - Json序列化
+        - FastJson
+        - Jackson
     - ProtoBuff序列化：[Google Protocol Buffer 的使用和原理](https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/index.html)
     - Thrift序列化
     - Avro序列化
@@ -403,19 +417,20 @@ String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader & URLCla
 
 ## Java高级
 ### 设计模式
-- 设计模式的六大原则：
-    - 开闭原则（Open Close Principle）
-    - 里氏代换原则（Liskov Substitution Principle）
-    - 依赖倒转原则（Dependence Inversion Principle）
-    - 接口隔离原则（Interface Segregation Principle）
-    - 迪米特法则（最少知道原则）（Demeter Principle）
-    - 合成复用原则（Composite Reuse Principle）
-- 了解23种设计模式
+- [设计模式的六大原则](Java_Technology/Java_Advanced_Technology/DesignPatterns/设计模式的六大原则.md)：
+    - 单一职责原则（Single Responsibility Principle）：一个类只负责一个功能领域中的相应职责，或者可以定义为：就一个类而言，应该只有一个引起它变化的原因
+    - 开闭原则（Open Close Principle）：一个软件实体应当对扩展开放，对修改关闭。即软件实体应尽量在不修改原有代码的情况下进行扩展
+    - 里氏代换原则（Liskov Substitution Principle）：所有引用基类（父类）的地方必须能透明地使用其子类的对象
+    - 依赖倒转原则（Dependence Inversion Principle）：抽象不应该依赖于细节，细节应当依赖于抽象。换言之，要针对接口编程，而不是针对实现编程
+    - 接口隔离原则（Interface Segregation Principle）：使用多个专门的接口，而不使用单一的总接口，即客户端不应该依赖那些它不需要的接口
+    - 迪米特法则（最少知道原则）（Demeter Principle）：一个软件实体应当尽可能少地与其他实体发生相互作用
+    - 合成复用原则（Composite Reuse Principle）：尽量能使用组合就不要使用继承
+- [了解23种设计模式](Java_Technology/Java_Advanced_Technology/DesignPatterns/23种设计模式.md)
     - 创建型模式：单例模式、抽象工厂模式、建造者模式、工厂模式、原型模式。
     - 结构型模式：适配器模式、桥接模式、装饰模式、组合模式、外观模式、享元模式、代理模式。
     - 行为型模式：模版方法模式、命令模式、迭代器模式、观察者模式、中介者模式、备忘录模式、解释器模式（Interpreter模式）、状态模式、策略模式、职责链模式(责任链模式)、访问者模式。
 - 会使用常用设计模式
-单例的七种写法：懒汉——线程不安全、懒汉——线程安全、饿汉、饿汉——变种、静态内部类、枚举、双重校验锁
+- [单例的七种写法]()：懒汉——线程不安全、懒汉——线程安全、饿汉、饿汉——变种、静态内部类、枚举、双重校验锁
 
 工厂模式、适配器模式、策略模式、模板方法模式、观察者模式、外观模式、代理模式等必会
 #### 不用synchronized和lock，实现线程安全的单例模式
@@ -454,7 +469,7 @@ synchronized和lock之间关系、不使用synchronized如何实现一个线程�
 
 synchronized和原子性、可见性和有序性之间的关系
 #### volatile
-happens-before、内存屏障、编译器指令重排和CPU指令重
+happens-before、内存屏障、编译器指令重排和CPU指令重排
 
 volatile的实现原理
 
@@ -512,7 +527,12 @@ DNS污染、DNS劫持、公共DNS：114 DNS、Google DNS、OpenDNS
 ### NIO技术
 ### JVM技术
 #### JVM内存结构
-运行时数据区：堆-栈-方法区（元空间）-直接内存-运行时常量池
+- 运行时数据区：
+    - 堆：
+    - 栈：
+    - 方法区（元空间）：
+    - 直接内存：
+    - 运行时常量池：
 
 堆和栈区别
 
