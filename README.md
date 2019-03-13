@@ -29,7 +29,7 @@
 - 队列
 - 栈
 #### 散列表
-- 
+
 #### 树
 - 二叉树
 - 多路查找树
@@ -358,6 +358,9 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - **finally和return的执行顺序**：先执行try块或者catch块中的return，然后将结果保存起来，去执行finally中的代码，执行完后再将之前保存的返回结果返回即可，但是如果在finally块中定义了return，那么就坏菜了，程序会直接提前返回。所以，我们不能再finally块中加return。
 - **异常注意事项**
 子类重写父类带有throws申明异常的时候，子类只能抛出小于等于父类方法中的异常数量，而且类型必须是父类方法申明异常类型或者其子类型
+- NoClassDefFoundError与ClassNotFoundException区别：
+    - NoClassDefFoundError：错误（运行时错误），不需要捕捉，一般表示在类加载的解析阶段找不到指定的类的Class定义，这种情况在编译的时候类还是存在的，可能是类初始化失败导致。
+    - ClassNotFoundException：受检异常（编译期异常），需要显式捕捉处理，否则无法通过编译，一般表示在反射调用目标类的时候或者使用类加载器加载某个类的时候找不到类的Class文件。其实就是不存在该类的Class文件。
 ### 正则表达式
 - java.lang.util.regex.Pattern：规则模型
 - java.lang.util.regex.Matcher：匹配器
@@ -703,9 +706,20 @@ submit() 和 execute()
 #### tcp、udp、http、https等常用协议
 - TCP协议：可靠的传输控制协议
 - UDP协议：不可靠的数据报传输协议
-- HTTP协议：
+- HTTP协议：超文本传输协议
 - HTTPS协议：
-- 三次握手与四次关闭
+- [三次握手与四次挥手](https://cloud.tencent.com/developer/news/257281)：
+    - 三次握手：
+        - 第一次：源端发起连接SYN请求报文：`SYN=1,seq=x`,源端进入SYN_SENT状态，等待目的端响应（源端确认自己的发送能力）
+        - 第二次：目的端收到请求进行响应，发送SYN+ACK报文：`SYN=1,ACK=1,seq=y,ack=x+1`,目的端进入SYN_RECV状态，等待源端的响应（目的端确认对方的发送能力，自己的接收能力）
+        - 第三次：源端收到请求进行响应，发送ACK报文：`ACK=1,seq=x+1,ack=y+1`,然后源端进入ESTABLISHED状态，目的端收到响应收也进入ESTABLISHED状态（源端确认自己的接受能力、对方的接收能力和发送能力；目的端确认对方的接收能力，三次之后，双方均知道自己和对方具有发送和接收的能力，那么连接就建立起来了）
+    - 四次挥手：
+        - 第一次：源端发起FIN报文：`FIN=1,seq=u`,源端进入FIN_WAIT_1状态，停止向目的端发送数据
+        - 第二次：目的端收到断开请求进行响应，发送ACK报文：`ACK=1,seq=v,ack=u+1`,目的端进入CLOSE_WAIT状态,此时源端不再往目的端发送数据，但目的端可以继续往源端发送数据
+        - 第三次：目的端发送FIN+ACK报文：`FIN=1,ACK=1,seq=w,ack=u+1`,目的端进入LAST_ACK状态，不再往源端发送数据
+        - 第四次：源端收到报文后，发出ACK报文：`ACK=1,seq=u+1,ack=w+1`,目的端接收到响应直接关闭连接，源端进入TIME_WAIT状态，并等待2MSL(最长报文端寿命)后关闭连接，挥手结束。
+![TCP三次握手](Images/TCP三次握手.jpg)
+![TCP四次挥手](Images/TCP四次挥手.jpg)
 - 流量控制和拥塞控制
 - OSI七层模型
     - 应用层
@@ -722,12 +736,21 @@ submit() 和 execute()
     - 数据链路层
     - 物理层
 - tcp粘包与拆包
+- TCP报文结构
+- TCP协议与UDP协议的不同
+    - TCP基于连接，UDP不基于连接传输数据
+    - TCP对系统资源要求要多于UDP
+    - UDP报文结构简单，TCP报文结构复杂
+    - TCP属于流模式传递，UDP属于数据报模式传递
+    - TCP是可靠的传输协议，能保证传输的顺序，UDP不可靠，可能丢包，也不保证顺序
+- [TCP/IP详解学习笔记   这位仁兄写得太好了](https://www.cnblogs.com/fengzanfeng/articles/1339347.html)
 #### http/1.0 http/1.1 http/2之间的区别
-http中 get和post区别
-
-常见的web请求返回的状态码
-
-404、302、301、500分别代表什么
+- http中 get和post区别
+- 常见的web请求返回的状态码
+    - 200
+    - 302
+    - 404
+    - 500
 #### http/3
 #### Java RMI，Socket，HttpClient
 - Java RMI
@@ -760,6 +783,7 @@ http中 get和post区别
 - 反向代理
 - 反向代理服务器
 #### 浏览器与服务器通讯过程
+
 ### NIO技术
 ### JVM技术
 #### JVM内存结构
@@ -879,8 +903,8 @@ oop-klass、对象头
     - 访问定位：
         - 句柄：需要在堆中建立句柄池，用于存储对象类型数据和实例数据的指针，栈中保存句柄地址。
         - 直接指针：栈中直接保存对象实例数据地址，其中在对象头中保存类型指针，指向对象类型数据。HotSpot采用直接指针
-- 即时编译器
-- 编译优化
+- 即时编译器(见下方)
+- 编译优化(见下方)
 #### 虚拟机性能监控与故障处理工具
 - jps：虚拟机进程状况工具（JVM Process Status Tool），用于罗列正在运行的虚拟机进程
     - -l：输出主类全名
@@ -1023,7 +1047,7 @@ oop-klass、对象头
 - 什么是反编译
 - 即时编译器
     - 解释器
-    - 编译器（则一而用）
+    - 编译器
         - C1编译器
         - C2编译器
 - 分层编译：1.7中的默认编译策略
@@ -1076,9 +1100,14 @@ oop-klass、对象头
             - 标量替换
 - 什么是虚方法：虚方法就是存在继承体系，且不止一个实现的情况，这种情况下具体会调用哪个子类中的方法，需要运行时确定，称为虚方法。
 - 反编译工具：
-    - javap
-    - jad
-    - CRF
+    - javap：获得可读性字节码
+    - JAD：很好用但久不更新，只适用于JDK1.6以下，JDK1.7部分支持，JDK 1.8不支持
+    - CRF：JAD的替代品，可以支持JDK1.8
+- 如何防止反编译：
+    - 代码混淆：打乱代码，并掺入随机或者特殊字符，降低代码可读性
+    - 加密class：编译代码时使用插件将代码进行加密将class文件里面的内容读取成byte[]，然后进行加密后再写回到class文件，然后在启动项目代码时，指定使用我们自定义的ClassLoader进行类的加载就行了，而自定义的部分，主要就是在这里做解密工作！
+    - 高级加密class：修改本地方法来进行加密和解密，黑箱运行
+    - 更改JVM：
 #### Java内存模型
 - 计算机内存模型
 - 缓存一致性
@@ -1086,7 +1115,7 @@ oop-klass、对象头
 - 三大特性：
     - 可见性
     - 原子性
-    - 顺序性
+    - 有序性
 - happens-before
 - 内存屏障
 - synchronized
@@ -1102,9 +1131,13 @@ oop-klass、对象头
 ### 新技术
 #### Java 8
 - [lambda表达式](https://www.cnblogs.com/figure9/archive/2014/10/24/4048421.html)
-- Stream API
+- [Stream API](https://www.jianshu.com/p/3dc56886c2eb)
+- [Optional](https://www.jianshu.com/p/61e3332d7383)
 - 时间API
-- Optional
+
+
+
+
 #### Java 9
 - modularity System 模块系统,Jigsaw
 - HTTP/2
