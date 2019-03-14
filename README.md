@@ -104,12 +104,12 @@
 		- [位运算](#位运算)
 	- [性能优化](#性能优化)
 	- [新技术](#新技术)
-		- [Java](#Java)
-		- [Java](#Java)
-		- [Java](#Java)
-		- [Java](#Java)
-		- [Spring](#Spring)
-		- [Spring](#Spring)
+		- [Java8](#Java8)
+		- [Java9](#Java9)
+		- [Java10](#Java10)
+		- [Java11](#Java11)
+		- [Spring5](#Spring5)
+		- [SpringBoot2.0](#SpringBoot2.0)
 	- [高级源码](#高级源码)
 	- [线上问题分析](#线上问题分析)
 		- [dump获取](#dump获取)
@@ -1464,7 +1464,7 @@ oop-klass、对象头
 ### 性能优化
 使用单例、使用Future模式、使用线程池、选择就绪、减少上下文切换、减少锁粒度、数据压缩、结果缓存
 ### 新技术
-#### Java 8
+#### Java8
 - [lambda表达式](https://www.cnblogs.com/figure9/archive/2014/10/24/4048421.html)
 - [Stream API](https://www.jianshu.com/p/3dc56886c2eb)
 - [Optional](https://www.jianshu.com/p/61e3332d7383)
@@ -1473,7 +1473,7 @@ oop-klass、对象头
 
 
 
-#### Java 9
+#### Java9
 - modularity System 模块系统,Jigsaw
 - HTTP/2
 - JShell
@@ -1486,18 +1486,18 @@ oop-klass、对象头
 - I/O 流新特性
 - Reactive Streams
 
-#### Java 10
+#### Java10
 
 局部变量类型推断、G1的并行Full GC、ThreadLocal握手机制
 
-#### Java 11
+#### Java11
 
 ZGC、Epsilon、增强var、
 
-#### Spring 5
+#### Spring5
 响应式编程
 
-#### Spring Boot 2.0
+#### SpringBoot2.0
 
 ### 高级源码
 为什么Thread里有一个ThreadLocalMap类型的变量
