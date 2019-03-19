@@ -57,14 +57,13 @@
 		- [并发与并行](#并发与并行)
 		- [线程](#线程)
 		- [线程池](#线程池)
+		- [阻塞队列](#阻塞队列)
 		- [线程安全](#线程安全)
-		- [锁](#锁)
+		- [线程安全解决途径](#线程安全解决途径)
 		- [死锁](#死锁)
 		- [synchronized](#synchronized)
 		- [volatile](#volatile)
-		- [sleep](#sleep)
-		- [wait](#wait)
-		- [notify](#notify)
+		- [Lock](#Lock)
 		- [join操作，三个任务，如何多线程顺序执行](#join操作，三个任务，如何多线程顺序执行)
 		- [Fork/Join框架，分而治之](#Fork/Join框架，分而治之)
 		- [ThreadLocal](#ThreadLocal)
@@ -160,6 +159,7 @@
 	- [分布式](#分布式)
 		- [分布式事务](#分布式事务)
 		- [Dubbo](#Dubbo)
+		- [分布式锁](#分布式锁)
 		- [分布式数据库](#分布式数据库)
 		- [分布式文件系统](#分布式文件系统)
 		- [分布式缓存](#分布式缓存)
@@ -184,7 +184,7 @@
 	- [DNS](#DNS)
 	- [CDN](#CDN)
 - [扩展](#扩展)
-	- [AR](#AR)
+	- [AR&VR](#AR&VR)
 
 > 简单内容直接呈现，复杂内容链接文章
 ## IT技术基础
@@ -884,13 +884,16 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - **maximumPoolSize**：线程池最大线程数，这是线程池允许的线程数的最大值，一般会设置的大于corePoolSize，这样当队列满了之后，将检查线程池内的线程数是否达到该数目吗，若未达到则创建新线程执行任务，否则就是走饱和策略了
     - **keepAliveTime**：线程空闲存活时间，指的是非核心线程的空闲存活时间，当非核心线程空闲时（队列空）等待keepAliveTime时间之后还没有新任务，则销毁线程
     - unit：线程空闲存活时间单位，可选单位包括：天、时、分、秒、毫秒、微秒、纳秒等，TimeUnit
-    - **workQueue**：工作队列（阻塞队列），当核心线程数达到corePoolSize之后，再来的新任务就进入阻塞队列等待执行
+    - **workQueue**：工作队列（阻塞队列），当核心线程数达到corePoolSize之后，再来的新任务就进入阻塞队列等待执行，通常去以下三种类型：
+        - ArrayBlockingQueue：基于数组的FIFO队列，创建时必须指定大小
+        - LinkedBlockingQueue：基于链表的FIFO队列，默认大小为Integer.MAX_VALUE，也可以指定大小
+        - synchronousQueue：同步队列，容量为0，用于配对线程和任务，提交一个任务到该队列，当有线程试图从队列取任务时，就将这个任务直接拨给该线程。
     - threadFactory：线程工厂，用于创建线程的工厂，
     - handler：处理器，这里处理的是饱和之后的任务，针对阻塞队列满，线程池线程数满的情况下再来的新任务进行处理
-        - AbortPolicy：直接抛出异常
-        - CallerRunsPolicy：只用调用者所在线程来运行任务
-        - DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务
-        - DiscardPolicy：不处理，丢弃掉
+        - AbortPolicy：丢弃任务并抛出RejectedExecutionException异常
+        - DiscardPolicy：丢弃任务，不处理，不抛异常
+        - DiscardOldestPolicy：丢弃队列里最近的一个任务（队列最前方的任务），并执行当前任务（重复此过程）
+        - CallerRunsPolicy：由调用者所在线程来执行任务
         - 实现RejectedExecutionHandler接口来自定义策略
 - **线程池原理**：当提交一个任务到线程池时，按照以下流程：
     1. 判断线程池的核心线程数是否达到corePoolSize，如果未达到，则新建一个核心线程来执行任务，否则下一步
@@ -971,6 +974,9 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
             4. 一旦某个任务执行出现异常，线程会终止，但其他任务的线程不受影响
 - FutureTask
     - cancel方法：取消任务的执行。
+- 如何合理配置线程池的大小
+    - CPU密集型任务：尽量压榨CPU，参考设置为NCPU+1
+    - IO密集型任务：参考设置为2*NCPU
 - 自己设计线程池（自定义线程池）
 #### 阻塞队列
 
@@ -1010,8 +1016,20 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - ThreadLocal
     - 并发工具
         - 并发集合
-            - ConcurrentHashMap
-            - 
+            - CopyOnWriteArrayList：并发List实现
+            - CopyOnWriteArraySet：并发Set实现
+            - ConcurrentHashMap：并发Map实现
+            - ConcurrentLinkedQueue：并发Queue实现
+            - BlockingQueue：阻塞Queue实现
+                - ArrayBlockingQueue：基于数组实现的阻塞队列
+                - LinkedBlockingQueue：基于链表实现的阻塞队列
+                - SynchronousQueue：无容量的阻塞队列
+                - PriorityBlockingQueue：优先级阻塞队列
+                - LinkedTransferQueue
+                - DelayQueue
+            - ConcurrentLinkedDeque：并发Dueue实现
+            - BlockingDueue：阻塞Dueue实现
+                - LinkedBlockingDueue
         - CountDownLatch
         - CyclicBarrier
         - Semaphore
@@ -1038,15 +1056,23 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - volatile和原子性、可见性和有序性之间的关系
 - 有了synchronized为什么还需要volatile：volatile是一种轻量级的锁，针对确定原子操作的变量可以实现线程安全，不需要加上繁重的synchronized
 #### Lock
-#### sleep 和 wait
 
-#### wait 和 notify
-
-#### notify 和 notifyAll
 #### join操作，三个任务，如何多线程顺序执行
 #### Fork/Join框架，分而治之
+- 
 #### ThreadLocal
-
+- ThreadLocal作用：用于实现线程私有变量，该变量将一直存在与线程中，与方法调用无关，直到线程销毁，如此一来，我们可以在线程的所有方法中通过ThreadLocal来使用这个变量，这个变量的生命周期将会是整个线程周期，除非手动调用remove操作清除变量。
+- ThreadLocal结构：ThreadLocal有一个静态内部类ThreadLocalMap，这个Map被Thread所持有，即每个线程天然持有一个ThreadLocal.ThreadLocalMap对象；ThreadLocalMap内部使用一个Entry来存储线程变量，其中以一个弱引用ThreadLocal对象作为键，以线程变量作为值。每个线程可以设置多个线程变量，只是需要为每个线程变量创建一个ThreadLocal对象。这些线程变量将全部存储在线程的私有属性ThreadLocalMap中。
+- ThreadLocal用法：一般将ThreadLocal作为共享变量，或单独成类，或作为成员属性，主要目的就是为了实现多线程共用，虽然ThreadLocal实例被多线程共用，但是针对每个线程而言，其设置的线程变量都保存在自身内部的ThreadLcoalMap中，它是线程私有的，每个线程都有，那么也就实现了线程安全性，此时在多个线程中作为键的ThreadLocal会是同一个。那么是什么样的变量需要使用ThreadLocal来进行存储呢？当遇到需要在整个线程中多处使用的变量时，可以将其保存到ThreadLcoal，更重要的是针对那些不便于传递的变量，可以保存到ThreadLcoal中。
+- ThreadLocal问题：存在可能内存泄漏的问题，主要是忘记remove操作就会导致设置的变量值被持有引用，生存到线程销毁。ThreadLocalMap的键是弱引用的，会在下一次GC时被清理，但是值并不会被自动清理，由其在现场池的情况下，后续不再执行set操作，那么这个值将会一直与线程共存亡，造成内存泄漏。
+- ThreadLocal常用方法：
+    - void set(T value)：将指定的值value以当前ThreadLocal实例为键保存到当前线程的threadlocals中。
+    - T get()：获取当前线程threadlocals中以当前ThreadLocal实例为键的Entry键值对中的值。
+    - void remove()：清除当前线程threadlocals中以当前ThreadLocal实例为键的Entry键值对。
+- ThreadLocal.ThreadLocalMap：
+    - 初始容量：16
+    - 扩容阈值：容量的2/3
+    - 扩容规则：容量翻倍
 #### 写一个死锁的程序
 
 #### 写代码来解决生产者消费者问题
@@ -1782,6 +1808,6 @@ DNS原理、DNS的设计
 ### CDN
 数据一致性
 ## 扩展
-### AR & VR
+### AR&VR
 - VR：虚拟现实技术
 - AR：增强现实技术
