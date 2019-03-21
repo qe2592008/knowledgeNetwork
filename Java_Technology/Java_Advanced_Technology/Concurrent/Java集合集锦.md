@@ -151,9 +151,127 @@
 - 支持序列化、克隆、排序
 ## Queue
 ### PriorityQueue
-
-### ConcurrentLinkedQueue
-
+- 线程不安全
+- 不支持null元素
+- 有序，基于Comparable或者Compatator
+- 基于**优先级堆**的**无界队列**
+- 基于堆结构实现，具体是完全二叉树实现的小顶堆（任意非叶子节点的权值都不能大于其左右子节点的权值），底层采用的数组实现
+- 可以指定数组初始容量，默认为11
+- 添加元素的时候发现数组容量不足，先进行扩容，如果旧数组容量不足64，那么就扩容为原来的两倍+2，否则扩容为原来的1.5倍
+- peek()\element()操作时间复杂度为O(1)
+- add()\offer()\remove()\poll()操作的时间复杂度为O(logn)
+- 支持序列化、排序
+### [ConcurrentLinkedQueue](http://www.importnew.com/25668.html)
+- 线程安全
+- 基于哨兵模式**单向链表**的**无界队列**，采用非阻塞算法（CAS操作+无限循环）实现操作的原子性，而可见性和有序性依靠volatile实现，而这也正是并发包中Concurrent开头的并发集合的实现基础，一般基于此实现的逻辑均较为复杂，比如此处的add、offer操作
+- 不支持null元素
+- 支持FIFO（先进先出），新元素添加到队列尾部，取出元素从队列头部取出
+- size属性一般无法保证精确度，所以size()方法会遍历集合进行数量统计，这会耗费较多时间，所以要尽量避免使用，可用isEmpty代替
+- 集合持有链表的头尾节点，分别为head和tail，需要注意的是tail并不总是指向真正的尾节点，基于其内部复杂的实现，tail有多种情况需要考虑
+- offer操作简单分析：多个线程同时执行添加元素的操作（各个线程添加的是不同的元素）:
+```java
+public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
+        implements Queue<E>, java.io.Serializable {
+    // 将新元素添加到队列尾部
+    // newNode：代表新增节点
+    // t：代表尾节点
+    // p：指向的应该是真正的尾节点，每个添加元素的线程都会将p移动到当前的尾节点,通过第(4)步
+    // q：永远指向p的下级节点，其实就是指向NULL(不存在的节点)，每次新增一个元素节点，其实就是插入到q所指向的位置，新的线程开始循环的时候就会将q指向新的NULL
+    // t、p、q的变迁只在存在多个线程的情况才会有意义，如果是单线程那么就没有意义，只有tail有意义，第二个线程会走两次循环，第一次会执行(4)，第二次循环进行元素添加，成功之后还会执行(2)来更新tail指向，所以tail会每隔一个节点执行一次。
+    public boolean offer(E e) {
+        checkNotNull(e);// null校验
+        final Node<E> newNode = new Node<E>(e);// 封装元素节点
+        for (Node<E> t = tail, p = t;;) {// t代表尾节点tail，p初始化为t
+            // 这一步将q定义为p的next执向，即NULL，但有多个线程时，会各有一个q指向NULL
+            Node<E> q = p.next;
+            if (q == null) {
+                // p is last node
+                // 执行节点添加操作，多线程情况下只能有一个线程能成功添加到这个q指向的位置，
+                // 当一个线程成功之后，其余线程皆失败，失败的线程会重新循环
+                if (p.casNext(null, newNode)) {// (1) 
+                    // Successful CAS is the linearization point
+                    // for e to become an element of this queue,
+                    // and for newNode to become "live".
+                    // 执行节点添加成功的线程并不一定会执行下面的tail更新操作，只有在p!=t的情况下才会执行，
+                    // 那么什么时候p!=t呢：只有当前线程执行过(4)操作之后才会导致p和t不等。如果p!=t，执行下
+                    // 面的tail更新操作，将tail指向当前线程刚刚新增的尾节点
+                    if (p != t) // hop two nodes at a time
+                        casTail(t, newNode);  // Failure is OK.(2) 这个操作隔一个节点执行一次（隔一个成功添加节点的线程执行一次）
+                    return true;
+                }
+                // Lost CAS race to another thread; re-read next
+            }
+            // p==q是指遭遇其他线程的执行poll操作导致出现next指向自身的节点出现，针对这种节点p==q成立，
+            // 对于遇到这种情况，需要专门进行重定位，此处重定位p的指向，如果tail指向刚刚被其他线程更新，
+            // 那么可能tail指向的就是真正的尾节点，当然也有可能不是，这里可以尝试定位到tail指向的节点，
+            // 否则直接定位到head头节点，然后再次循环，如果定位tail确实是尾节点，则可以顺利指向(1)，
+            // 如果不是或者指向的是head节点，那么会执行(4)，将p一步一步挪到真正的尾节点，然后在执行(1)
+            else if (p == q)
+                // We have fallen off list.  If tail is unchanged, it
+                // will also be off-list, in which case we need to
+                // jump to head, from which all live nodes are always
+                // reachable.  Else the new tail is a better bet.
+                // 此处的比较方式好新奇，其实与线程操作栈有关，t先入栈，指向的是tail的节点，然后再次将tail赋值给t，
+                // 如果在此之前其他线程更新的tail，那么新的t指向与之前入栈的t就不同了，不同就代表tail刚刚被更新了，
+                // 所以直接将p指向新更新的tail，否则指向head节点，由第(4)布慢慢挪到尾节点再去执行(1)
+                p = (t != (t = tail)) ? t : head;// (3)
+            else
+                // Check for tail updates after two hops.
+                // 当竞争失败的线程再次开始循环的时候发现q不再指向NULl，而是指向了上次竞争成功的线程添加的节点时，
+                // 就会到这里先把p往后挪一位，然后再去循环执行(1)
+                p = (p != t && t != (t = tail)) ? t : q;// (4)
+        }
+    }
+    // 获取并删除头节点
+    // h：指向头节点
+    // p：指向的应该是真正的头节点（非null节点）
+    // q：指向p的next
+    public E poll() {
+        restartFromHead:
+        for (;;) {
+            for (Node<E> h = head, p = h, q;;) {
+                E item = p.item;// 预存当前头节点的值
+                // 如果当前p的item不为null，则p指向的是真正的头节点，那么尝试将其值更新为null，
+                // 此处可能会有多个线程进行操作，执行成功的线程会尝试执行(2)
+                if (item != null && p.casItem(item, null)) {// (1)
+                    // Successful CAS is the linearization point
+                    // for item to be removed from this queue.
+                    // 执行头节点值更新成功的线程会进来校验p和h，只有p!=h，才会更新head的指向，
+                    // 那么何时p会与h不等呢？其实很简单只要当前线程在更新成功之前执行过(5)操作，
+                    // 那么p会发生挪移，不再与h指向同一节点，然后可以执行head指向的更新(2)
+                    if (p != h) // hop two nodes at a time
+                        // 如果p有下级节点，那么优先将该下级节点作为新的头节点，否则就将当前的p指向的null节点作为头节点
+                        updateHead(h, ((q = p.next) != null) ? q : p);// (2)
+                    return item;
+                }
+                // 此处定义q的值为p的next指向节点。如果q指向的是null，那么意味着当前队列中没有真正的元素节点存在
+                // （可能是尚未添加任何节点，也可能是所有节点被取走或删除），此时尝试更新头节点指向
+                else if ((q = p.next) == null) {
+                    updateHead(h, p);// (3)
+                    return null;
+                }
+                // p==q是在遭遇其他线程指向offer操作的时候会发生这种指向自身的节点出现，出现这种情况，直接重新开启外部循环
+                else if (p == q)
+                    continue restartFromHead;// (4)
+                // 当竞争失败的线程再次开始循环的时候发现p的item已经为null了，那么这时候p指向
+                // 的就不是真正的头节点了，需要执行下面的操作(5)将p的指向向后挪移，然后继续循环    
+                else
+                    p = q;// (5) 向后迁移p指向
+            }
+        }
+    }
+    final void updateHead(Node<E> h, Node<E> p) {
+        // 如果h==p，代表的是尚未添加任何元素节点的情况，此种情况下，不做更新；如果h!=p，
+        // 那么会是在当前线程执行过(5)操作前后队列中的所有元素被删除或取走,此时h!=p，那么
+        // 尝试将头节点指向p，此处为何指向p呢：因为既然h!=p，那么就是说h的指向已经是一个值
+        // 为null的节点了，p原本是一个有值的节点，不过在此期间被别的线程删除，也变成值为null的节点了，
+        // 但是p作为后继节点会作为新增节点的前置节点，而不是原来的head节点，如果还保留原来的head节点，那么就会存在两个null节点了
+        if (h != p && casHead(h, p))
+            h.lazySetNext(h);// 将旧的head指向他自己，作为一个哨兵，为succ()方法服务
+    }
+}
+```
+- 支持序列化
 ### BlockingQueue
 #### DelayQueue
 
@@ -173,5 +291,11 @@
 ### LinkedList
 
 ### ConcurrentLinkedDeque
-
+- 线程安全
+- 不支持null元素
+- 基于哨兵模式**双向链表**的**无界队列**，属于**双端队列**，采用非阻塞算法（CAS操作+无限循环）实现操作的原子性，而可见性和有序性依靠volatile实现，而这也正是并发包中Concurrent开头的并发集合的实现基础，一般基于此实现的逻辑均较为复杂，比如此处的add、offer操作
+- 同时支持FIFO（先入先出）和FILO（先入后出），所以相较于ConcurrentLinkedQueue，实现将更加复杂
+- size属性一般无法保证精确度，所以size()方法会执行一次集合遍历来统计集合容量，较为耗时，尽量避免使用，可用isEmpty代替
+- 各个操作其实和ConcurrentLinkedQueue差不多，只是存在两个方向
+- 支持序列化
 ### LinkedBlockingDeque
