@@ -287,9 +287,17 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
 
 ## Deque
 ### ArrayDeque
-
+- 非线程安全
+- 不支持null元素，当做栈使用速度比Stack快，当做队列使用速度快于LinkedList
+- 基于可变数组实现的无界双端队列，底层数组是被当做环形来使用的，
+- 底层包含一个Object[]数组elements，还持有头节点和尾节点的下标索引head和tail
+- 可以自定义初始容量，但是ArrayDeque有一个最小初始容量（为8）限制，如果自定义容量小于该值，则以该值为标准计算最后的容量，否则以自定义容量计算最后的容量，计算规则是找出大于等于给定容量值的最小的2的次幂值，如果是8,那么结果就是8，如果是10，那么结果是16；如果不自定义容量，那么默认初始容量为16
+- 当数组容量爆满时需要扩容，扩容为原来的2倍容量，扩容后迁移数据时会将原来数组中环形存放的元素整齐存放到新数组中（指新数组从0开始存放头节点一直然后）
+- 采用数组环形存放节点，有一种快速校验是否爆满的方式：
+- 支持序列化、克隆
+- 支持fail-fast
 ### LinkedList
-
+同List中的LinkedList
 ### ConcurrentLinkedDeque
 - 线程安全
 - 不支持null元素
