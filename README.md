@@ -821,11 +821,41 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 ### 动态代理
 - 静态代理：手动创建代理类，需要与目标类实现同一接口，当目标类较多时，需要逐一手动创建，费事
 - 动态代理：通过反射来在运行时动态创建代理类
+- 静态代理与动态代理的区别：
+    - 静态代理有明确的目标类和接口，在编译期完成代理类的创建
+    - 动态代理没有明确的目标类和接口，需要在运行期动态获取并创建代理类
 - [动态代理和反射的关系](http://blog.sina.com.cn/s/blog_548c8a8301013j6u.html)：动态代理利用反射实现的
 - 动态代理的几种实现方式
-    - JDK原生动态代理：基于接口实现，通过创建代理类实现
-    - CGLIB动态代理：基于类实现，通过继承创建代理子类实现
+    - JDK原生动态代理：基于接口实现，通过创建代理类实现，代理类与目标类实现同一接口，底层通过反射机制实现代理
+        - 原理：
+        - 优势：JDK内置机制，速度快
+        - 劣势：只能基于接口实现，局限性较大
+    - CGLIB动态代理：基于类实现，通过继承创建代理子类实现，代理子类继承自目标类，final类不支持，也不支持代理调用final方法，底层通过
+        - 原理：
+        - 优势：适用性强于JDK动态代理，基于类来实现，去除了接口的限制
+        - 劣势：不支持代理final类和final方法
 - AOP：Spring中的AOP实现原理就是动态代理，同时支持JDK动态代理和CGLIB动态代理
+- JDK动态代理实现步骤：
+    1. 创建InvocationHandler接口实现类Handler
+    2. 持有被代理类Target的对象target，这里是Object类型
+    3. 实现InvocationHandler接口中的invoke方法，在方法中反射调用目标类的目标方法，该方法三个参数：
+        - Object proxy：生成的代理对象
+        - Method method：被代理的方法
+        - Object[] args：被代理方法的参数列表
+    4. 反射创建代理类的实例，使用Proxy.newProxyInstance(ClassLoader loader, Class<?>[] interfaces, InvocationHandler h)方法，然后使用代理类实例调用目标方法
+        - ClassLoader loader：使用第1-3步创建的InvocationHandler实现类的实例的类加载器handler.getClass().getClassLoader()
+        - Class<?>[] interfaces：基于的接口，target.getClass().getIntrefaces()------可见JDK动态代理也是基于接口实现的
+        - InvocationHandler h：InvocationHandler实例，就是第1-3步创建的InvocationHandler实现类的实例
+- CGLIB实现动态代理的步骤：
+    1. 创建MethodInterceptor实现类Interceptor
+    2. 实现MethodInterceptor接口的intercept方法，在方法中调用父类（目标类）的目标方法，intercept方法有四个参数：
+        - Object o：代理类实例
+        - Method method：目标方法
+        - Object[] objects：目标方法参数
+        - MethodProxy methodProxy：代理方法的MethodProxy实例
+    3. 创建一个Enhancer实例enhancer，设置其超类为目标类，设置回调为Interceptor实例，设置好二者之后，就可以调用create方法来创建代理类实例，然后发起调用即可
+- [JDK动态代理实现原理]()
+- [CGLIB动态代理实现原理]()
 ### 并发编程
 #### 并发与并行
 - 并发：指的是多个任务线程一起执行，但需要抢占CPU时间片，同一时刻只能有一个任务线程在执行，可发生在单核和多核环境

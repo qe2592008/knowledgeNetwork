@@ -273,30 +273,41 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
 ```
 - 支持序列化
 ### BlockingQueue
-#### DelayQueue
+#### DelayQueue(延迟阻塞队列)
+- 线程安全的有序无界阻塞队列，是按照过期优先级排序的，先过期的排前面，头节点是最先过期的元素
+- 不支持null元素，保存到其中的元素必须是Delayed类型或其子类型
+- 该队列中的元素都有一个延期时间，只有到期的元素才能被取出来，如果所有元素均未到期，无法取出元素，但不代表队列中无元素
+- 底层基于PriorityQueue实现，其实就是针对PriorityQueue对应的方法进行加Lock锁来保证线程安全性
+- 初始容量同PriorityQueue，为11，此处使用的正是无参构造器，无法初始化容量，直接采用默认初始容量11
+- 扩容规则同PriorityQueue
+- 由以上可知，该队列同样依据优先级堆来实现，以数组实现的完全二叉树构造的小顶堆
+- 元素有序的实现：该队列基于PriorityQueue无参构造器实现，底层使用Comparable来实现排序，那么这个Comparable来自哪里呢？其实现compareTo方法定义在哪里呢？打开Delayed源码就能看到，这个接口继承了Comparable接口，那么其子类就必要实现compareTo方法，那么延迟队列中元素排序比较的依据就是在这个方法实现中定义的，示例可参照TimeQueue的DelayedTimer内部类
+- 延迟队列，可用于实现缓存系统，定时调度系统，Timer就是基于此队列实现
+#### PriorityBlockingQueue(优先阻塞队列)
 
-#### PriorityBlockingQueue
+#### SynchronousQueue(同步阻塞队列)
 
-#### SynchronousQueue
+#### ArrayBlockingQueue(基于数组的阻塞队列)
 
-#### ArrayBlockingQueue
+#### LinkedBlockingQueue(基于链表的阻塞队列)
 
-#### LinkedBlockingQueue
+#### LinkedTransferQueue()
 
-#### LinkdTreansferQueue
-
-## Deque
-### ArrayDeque
+## Deque(双端队列)
+### ArrayDeque（基于数组的双端队列）
 - 非线程安全
 - 不支持null元素，当做栈使用速度比Stack快，当做队列使用速度快于LinkedList
-- 基于可变数组实现的无界双端队列，底层数组是被当做环形来使用的，
+- 基于可变循环数组实现的无界双端队列，底层数组是被当做环形来使用的，
 - 底层包含一个Object[]数组elements，还持有头节点和尾节点的下标索引head和tail
 - 可以自定义初始容量，但是ArrayDeque有一个最小初始容量（为8）限制，如果自定义容量小于该值，则以该值为标准计算最后的容量，否则以自定义容量计算最后的容量，计算规则是找出大于等于给定容量值的最小的2的次幂值，如果是8,那么结果就是8，如果是10，那么结果是16；如果不自定义容量，那么默认初始容量为16
 - 当数组容量爆满时需要扩容，扩容为原来的2倍容量，扩容后迁移数据时会将原来数组中环形存放的元素整齐存放到新数组中（指新数组从0开始存放头节点一直然后）
 - 采用数组环形存放节点，有一种快速校验是否爆满的方式：
+    - 首先要保证数组的长度是2的次幂，这样2<sup>n</sup>-1得到的就是末几位全是1的值（例如：2<sup>4</sup>=16，其二进制为10000，16-1的结果为15，其二进制为1111）
+    - 然后用上面全1的结果与期待的逻辑位相与，就能得到逻辑位置对应到循环数组中的物理位置下标（数组满不满主要看head与tail是否将要重合，但二者分别指向头节点与尾节点，不可能等重合再进行扩容，只要将要重合，数组没有空位就需要扩容，所以此处是(tail + 1) & (elements.length - 1)的结果是否是head节点下标，如果是就需要扩容）
+    - 举个例子，16位数组，head指向下标0，tail指向下标15，要判断head与tail在下一次新增节点时会不会重合，只需要在tail+1，指向逻辑上的下一个元素下标位，然后通过上面的公式计算出物理下标位，得到结果为0，与当前head下标一致，说明下一次新增节点head和tail将会重合，此时就必须扩容
 - 支持序列化、克隆
 - 支持fail-fast
-### LinkedList
+### LinkedList（基于链表的双端队列）
 同List中的LinkedList
 ### ConcurrentLinkedDeque
 - 线程安全
