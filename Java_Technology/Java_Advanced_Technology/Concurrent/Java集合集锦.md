@@ -73,8 +73,9 @@
 - 支持fail-fast
 #### JDK1.7
 - 底层基于数组+链表实现，数组用于存放链表头节点，链表用于处理Hash冲突
+- 添加元素时，先进行扩容，然后在进行新元素添加
 - 链表采用头插法，会导致在扩容时形成循环链表，形成原因是两个线程同时进行扩容操作后迁移数据的时候，循环中的`Entry<K,V> next = e.next;`一句，它会提前将e节点的下级节点预存起来，如果一个线程在执行完此句后中断，另一个线程完成了迁移操作，而迁移数据采用的仍然是头插法，就会导致节点的顺序颠倒过来（next颠倒），那么该线程再次开始执行时，由于next已被预存（保留的是原始的next,现在已被另一个线程修改），导致两个节点被各自的next互相引用形成循环链表
-- 扩容后迁移元素时，元素全部重新hash，重新落位
+- 扩容后迁移元素时，元素被分拆成两个小链表，反向头插入新的桶数组的原位与原位+旧容量位
 - 可能会导致插入的数据丢失
 - [HashMap的hashSeed的问题](https://blog.csdn.net/qq_30447037/article/details/78985216)
 #### JDK1.8
@@ -123,10 +124,140 @@
 - 支持序列化功能
 #### JDK1.7
 - 底层采用Segment数组+table数组来实现
-- 分段数组的最大数量为1<<16个
-- 分段数组的容量最小为2，可以扩容，扩容为原来的2倍，容量必须为2的次幂
+- Segment数组可以自定义，但是一旦初始化就固定不变，默认为concurrencyLevel=16
+- Segment数组的最大容量为1<<16，表示可以最多拥有1<<16个分段数组，这个值一旦初始化不可改变
+- 集合容量可以初始化，这个容量是整个ConcurrentHashMap的容量，初始化后会平均分给每个Segment
+- table数组的容量最小为2，可以扩容，扩容为原来的2倍，容量必须为2的次幂
 - 扩容针对的是table数组，Segment数组一经初始化就固定不变了，这样扩容不会导致整个集合全部扩容，而是仅仅一个Segment数组的元素代表的table数组进行扩容和数据迁移
 - 链表采用头插法实现，扩容迁移数据时也是头插法
+```java
+public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
+        implements ConcurrentMap<K, V>, Serializable {
+    public V put(K key, V value) {
+        Segment<K,V> s;
+        // 不支持null值
+        if (value == null)
+            throw new NullPointerException();
+        int hash = hash(key);// 计算key的hash值
+        // 计算元素的位置j，其中segmentShift和segmentMask都是在容器初始化的时候赋值的
+        int j = (hash >>> segmentShift) & segmentMask;
+        if ((s = (Segment<K,V>)UNSAFE.getObject          // nonvolatile; recheck
+             (segments, (j << SSHIFT) + SBASE)) == null) //  in ensureSegment
+            s = ensureSegment(j);// 初始化segment[j]
+        return s.put(key, hash, value, false);
+    }
+    // 初始化分段数组segment[k]
+    private Segment<K,V> ensureSegment(int k) {
+        final Segment<K,V>[] ss = this.segments;
+        long u = (k << SSHIFT) + SBASE; // raw offset
+        Segment<K,V> seg;
+        if ((seg = (Segment<K,V>)UNSAFE.getObjectVolatile(ss, u)) == null) {// 如果尚未初始化则进行初始化
+            Segment<K,V> proto = ss[0]; // 使用当前的segment[0]作为原型，这个segment[0]可能已经发生过扩容
+            int cap = proto.table.length;// 获取原型的内部数组长度
+            float lf = proto.loadFactor;// 获取原型的加载因子
+            int threshold = (int)(cap * lf);// 计算阈值
+            HashEntry<K,V>[] tab = (HashEntry<K,V>[])new HashEntry[cap];// 创建一个指定容量的空数组tab
+            if ((seg = (Segment<K,V>)UNSAFE.getObjectVolatile(ss, u)) == null) { // recheck,如果没有其他线程完成初始化操作，则由本线程完成
+                Segment<K,V> s = new Segment<K,V>(lf, threshold, tab);// 新建一个Segment实例s
+                // 通过无限循环和CAS来保证操作的原子性
+                while ((seg = (Segment<K,V>)UNSAFE.getObjectVolatile(ss, u)) == null) {
+                    if (UNSAFE.compareAndSwapObject(ss, u, null, seg = s))// 将上面新建的Segment实例s设置到指定的分段数组位上
+                        break;
+                }
+            }
+        }
+        return seg;
+    }
+    // Segment类，每个Segment持有一个HashEntry数组，每个Segment实例就是一个分段
+    static final class Segment<K,V> extends ReentrantLock implements Serializable {
+        // 因为元素都是保存在每个分段的内部HashEntry数组中的额，所以每个put操作最后都需要调用这个put来完成添加操作
+        final V put(K key, int hash, V value, boolean onlyIfAbsent) {
+            // 首先尝试快速获取独占锁，如果成功node=null，否则执行scanAndLockForPut方法来获取锁
+            HashEntry<K,V> node = tryLock() ? null : scanAndLockForPut(key, hash, value);
+            V oldValue;
+            try {
+                HashEntry<K,V>[] tab = table;
+                int index = (tab.length - 1) & hash;
+                HashEntry<K,V> first = entryAt(tab, index);
+                for (HashEntry<K,V> e = first;;) {
+                    if (e != null) {
+                        K k;
+                        if ((k = e.key) == key ||
+                            (e.hash == hash && key.equals(k))) {
+                            oldValue = e.value;
+                            if (!onlyIfAbsent) {
+                                e.value = value;
+                                ++modCount;
+                            }
+                            break;
+                        }
+                        e = e.next;
+                    }
+                    else {
+                        if (node != null)
+                            node.setNext(first);
+                        else
+                            node = new HashEntry<K,V>(hash, key, value, first);
+                        int c = count + 1;
+                        if (c > threshold && tab.length < MAXIMUM_CAPACITY)
+                            rehash(node);
+                        else
+                            setEntryAt(tab, index, node);
+                        ++modCount;
+                        count = c;
+                        oldValue = null;
+                        break;
+                    }
+                }
+            } finally {
+                unlock();
+            }
+            return oldValue;
+        }
+        // 尝试获取锁
+        private HashEntry<K,V> scanAndLockForPut(K key, int hash, V value) {
+            HashEntry<K,V> first = entryForHash(this, hash);
+            HashEntry<K,V> e = first;
+            HashEntry<K,V> node = null;
+            int retries = -1; // negative while locating node
+            // 循环获取锁，成功结束循环，否则进入循环内部
+            while (!tryLock()) {
+                HashEntry<K,V> f; // to recheck first below
+                if (retries < 0) {// 首次循环总是-1，会进来这里
+                    if (e == null) {// e==null，有两种情况，一种是数组为空，另一种是遍历完一遍数组中的元素之后，然就会将次数置为0
+                        if (node == null) // speculatively create node
+                            node = new HashEntry<K,V>(hash, key, value, null);// 初始化node节点
+                        retries = 0;// 次数置0
+                    }
+                    // 如果数组中已有元素，则比较新元素的key与数组中元素的key是否等，如果相等，
+                    // 那么就直接替换value即可，不用再添加新元素，所有次数置0，如果不等那么走下面的遍历链表，
+                    // 比较下一个元素，直到找到相等的或者遍历完所有元素
+                    else if (key.equals(e.key))
+                        retries = 0;
+                    else
+                        e = e.next;// 遍历链表
+                }
+                // 次数自增，每次加1，MAX_SCAN_RETRIES如果是单核值为1，多核值为64；
+                // 如果retries=0，MAX_SCAN_RETRIES为1（单核），retires自增为1，等式不成立，会再次循环，
+                // 还是没有获取到锁的情况下，再次走到这里，等式成立，执行lock方法，线程阻塞，
+                // 直到获取到锁才能结束，break跳出循环
+                else if (++retries > MAX_SCAN_RETRIES) {
+                    lock();
+                    break;
+                }
+                // 如果发现头节点发生变化，那么只能是别的线程添加了新元素导致头节点变更，
+                // 这时候当前线程的流程结束，重新开始一波循环，开始前需要重置初始值
+                else if ((retries & 1) == 0 &&
+                         (f = entryForHash(this, hash)) != first) {
+                    e = first = f; // re-traverse if entry changed
+                    retries = -1;
+                }
+            }
+            return node;
+        }
+    }
+}
+```
 #### JDK1.8
 - 放弃分段锁方式，恢复原始的数组+链表+红黑树方式实现
 - 链表元素达到8个且桶数组容量达到64以上，则将单向链表转化为一个红黑树，其实它同时还是一个双向链表，双向链表的目的是为了退化为链表做的准备

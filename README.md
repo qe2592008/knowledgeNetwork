@@ -330,10 +330,10 @@
 - 值传递：表示传递的是值的拷贝，在新方法中对值进行更改不会影响原来的值
 - 引用传递：表示传递的是对象的引用地址，那么新方法中针对对象的改变将会体现在原来的引用中，因为两个引用执行相同的对象
 - [为什么说Java中只有值传递](https://www.cnblogs.com/wchxj/p/8729503.html)：如果某个方法的参数是一个对象，那么传递的时候就会直接传递这个对象在栈空间的句柄，那么这种是不是引用传递呢，不是，因为传递的关注点并不是对象而是那个对象地址值，在传递的时候，同样是拷贝了一封对象地址值传递的，那么这里就是值传递，引用传递指的是直接将原来的引用地址传进来。Java在这里进行了处理，并不是传原来的引用地址，而是原来引用地址的一份拷贝。
-- [方法重写与重载]
+- 方法重写与重载
     - 方法重写：重写针对的是继承体系中，子类重写父类的方法，可以使用@Override标注。
     - 方法重载：重载指的是同一个类中，多个参数形式不同的同名方法，返回值不参与区分是否重载
-- [Java的继承与实现]
+- Java的继承与实现
     - 继承：Java支持单继承，一个类只能继承一个抽象类或者普通类，一个接口可以继承多个接口，继承的目标可以使接口、抽象类、普通类
     - 实现：Java支持多实现，一个抽象类或者普通类可以实现多个接口，实现的目标只能是接口
 - 构造函数与默认构造函数：Java类中可以拥有多个构造函数，型重载，多个构造函数参数必须不同。一个类默认存在一个无参构造器，但是一旦自定义了新的构造器，则无参构造器失效，需要手动添加。
@@ -341,9 +341,10 @@
     - 类变量：在类内部定义，由static修饰的变量，可由类名点用（无需创建对象使用），共享使用，在类加载阶段完成赋值操作（可直接赋值，静态块赋值，静态方法赋值）
     - 成员变量：在类内部定义，需要使用对象调用，每个对象有一个自己的变量，不共享，在创建对象时赋值（可直接赋值，构造器赋值，块赋值，成员方法赋值等）
     - 局部变量：方法内定义，只在方法内有效，天生线程安全。
-- [成员变量和方法作用域]
-
-- [接口和抽象类]
+- 成员变量和方法作用域
+    - 成员变量：是属于对象级的变量，区别于静态变量，静态变量是属于类级变量，成员变量在创建对象的时候进行初始化，而类变量在类加载的时候进行初始化，作用域在对象内部有效
+    - 成员方法：同样属于对象级的方法，区别于静态方法，静态方法属于类级方法，成员方法必须被对象调用，作用域在对象内部有效
+- 接口和抽象类
     - 接口
         - interface定义
         - 变量默认public static final-静态常量
@@ -375,9 +376,9 @@
     - char：2字节，0~65535
     - boolean：1字节，0~1
 - 基本数据类型的产生的历史原因：其实是为了兼容C语言的模式，为C语言开发者转Java提供方便
-- [整型和浮点型的二进制表示形式与计算原理]
-- [什么是浮点型]
-- [什么是单精度和双精度]
+- [整型和浮点型的二进制表示形式与计算原理]   //TODO
+- [什么是浮点型]   //TODO
+- [什么是单精度和双精度]   //TODO
 - **为什么不能用浮点型表示金额**：因为使用浮点数能精确表示的小数很少，大部分都无法精确表示，这和十进制无法精确表达1/3一样。
 - [浮点数为什么不精确？为什么银行的金额不能用浮点数计算](https://blog.csdn.net/keke_xin/article/details/84831024)
 ### 自动拆装箱
@@ -389,7 +390,7 @@
 - 包装类型的比较需要使用equals，不能直接使用==，除非将其手动转换为基本类型。
 ### String
 - [字符串的不可变性](https://blog.csdn.net/qunzer/article/details/25157309)：String类被final修饰，是为最终类，不可被继承修改,且底层保存字符序列的字符数组也被final修饰，一旦赋值不再改变，这是String不变的原理。这种不变性也保证了其可以作为Map中键的常客。
-- [JDK 6和JDK 7中substring的原理及区别](Java_Technology\Java_Base_Technology\JDK 6和JDK 7中substring的原理及区别.md)
+- [JDK6和JDK7中substring的原理及区别](Java_Technology\Java_Base_Technology\JDK6和JDK7中substring的原理及区别.md)
 - replaceFirst、replaceAll、replace区别
     - replace：使用新字符替换所有旧字符，字符的替换操作
     - replaceFirst：使用给定的字符序列根据给定的正则表达式替换第一次出现的旧字符序列，字符序列的替换操作，涉及正则表达式，只替换首个出现的匹配的旧字符序列
@@ -407,8 +408,8 @@
 - switch支持以下类型：
     - 基本数据类型：byte, short, char, int
     - 包装数据类型：Byte, Short, Character, Integer
-    - 枚举类型：Enum
-    - 字符串类型：String（Jdk 7+ 开始支持）
+    - 枚举类型：Enum（语法糖）
+    - 字符串类型：String（Jdk 7+ 开始支持）（语法糖）
 - 字符串常量池
     字符串常量池和运行时常量池不同，后者是class文件私有的，每个class文件有一个运行时常量池，而字符串常量池是公共的，全局的。
     JDK 1.6之前，字符串常量池位于方法区，JDK1.7开始挪到了堆内存。
@@ -428,7 +429,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - transient原理及用法：使用于序列化机制中，用于屏蔽不想参与序列化的字段，被其修饰的字段不参与序列化与反序列化。一般使用writeObject和readObject方法来自定义其值的序列化与反序列化，通常是直接写入流中或从流中获取赋值。
 - [instanceof原理及用法](https://www.jianshu.com/p/134891584105)
 - [volatile原理及用法](https://www.jianshu.com/p/75c95a676385)
-- [synchronized原理及用法]()
+- [synchronized原理及用法](#synchronized)
 - [final原理及用法](https://www.jianshu.com/p/f89475e3b234)
 - [static原理及用法](https://www.jianshu.com/p/f2b9aabb01c6)
 - const原理及用法：C/C++中的关键字，Java中作为保留字存在，和goto一样
@@ -455,14 +456,30 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - HashMap：线程不安全的键值对集合
     - HashTable：线程安全的键值对集合，使用synchronized加锁实现线程安全，效率较低
     - ConcurrentHashMap：线程安全的键值对集合，使用原子操作+synchronized实现，效率更高，推荐使用
-- Set和List区别？
+- Set和List区别
     - Set特点：无序-不可重复-可保存null值但只能有一个
     - List特点：有序-可重复-可保存多个null值
-- Set如何保证元素不重复？
-    Set一般底层以Map来实现，可以说Set就是一个value为固定值的Map，那么Set保存的值映射到Map，就是Map的key，key当然不能重复，如果key重复那么
+- Set如何保证元素不重复
+    Set一般底层以Map来实现，可以说Set就是一个value为固定值的Map，那么Set保存的值映射到Map，就是Map的key，key当然不能重复，所以这个问题可以引申到Map中的key不重复时候怎么保证的，其实主要原理就在添加元素的代码中，在添加新元素的时候，首先就会对元素对的键进行hash来进行桶定位，确定好桶位之后，如果桶位没有元素，直接添加，如果有元素，那么就要遍历桶位的链表或者红黑树，通过新元素的键与旧元素的键进行比较，如果没有相同的键，则新元素添加到链表或者树中，否则只是替换相同键的value值。相对于set来说，就是没有添加进去，重点在于比较，这里的比较使用equals进行比较。
 - [Java 8中stream相关用法](https://www.jianshu.com/p/3dc56886c2eb)
-- [apache集合处理工具类的使用]
-- [不同版本的JDK中HashMap的实现的区别以及原因]()
+- [apacheCommons工具类的使用](https://www.cnblogs.com/crazylqy/p/4872236.html)
+    - **Collections**：java集合框架操作.
+    - **Lang**：Java基本对象方法的工具类包 如：StringUtils,ArrayUtils等等.
+        - 
+    - **BeanUtils**：提供了对于JavaBean进行各种操作，克隆对象,属性等等.
+    - **DBCP**：提供数据库连接池服务.
+    - **FileUpload**：提供文件上传功能.
+    - Betwixt：XML与Java对象之间相互转换.
+    - Codec：处理常用的编码方法的工具类包 例如DES、SHA1、MD5、Base64等.
+    - Compress：Java提供文件打包 压缩类库.
+    - Configuration：一个java应用程序的配置管理类库.
+    - DbUtils：提供对jdbc 的操作封装来简化数据查询和记录读取操作.
+    - Email：java发送邮件 对javamail的封装.
+    - HttpClient：提供HTTP客户端与服务器的各种通讯操作. 现在已改成HttpComponents
+    - IO：io工具的封装.
+    - Logging：提供的是一个Java 的日志接口.
+    - Validator：提供了客户端和服务器端的数据验证框架.
+- [不同版本的JDK中HashMap的实现的区别以及原因](http://www.importnew.com/28263.html)
 - Collection和Collections区别
     - Collection是集合的基础接口定义了一些公共的方法。
     - Collections是集合工具类，主要用于操作集合：排序、反转、拷贝、查找、定位等功能
@@ -476,10 +493,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - [fail-fast 和 fail-safe的区别](https://blog.csdn.net/u010889616/article/details/79954413)
     fail-fast：快速失败，ju包下的集合类均是快速失败的，当多个线程对同一个集合进行操作，就可能产生fail-fast。
     fail-safe：安全失败，所有针对同一集合结构的更改操作都会在一个复制的集合上进行。
-- CopyOnWriteArrayList
-    
-- ConcurrentSkipListMap
-    
+
 ### 枚举
 - [深入理解Java枚举类型(enum)](https://blog.csdn.net/javazejian/article/details/71333103)
 - 枚举的用法
@@ -510,7 +524,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - @Deprecated：方法弃用
     - @Suppvisewarnings：忽略警告
 - [注解与反射的结合](Java_Technology/Java_Base_Technology/注解与反射结合使用.md)
-- [Spring常用注解] 
+- [Spring常用注解](#Spring)
 ### 泛型
 - **泛型**：Java编译器语法糖的一种，泛型只在编译期有效，编译器会执行类型擦除，来去掉泛型。
 - 泛型与继承
@@ -519,9 +533,9 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - K T V E这些其实是一样的，我们还可以使用其他任意的大写字母来替换它们，只是这几个经常使用罢了，它们表示一个具体的类型
         - K：键值对中的键key
         - V：键值对中的值value
-        - T：
-        - E：
-        - R:
+        - T：表示参数parameter
+        - E：异常类Exception
+        - R：表示返回值result
         - ?：不限定类型
         - Object：任意类型
     - ?表示不限定类型，
@@ -540,26 +554,26 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - List\<?\>：通配符类型，形参，可以接受任何对应List<E>的参数化类型，包括List，来作为实参，形参并不能添加元素。
     - List\<Object\>：类型参数为Object的参数化类型，实参，仅仅能够接受List和其本身类型，可以添加任意类型元素。
 ### 异常
-- [Java 中的异常和处理详解](http://www.importnew.com/26613.html)
-- [如何优雅的设计 Java 异常](http://www.importnew.com/28000.html)
+- [Java中的异常和处理详解](http://www.importnew.com/26613.html)
+- [如何优雅的设计Java异常](http://www.importnew.com/28000.html)
 - **异常类型**
     - 错误Error
         - AssertionError：抛出断言失败错误
         - OutOfMemoryError：抛出内存溢出错误，当JVM没有多余内存来存放目标对象，并且使用GC垃圾回收之后仍然无多余内存来保存目标对象
         - StackOverflowError：堆栈溢出错误，递归太深导致堆栈溢出
     - 异常Exception
-        - 受检异常（编译期异常）
-            - ClassNotFoundException
-            - CloneNotSupportedException
-            - FileAlreadyExistsException
-            - FileNotFoundException
-            - InterruptedException
-            - IOException
-            - SQLException
-            - TimeoutException
-            - UnknownHostException
-        - 非受检异常（运行时异常）
-            - AlreadyBoundException
+        - 受检异常（编译期异常，必须手动处理）
+            - ClassNotFoundException：找不到指定的类定义
+            - CloneNotSupportedException：不支持clone功能，未实现Cloneable而调用clone方法
+            - FileAlreadyExistsException：已存在文件异常
+            - FileNotFoundException：找不到指定文件异常
+            - InterruptedException：中断异常
+            - IOException：IO异常
+            - SQLException：SQL异常
+            - TimeoutException：超时异常
+            - UnknownHostException：未知主机异常
+        - 非受检异常（运行时异常，可不处理）
+            - AlreadyBoundException：已绑定再次尝试绑定抛出异常
             - ClassCastException：类转换异常，将一个实例转化为非其真实类型的子类时发生异常
             - ConcurrentModificationException：并发修改异常，多线程修改
             - IllegalArgumentException：参数非法异常，表示方法传递了一个非法的不适合的参数
@@ -568,9 +582,36 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
             - NullPointerException：空指针异常，针对空对象进行方法调用的时候触发
             - SecurityException：安全异常，由安全管理器抛出
             - UnsupportedOperationException：不支持操作异常，表示不支持指定的操作，从而抛出异常
-- [正确处理异常]()
+- 正确处理异常
     - 如果不手动处理异常，将会由默认的异常处理器来处理异常。
-- [自定义异常]()
+    - finally代码块总是会在方法返回或方法抛出异常前执行，而try-catch-finally代码块后面的代码就有可能不会再执行
+    - finally代码块里面不推荐使用return语句或throw语句。
+    - try代码块一定要求要有一个catch代码块或finally代码块（二者取其一就行）。
+    - catch处理器的优先级比声明异常语句要高。
+    - 如果多处抛出异常，finally代码块里面的异常会压抑其他异常
+- Java异常实践原则
+    - 使用异常，而不使用返回码
+    - 利用运行时异常设定方法使用规则：设定方法的使用规则，遇到不合法的使用方式时，立刻抛出一个运行时异常，这样既不会让主流程代码变复杂，也不会制造不必要的BUG。为什么是运行时异常而不是检查异常呢？这是为了强迫用户修改代码或者改正使用方式——这属于用户的使用错误。
+    - 消除运行时异常：当你的程序发生运行时异常，通常都是因为你使用别人的方法的方式不正确，所以，一般都是采取修改代码的方式，而不是新增一个异常流程。
+    - 正确处理检查异常：
+        - 处理检查异常的时候，处理器一定要做到下面的要求才算合格：
+            - 返回到一种安全状态，并能够让用户执行一些其他的命令；
+            - 允许用户保存所有操作的结果，并以适当的方式终止程序。
+        - 好的实践方式：
+            - 让可以处理这个异常的方法去处理。衡量的标准就是在你这个方法写一个处理器，这个处理器能不能做到前面的那两个要求，如果不能，就往上抛。如果你不能知道所有用户的所有需求，你通常就做不到那两个要求。
+            - 有必要的时候可以通过链式异常包装一下，再抛出。
+            - 最终的处理器一定要做到本节开头的那两个要求。
+    - 使主流程代码保持整洁：一个try代码块后面可以跟多个catch代码块，这就让一些可能会发生不同异常的代码可以写在一块，让代码看起来很清晰。相反，在一个方法里写多个try-catch，或者写嵌套的try-catch，就会让主流程代码变得很混乱。
+    - 使用try-with-resources
+    - 尽量处理最具体的异常：同一个try语句中，比较具体的异常的catch代码块应写在前面，比较通用的异常的catch代码块应写在后面。
+    - 设计自己的异常类型要遵循的原则
+        - 确定什么场景下，需要创建自己的异常类型
+        - 为你的接口方法的使用规则创建一组运行时异常
+        - 包装别人的检查异常的时候，一定也要用检查异常。这样异常才能传递给上层方法处理
+        - 设计一组有层次结构的异常，而不是设计一堆零零散散的异常
+        - 区分清楚异常发生的原因，然后决定你的异常是检查异常还是运行时异常
+        - 模块内部不需要处理自己定义的异常（重要）
+- 自定义异常
     - 自定义受检异常：继承Exception
     - 自定义运行时异常：继承RuntimeException
     - 自定义异常需要提供以下构造器：
@@ -597,11 +638,11 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - IO流分类：
     - 传输格式：
         - 字符流：
-            - Reader
-            - Writer
+            - Reader：输入字符流
+            - Writer：输出字符流
         - 字节流
-            - InputStream
-            - OutputStream
+            - InputStream：输入字节流
+            - OutputStream：输出字节流
     - 传输方向：
         - 输入流
             - InputStream
@@ -609,6 +650,8 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
         - 输出流
             - OutputStream
             - Writer
+    - 功能流：
+        - 缓冲流：
 - 四大概念理解：[聊聊同步、异步、阻塞与非阻塞](https://www.jianshu.com/p/aed6067eeac9)
     - 同步：调用方一直等待被调用方返回结果（等待结果，需要时刻关注被调用方是否完成）
     - 异步：调用方不等待被调用方返回结果，只要被调用方完成后主动通知调用方即可，即调用方等待的是被调用方的通知（等待通知[不等待结果-属于被动行为不需要主动触发]，不关注被调用方何时完成）
@@ -626,11 +669,11 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 多路复用IO：同步阻塞的一种，一个进程监听多个IO操作，只要有一个准备好数据，就执行对应的操作，如果都没有准备好，那么会阻塞执行，一直等待
     - 信号驱动I/O：不常用
     - 异步 I/O（AIO）：效率最高
-- [BIO、NIO和AIO的区别、用法、原理](Java_Technology/Java_Base_Technology/BIO、NIO和AIO的区别、用法、原理.md)
+- [BIO、NIO和AIO的区别、用法、原理](Java_Technology/Java_Base_Technology/BIO、NIO和AIO的区别、用法、原理.md)    // TODO
     - BIO：同步阻塞IO
     - NIO：同步非阻塞IO
     - AIO：异步非阻塞IO
-- Netty
+- Netty   //TODO
 ### 序列化
 - 什么是序列化与反序列化
     - 序列化：把对象转换为字节序列的过程
@@ -731,22 +774,22 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - Flushable：可刷新流，实现了该接口的类可以将缓存中的数据刷新到流中。一般在输出流中实现
 
 ### 源码阅读
-- [String源码解读]()
-- [Integer源码解读]()
-- [Long源码解读]()
-- [Enum源码解读]()
-- [BigDecimal源码解读]()
+- [String源码解读]()   // TODO
+- [Integer源码解读]()   // TODO
+- [Long源码解读]()   // TODO
+- [Enum源码解读]()   // TODO
+- [BigDecimal源码解读]()   // TODO
 - [ArrayList源码解读](https://www.jianshu.com/p/b85cf23fef07)
-- [LinkedList源码解读]()
-- [HashMap源码解读]()
-- [LinkedHashMap源码解读]()
-- [TreeMap源码解读]()
+- [LinkedList源码解读]()   // TODO
+- [HashMap源码解读]()   // TODO
+- [LinkedHashMap源码解读]()   // TODO
+- [TreeMap源码解读]()   // TODO
 - [HashSet源码解读](https://www.jianshu.com/p/b4c7c056a227)
-- [LinkedHashSet源码解读]()
-- [TreeSet源码解读]()
-- ThreadLocal源码解读
-- ClassLoader源码解读
-- URLClassLoader源码解读
+- [LinkedHashSet源码解读]()   // TODO
+- [TreeSet源码解读]()   // TODO
+- [ThreadLocal源码解读]()   // TODO
+- [ClassLoader源码解读]()   // TODO
+- [URLClassLoader源码解读]()   // TODO
 
 ## Java高级
 ### 设计模式
@@ -758,7 +801,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 接口隔离原则（Interface Segregation Principle）：使用多个专门的接口，而不使用单一的总接口，即客户端不应该依赖那些它不需要的接口
     - 迪米特法则（最少知道原则）（Demeter Principle）：一个软件实体应当尽可能少地与其他实体发生相互作用
     - 合成复用原则（Composite Reuse Principle）：尽量能使用组合就不要使用继承
-- [了解23种设计模式](Java_Technology/Java_Advanced_Technology/DesignPatterns/23种设计模式.md)
+- [了解23种设计模式](Java_Technology/Java_Advanced_Technology/DesignPatterns/23种设计模式.md)     // TODO
     - 创建型模式：
         - 工厂模式：使用工厂接口统筹所有工厂类，新增功能后，同时新增新的工厂类，避免修改原有工厂类，针对的是一个目标类
         - 抽象工厂模式：针对的是一系列目标类，这一系列属于同一个工厂，其余与工厂模式相似
@@ -788,7 +831,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
         - 访问者模式：
         - 中介者模式：
         - 解释器模式（Interpreter模式）：
-- 会使用常用设计模式
+- 会使用常用设计模式   // TODO
 - [单例的七种写法](Java_Technology/Java_Advanced_Technology/DesignPatterns/单例的七种写法.md)：相似点：构造器私有化，大部分都需要有静态私有的类成员（单例），公共的获取类成员的静态方法
     - 懒汉——线程不安全：线程不安全，就不要出来显了
     - 懒汉——线程安全：不安全写法的方法上加锁，线程安全了，算是一个单例实现方式了
@@ -807,9 +850,9 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 > 总结：使用抽象类可以提升抽象化层次，当然接口是可以的，但是很多情况下，已经不能定义接口了，比如目标要继承一个抽象类，这时候要抽象层次的只能是抽象类，
 > 在没有任何限制的情况下，优先使用接口来进行抽象解耦，如果有限制，比如需要持有目标实例，那么就退而求其次使用抽象类来进行抽象解耦
 - 不用synchronized和lock，实现线程安全的单例模式：静态内部类方式、枚举方式、饿汉式
-- **实现AOP**：需要使用到代理模式和反射
-- **实现IOC**：用到了多种设计模式：？？
-- NIO和reactor设计模式
+- **实现AOP**：需要使用到代理模式和反射   // TODO
+- **实现IOC**：用到了多种设计模式：？？   // TODO
+- NIO和reactor设计模式   // TODO
     处理一个或多个客户端并发请求服务的事件设计模式，当请求抵达后，服务处理程序使用I/O多路复用策略，然后同步地派发这些请求至相关的请求处理程序。
 ### 反射技术
 - Java反射技术：反射是Java语言的一个特性，它允许程序在运行时（注意不是编译的时候）来进行自我检查并且对内部的成员进行操作。
@@ -865,7 +908,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
         - Object[] objects：目标方法参数
         - MethodProxy methodProxy：代理方法的MethodProxy实例
     3. 创建一个Enhancer实例enhancer，设置其超类为目标类，设置回调为Interceptor实例，设置好二者之后，就可以调用create方法来创建代理类实例，然后发起调用即可
-- [JDK动态代理实现原理]()
+- [JDK动态代理实现原理](Java_A)
 - [CGLIB动态代理实现原理]()
 ### 并发编程
 #### 并发与并行
@@ -1273,8 +1316,12 @@ public class DeadLock{
             - From Survivor区（1/10）
             - To Survivor区（1/10）
         - 老年代
-    - 方法区：包括类信息（Class对象）、常量、静态变量、JIT编译内容
-    - 元空间：
+    - 方法区：包括类信息（Class对象）、常量、静态变量、JIT编译内容，在jdk1.7开始准备撤除，在1.8中完全取缔，其中的内容进行了迁移：符号引用（类信息）迁移到元空间，字面量和类的静态变量、字符串池迁移到java堆
+    - 元空间：不在虚拟机中，属于本地内存
+        - -XX:MetaspaceSize：设置元空间初始大小，达到该值就会触发垃圾收集进行类型卸载，同时GC会对该值进行调整：如果释放了大量的空间，就适当降低该值；如果释放了很少的空间，那么在不超过MaxMetaspaceSize时，适当提高该值。
+        - -XX:MaxMetaspaceSize：设置元空间最大容量，默认是没有限制的。
+        - -XX:MinMetaspaceFreeRatio：在GC之后，最小的Metaspace剩余空间容量的百分比，减少为分配空间所导致的垃圾收集
+        - -XX:MaxMetaspaceFreeRatio：在GC之后，最大的Metaspace剩余空间容量的百分比，减少为释放空间所导致的垃圾收集
     - 运行时常量池：区别于Class文件常量池，后者位于Class文件中，当Class文件被虚拟机加载之后，其中的常量池部分就会进入到运行时常量池保存
     - 直接内存：
 - 堆和栈区别
@@ -1282,7 +1329,7 @@ public class DeadLock{
 - 常量池：
     - Class文件常量池：存在于class文件中
     - 运行时常量池：存在于方法区中，1.7以后挪到了元空间
-    - 字符串常量池：存在于方法区中，1.7以后挪到了堆中
+    - 字符串常量池符串常量池：存在于方法区中，1.7以后挪到了堆中
 #### 垃圾回收
 - GC算法：
     - 标记清除：先标记，再清除。效率低、有空间碎片
@@ -1342,7 +1389,7 @@ public class DeadLock{
     - Full GC/Major GC：老年代GC，一般伴随一次到多次Minor GC，速度慢10倍以上
         - 当年老代满时会引发Full GC，Full GC将会同时回收年轻代、年老代
         - 当永久代满时也会引发Full GC，会导致Class、Method元信息的卸载
-- 内存分配回收策略
+- **内存分配回收策略**
     - 对象优先分配在Eden区：Eden区空间不足触发Minor GC
     - 大对象直接进入老年代：通过-XX:PretenureSizeThreshold参数设置对象大小，大于这个值的对象直接放到老年代，该参数只在Serial和pranew中有效
     - 长期存活的对象进入老年代：对象在新生代中被复制一次年龄加1，即熬过一次Minor GC。当年龄达到15岁（默认为15，可由参数-XX:MaxTenuringThreshold设置）将会被晋升到老年代。
@@ -1354,10 +1401,10 @@ public class DeadLock{
     - 年老代的内存越来越大并且每次FullGC后年老代没有内存被释放
     - 之后系统会无法响应新的请求，逐渐到达OutOfMemoryError的临界值。
 #### JVM参数及调优
-- -Xmx：堆容量最大值
-- -Xmn：新生代容量，所以老年代容量 = 堆容量 - 新生代容量 
-- -Xms：堆容量初始值
 - -Xss：线程堆栈空间大小
+- -Xmn：新生代容量，所以老年代容量 = 堆容量 - 新生代容量
+- -Xms：堆容量初始值
+- -Xmx：堆容量最大值
 - -XX:MaxDirectMemorySize:Direct Buffer Memory大小
 - -XX:SurvivorRatio：Eden区与Survivor区的大小比值
 - -XX:PermSize：永久代初始大小
@@ -1365,6 +1412,10 @@ public class DeadLock{
 - -XX:MaxTenuringThreshold：设置对象进入老年代的经历的Minor GC次数
 - -XX:PretenureSizeThreshold：设置大于设定值的对象直接放到老年代
 - -XX:CMSInitiatingOccupancyFraction=80:老年代使用80％后开始CMS收集
+- -XX:MetaspaceSize：元空间初始大小
+- -XX:MaxMetaspaceSize：元空间最大值
+- -XX:MinMetaspaceFreeRatio：在GC之后，最小的Metaspace剩余空间容量的百分比，减少为分配空间所导致的垃圾收集
+- -XX:MaxMetaspaceFreeRatio：在GC之后，最大的Metaspace剩余空间容量的百分比，减少为释放空间所导致的垃圾收集
 #### Java对象模型
 oop-klass、对象头
 #### HotSpot
@@ -1407,6 +1458,7 @@ oop-klass、对象头
 - btrac
 - TProfiler
 - Arthas
+- [Eclipse Mat](http://www.cnblogs.com/duanxz/p/3958504.html)（内存分析器工具）
 #### 平台无关性
 - Java如何实现的平台无关：通过class字节码文件和JVM配合来实现的，首先使用JVM来屏蔽各种操作系统平台的不统一，统一对上层提供一致的入口。然后我们的Java程序会先被编译成class字节码然后被JVM加载执行。
 - JVM还支持哪些语言（Kotlin、Groovy、JRuby、Jython、Scala）
@@ -1605,17 +1657,20 @@ oop-klass、对象头
 用位运算实现加、减、乘、除、取余
 
 ### 性能优化
-使用单例、使用Future模式、使用线程池、选择就绪、减少上下文切换、减少锁粒度、数据压缩、结果缓存
+- 使用单例
+- 使用Future模式
+- 使用线程池
+- 选择就绪
+- 减少上下文切换
+- 减少锁粒度
+- 数据压缩
+- 结果缓存
 ### 新技术
 #### Java8
 - [lambda表达式](https://www.cnblogs.com/figure9/archive/2014/10/24/4048421.html)
 - [Stream API](https://www.jianshu.com/p/3dc56886c2eb)
 - [Optional](https://www.jianshu.com/p/61e3332d7383)
 - 时间API
-
-
-
-
 #### Java9
 - modularity System 模块系统,Jigsaw
 - HTTP/2
@@ -1628,18 +1683,16 @@ oop-klass、对象头
 - java9的垃圾收集机制，默认G1
 - I/O 流新特性
 - Reactive Streams
-
 #### Java10
-
-局部变量类型推断、G1的并行Full GC、ThreadLocal握手机制
-
+- 局部变量类型推断
+- G1的并行Full GC
+- ThreadLocal握手机制
 #### Java11
-
-ZGC、Epsilon、增强var、
-
+- ZGC
+- Epsilon
+- 增强var
 #### Spring5
-响应式编程
-
+- 响应式编程
 #### SpringBoot2.0
 
 ### 高级源码
@@ -1653,12 +1706,27 @@ ThreadLocalMap的Entry为什么使用弱引用类型
 [Java系列笔记(4) - JVM监控与调优](http://www.cnblogs.com/zhguang/p/Java-JVM-GC.html)
 #### dump获取
 线程Dump、内存Dump、gc情况
+- 自动堆转储：OutOfMemoryError是不可预料的，我们很难确定应该何时获得堆转储。有几个JVM标志可以起到帮助。
+    - -XX:+HeapDumpOnOutOfMemoryError该标志默认为false，打开该标志，JVM会在抛出OutOfMemoryError时创建堆转储。
+    - -XX:HeapDumpPath=\<path\>该标志知道了堆转储将被写入的位置，默认为当前工作目录下生产java_pid\<pid\>.hprof文件。
+    - -XX:+HeapDumpAfterFullGC 这会在运行一次Full GC后生成一个堆转储文件。
+    - -XX:+HeapDumpBeforeFullGC 这会在运行一次Full GC之前生成一个堆转储文件。
 #### dump分析
-分析死锁、分析内存泄露
+- 分析死锁
+- 分析内存泄露
 #### dump分析及获取工具
-jstack、jstat、jmap、jhat、Arthas
+- jstack、jstat、jmap、jhat、Arthas
+- jhat：JVM内置的原始的堆转储分析工具，它会读取堆转储文件，并运行一个小型的HTTP服务器，该服务器运行你通过一系列网易链接查看堆转储信息。
+- jvisualvm：jvisualvm的监视（Monitor） 选项卡可以从一个运行中的程序获得堆转储文件，也可以打开之前生成堆转储文件。
+- mat：开源的EclipseLink内存分析器工具（EclipseLink Memory Analyzer Tool，mat）可以加载一个或多个堆转储文件并执行分析。它可以生成报告，向我们建议可能存在问题的地方，也可以用于流量堆，并对堆执行类SQL的查询。
 #### 自己编写各种outofmemory，stackoverflow程序
-HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool OutOfMemory、DirectMemory OutOfMemory、Stack OutOfMemory Stack OverFlow
+- HeapOutOfMemory：堆内存溢出
+- Young OutOfMemory：年轻代内存溢出
+- MethodArea OutOfMemory：方法区内存溢出
+- ConstantPool OutOfMemory：常量池内存溢出
+- DirectMemory OutOfMemory：直接内存溢出
+- Stack OutOfMemory：栈内存溢出（没有足够内存为新线程分配栈空间）
+- Stack OverFlow：堆栈溢出（栈帧深度过深导致StackOverflowError）
 #### Arthas
 Arthas是什么：是一种命令式的Java应用诊断工具。
 jvm相关、class/classloader相关、monitor/watch/trace相关、options、管道、后台异步任务
@@ -1713,13 +1781,13 @@ java.lang.management.*、 javax.management.*
             - XML声明
             - 注解声明：@Transactional
     - 特性
-        - 事务隔离级别：隔离级别是指若干个并发的事务之间的隔离程度
-            - ISOLATION_DEFAULT：默认值，表示使用底层数据库的默认隔离级别。对大部分数据库而言，通常这值就是TransactionDefinition.ISOLATION_READ_COMMITTED。
+        - ***事务隔离级别***：隔离级别是指若干个并发的事务之间的隔离程度
+            - **ISOLATION_DEFAULT**：默认值，表示使用底层数据库的默认隔离级别。对大部分数据库而言，通常这值就是TransactionDefinition.ISOLATION_READ_COMMITTED。
             - ISOLATION_READ_UNCOMMITTED：该隔离级别表示一个事务可以读取另一个事务修改但还没有提交的数据。该级别不能防止脏读，不可重复读和幻读，因此很少使用该隔离级别
             - ISOLATION_READ_COMMITTED：该隔离级别表示一个事务只能读取另一个事务已经提交的数据。该级别可以防止脏读，这也是大多数情况下的推荐值
             - ISOLATION_REPEATABLE_READ：该隔离级别表示一个事务在整个过程中可以多次重复执行某个查询，并且每次返回的记录都相同。该级别可以防止脏读和不可重复读
             - ISOLATION_SERIALIZABLE：所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别（将事务串行化）
-        - 事务传播行为：如果在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为
+        - ***事务传播行为***：如果在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为
             - PROPAGATION_REQUIRED：默认值，如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务
             - PROPAGATION_REQUIRES_NEW：创建一个新的事务，如果当前存在事务，则把当前事务挂起
             - PROPAGATION_SUPPORTS：如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行
@@ -1727,8 +1795,8 @@ java.lang.management.*、 javax.management.*
             - PROPAGATION_NEVER：以非事务方式运行，如果当前存在事务，则抛出异常
             - PROPAGATION_MANDATORY：如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常
             - PROPAGATION_NESTED：如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于PROPAGATION_REQUIRED
-        - 事务超时：一个事务所允许执行的最长时间，如果超过该时间限制但事务还没有完成，则自动回滚事务。在 TransactionDefinition 中以 int 的值来表示超时时间，其单位是秒。默认不设置
-        - 事务只读属性：只读事务用于客户代码只读但不修改数据的情形，只读事务用于特定情景下的优化，比如使用Hibernate的时候，默认为读写事务
+        - ***事务超时***：一个事务所允许执行的最长时间，如果超过该时间限制但事务还没有完成，则自动回滚事务。在 TransactionDefinition 中以 int 的值来表示超时时间，其单位是秒。默认不设置
+        - ***事务只读属性***：只读事务用于客户代码只读但不修改数据的情形，只读事务用于特定情景下的优化，比如使用Hibernate的时候，默认为读写事务
     - 回滚规则
         1. 默认情况下，任何未处理的不受检异常（运行时异常）都会导致事务回滚，受检异常不会导致事务回滚
         2. 可以通过rollbackFor来设置那些异常可以导致回滚，这些异常包括所有的受检和不受检异常
@@ -1805,7 +1873,18 @@ Spring mvc与Struts mvc的区别
 Lombok plugin、.ignore、Mybatis plugin
 
 ## 数据库
-- 数据库相关锁机制
+- 锁机制
+- 事务机制
+    - 事务的四大特性：
+        - 原子性：操作要么全部执行，要么全部不执行
+        - 一致性：操作前后的业务状态要保持一致，不能存在中间结果
+        - 隔离性：事务与事务之间被隔离开，独自执行
+        - 持久性：事务的操作完成提交后，对数据所做的修改就是永久存在的
+    - 并发事务的问题：
+        - 丢失更新：两个写事务写同一行，造成结果覆盖
+        - 脏读：一个事务写，一个事务读，读的不准确
+        - 不可重复读：前后两次相同的都事务，获取的数据存在被删除，前后不一致
+        - 幻读：前后两次相同的读事务，获取到被更新的新数据，前后不一致
 ### SQL
 
 ### ORACLE
@@ -1913,11 +1992,70 @@ Lombok plugin、.ignore、Mybatis plugin
     - 在索引上分页，然后获取指定的数据
     - 针对无重复记录的情况，可以记录每页的最后一个数据的主键ID，然后分页查询时以这个ID来做条件，避免大量无关查询（limit m,n改为limit n）
 #### 日志
+- 分类：错误日志、二进制日志（BINLOG日志）、查询日志、慢查询日志
+- 错误日志：记录MySql启动和停止时，以及服务器运行时发生严重错误时的相关信息
+    - 设置日志位置：--log-error[=file_name]
+- 二进制日志：记录所有DDL（数据定义语言）和DML（数据操作语言）语句，但是不包括数据查询语句，用于灾难恢复。
+    - 设置日志位置：--log-bin[=file_name]
+    - 格式：
+        - STATEMENT：语句
+        - ROW：
+        - MINED：
+- 查询日志：
+    - 
+- 慢查询日志：
+    - 
+#### 锁机制
 
 ### SQL SERVER
 
 ## Nosql
-
+- [Redis、MemCache、MongoDB对比](https://www.cnblogs.com/lina520/p/7919551.html)
+    - Redis
+        - 优势：
+            1. 支持多种数据结构，如 string（字符串）、 list(双向链表)、dict(hash表)、set(集合）、zset(排序set)、hyperloglog（基数估算）
+            2. 支持持久化操作，可以进行aof及rdb数据持久化到磁盘，从而进行数据备份或数据恢复等操作，较好的防止数据丢失的手段。
+            3. 支持通过Replication进行数据复制，通过master-slave机制，可以实时进行数据的同步复制，支持多级复制和增量复制，master-slave机制是Redis进行HA的重要手段。
+            4. 单线程请求，所有命令串行执行，并发情况下不需要考虑数据一致性问题。
+            5. 支持pub/sub消息订阅机制，可以用来进行消息订阅与通知。
+            6. 支持简单的事务需求，但业界使用场景很少，并不成熟。
+        - 劣势：
+            1. Redis只能使用单线程，性能受限于CPU性能，故单实例CPU最高才可能达到5-6wQPS每秒（取决于数据结构，数据大小以及服务器硬件性能，日常环境中QPS高峰大约在1-2w左右）。
+            2. 支持简单的事务需求，但业界使用场景很少，并不成熟，既是优点也是缺点。
+            3. Redis在string类型上会消耗较多内存，可以使用dict（hash表）压缩存储以降低内存耗用。
+    - Memcache
+        - 优势：
+            1. Memcached可以利用多核优势，单实例吞吐量极高，可以达到几十万QPS（取决于key、value的字节大小以及服务器硬件性能，日常环境中QPS高峰大约在4-6w左右）。适用于最大程度扛量。
+            2. 支持直接配置为session handle。
+        - 劣势：
+            1. 只支持简单的key/value数据结构，不像Redis可以支持丰富的数据类型。
+            2. 无法进行持久化，数据不能备份，只能用于缓存使用，且重启后数据全部丢失。
+            3. 无法进行数据同步，不能将MC中的数据迁移到其他MC实例中。
+            4. Memcached内存分配采用Slab Allocation机制管理内存，value大小分布差异较大时会造成内存利用率降低，并引发低利用率时依然出现踢出等问题。需要用户注重value设计。
+    - MongoDB
+        - 优势：
+            1. 更高的写负载，MongoDB拥有更高的插入速度。
+            2. 处理很大的规模的单表，当数据表太大的时候可以很容易的分割表。
+            3. 高可用性，设置M-S不仅方便而且很快，MongoDB还可以快速、安全及自动化的实现节点（数据中心）故障转移。
+            4. 快速的查询，MongoDB支持二维空间索引，比如管道，因此可以快速及精确的从指定位置获取数据。MongoDB在启动后会将数据库中的数据以文件映射的方式加载到内存中。如果内存资源相当丰富的话，这将极大地提高数据库的查询速度。
+            5. 非结构化数据的爆发增长，增加列在有些情况下可能锁定整个数据库，或者增加负载从而导致性能下降，由于MongoDB的弱数据结构模式，添加1个新字段不会对旧表格有任何影响，整个过程会非常快速。
+        - 劣势：
+            1. 不支持事务。
+            2. MongoDB占用空间过大 。
+            3. MongoDB没有成熟的维护工具。
+    - 综合对比
+        - 性能：三者的性能都比较高，总的来讲：Memcache和Redis差不多，要高于MongoDB。
+        - 便利性：memcache数据结构单一；redis丰富一些，数据操作方面，redis更好一些，较少的网络IO次数；mongodb支持丰富的数据表达，索引，最类似关系型数据库，支持的查询语言非常丰富。
+        - 存储空间：redis在2.0版本后增加了自己的VM特性，突破物理内存的限制；可以对key value设置过期时间（类似memcache）；memcache可以修改最大可用内存,采用LRU算法；mongoDB适合大数据量的存储，依赖操作系统VM做内存管理，吃内存也比较厉害，服务不要和别的服务在一起。
+        - 可用性：redis，依赖客户端来实现分布式读写；主从复制时，每次从节点重新连接主节点都要依赖整个快照,无增量复制，因性能和效率问题，所以单点问题比较复杂；不支持自动sharding,需要依赖程序设定一致hash 机制。一种替代方案是，不用redis本身的复制机制，采用自己做主动复制（多份存储），或者改成增量复制的方式（需要自己实现），一致性问题和性能的权衡；Memcache本身没有数据冗余机制，也没必要；对于故障预防，采用依赖成熟的hash或者环状的算法，解决单点故障引起的抖动问题；mongoDB支持master-slave,replicaset（内部采用paxos选举算法，自动故障恢复）,auto sharding机制，对客户端屏蔽了故障转移和切分机制。
+        - 可靠性：redis支持（快照、AOF）：依赖快照进行持久化，aof增强了可靠性的同时，对性能有所影响；memcache不支持，通常用在做缓存,提升性能；MongoDB从1.8版本开始采用binlog方式支持持久化的可靠性。
+        - 一致性：Memcache 在并发场景下，用cas保证一致性；redis事务支持比较弱，只能保证事务中的每个操作连续执行；mongoDB不支持事务。
+        - 数据分析：mongoDB内置了数据分析的功能(mapreduce),其他两者不支持。
+        - 应用场景：redis：数据量较小的更性能操作和运算上；memcache：用于在动态系统中减少数据库负载，提升性能;做缓存，提高性能（适合读多写少，对于数据量比较大，可以采用sharding）；MongoDB:主要解决海量数据的访问效率问题。
+### Redis
+### MongoDB
+### Memcache
+### HBase
 ## 大数据
 ### Zookeeper
 - 基本概念
@@ -2007,7 +2145,12 @@ sidecar
 #### CDN技术
 #### 消息队列
 ActiveMQ
-
+### 权限管理
+Shiro
+### 搜索引擎
+Solr、Lucene、Nutch、Elasticsearch
+### 云计算
+IaaS、SaaS、PaaS、虚拟化技术、openstack、Serverlsess
 ### 监控
 #### 监控什么
 CPU、内存、磁盘I/O、网络I/O等
@@ -2032,3 +2175,15 @@ DNS原理、DNS的设计
 ### AR&VR
 - VR：虚拟现实技术
 - AR：增强现实技术
+### 其他语言
+Groovy、Python、Go、NodeJs、Swift、Rust
+### 人工智能
+数学基础、机器学习、人工神经网络、深度学习、应用场景。
+#### 常用框架
+TensorFlow、DeepLearning4J
+### 区块链
+哈希算法、Merkle树、公钥密码算法、共识算法、Raft协议、Paxos 算法与 Raft 算法、拜占庭问题与算法、消息认证码与数字签名
+#### 比特币
+挖矿、共识机制、闪电网络、侧链、热点问题、分叉
+#### 以太坊
+#### 超级账本

@@ -20,6 +20,7 @@ public final class String
 }
 ```
 substring方法返回的字符串对象时新创建的，但是底层指向的字符数组并未改变，还指向原字符串对象指向的字符数组，仅仅是使用对象中的三个属性来限制字符数组的开始位置与长度，展现给我们的就是截取完的新字符串。
+
 ![substring_jdk6](../../Images/substring_jdk6.png)
 
 JDK 7中的实现原理
@@ -40,4 +41,5 @@ public final class String
 }
 ```
 substring方法返回的字符串是新建的，而且底层指向的字符数组也是新的。
+
 ![substring_jdk7](../../Images/substring_jdk7.png)
