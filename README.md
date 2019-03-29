@@ -1132,11 +1132,9 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - CPU密集型任务：尽量压榨CPU，参考设置为NCPU+1
     - IO密集型任务：参考设置为2*NCPU
 - 自己设计线程池（自定义线程池）
-#### 阻塞队列
-
 #### 线程安全
 - 什么是线程安全：多线程环境下各个线程执行并发访问共享资源可能发生线程安全问题
-- 线程安全和内存模型的关系：Java内存模型主要指的是主内存与工作内存的关系，线程访问某个共享变量需要先从工作内存读取，如果工作内存中不存在要访问的变量，则线程才会访问主内存，同时在工作内存保留一份备份。这样一来当多线程同时访问一个共享变量时，在各自的工作内存中保留有该变量的副本，如果其中一个线程修改了变量的值，其他线程是不知道的，因为它们工作内存有这个变量，它们访问的时候直接从工作内存读取，根本不知道该变量已经被更改了，读取到的还是旧值。
+- 线程安全和内存模型的关系：Java内存模型主要指的是主内存与线程工作内存的关系，线程访问某个共享变量需要先从工作内存读取，如果工作内存中不存在要访问的变量的副本，则线程才会访问主内存，同时在工作内存保留一份副本。这样一来当多线程同时访问一个共享变量时，在各自的工作内存中保留有该变量的副本，如果其中一个线程修改了变量副本的值，其他线程是不知道的，因为它们工作内存有这个变量副本，它们访问的时候直接从工作内存读取，根本不知道该变量已经被更改了，读取到的还是旧值。
 #### 线程安全解决途径
 - 乐观锁与悲观锁
     - 悲观锁：总是很悲观的认为如果不加锁就会出错，所以直接加锁
@@ -1195,7 +1193,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 死锁如何排查
 死锁的解决办法
 #### synchronized
-- synchronized是实现原理：synchronized关键字通过编译之后，会在同步块的前后分别形成monitorenter和monitorexit这两个字节码指令，
+- synchronized是实现原理：synchronized关键字通过编译之后，会在同步块的前后分别添加monitorenter和monitorexit这两个字节码指令（class字节码中）
 - synchronized和lock之间区别
     - synchronized是Java原生的锁机制，Lock是编程实现的显示锁机制
     - synchronized的加锁和释放锁操作都由虚拟机来自动完成，Lock需要在程序中手动进行控制，前者使用简单，后者则较为复杂，需要手动进行锁的释放，复杂但是可操作性强
@@ -1213,6 +1211,201 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - volatile和原子性、可见性和有序性之间的关系
 - 有了synchronized为什么还需要volatile：volatile是一种轻量级的锁，针对确定原子操作的变量可以实现线程安全，不需要加上繁重的synchronized
 #### Lock
+- [AQS解读]()：AQS是实现同步组件的基础同步器，作为各同步组件的内部类存在。
+- 实现
+    - 重入锁：[ReentrantLock]()：
+        - 特点：
+            - 可重入
+            - 互斥
+            - 默认非公平锁，也可设置为公平锁
+    - 读写锁：[ReentrantReadWriteLock]()：
+        - 特点：
+            - 可重入
+            - 默认非公平锁，也可设置为公平锁
+            - 读写分离锁，读锁可共享，写锁互斥，读写互斥
+            - 锁降级：当前线程持有写锁，再获取读锁，然后释放写锁，写锁降级为读锁
+- 工具：[LockSupport]()：
+    - 阻塞线程：
+        - park()：阻塞当前线程
+        - parkNanos(long)：阻塞当前线程，最长为指定时间，超时自动苏醒
+        - parkUntil(long)：阻塞当前线程，直到指定的时间为止
+    - 唤醒线程：
+        - unpark(Thread)：唤醒指定线程
+- 等待条件：[Condition]()：
+    - 创建：Condition condition = lock.newCondition();// Condition与Lock关联，每个锁可持有多个Condition
+    - 等待：
+        - condition.await()：当前线程进入等待状态直到被唤醒或中断
+        - condition.awaitUninterruptibly()：当前线程进入等待状态直到被唤醒，不响应中断
+        - condition.awaitNanos(long)：当前线程进入等待状态直到被唤醒或中断或超时，返回值为剩余时间
+        - condition.awaitUntil(Date)：当前线程进入等待状态直到被唤醒或中断或直到指定时间，到了指定时间返回false，未到指定时间唤醒返回true
+    - 唤醒：
+        - condition.signal()：唤醒一个等待在Condition上的线程，返回的线程必然获取了Condition相关的锁
+        - condition.signalAll()：唤醒所有等待在Condition上的线程，返回的线程必然获取了Condition相关的锁
+#### 同步工具
+##### CountDownLatch：直接基于AQS实现
+- 概念：CountDownLatch是一个同步组件，可以使一个或多个线程等待其他线程执行后再执行
+- 原理：CountDownLatch内部维护了一个计数器，这个计数器其实就是AbstractQueuedSynchronizer（AQS）的state，CountDownLatch的构造器在创建countDownLatch实例时会指定计数量，然后提供了countDown方法用于将计数值减1，执行一次减1，并提供了await方法用于等待计数值降为0,await方法底层在尝试可中断的共享式获取锁，如果获取锁失败会挂起直到获取成功，才能退出await方法，而获取成功的条件是同步器的state值为0
+- 场景
+- [源码]()
+```java
+public class CountDownLatch {
+    // AQS的实现类Sync作为CountDownLatch的内部类，用AQS的state来持有计数count值
+    private static final class Sync extends AbstractQueuedSynchronizer {
+        private static final long serialVersionUID = 4982264981922014374L;
+        // 构造器，构建同步器
+        Sync(int count) {
+            setState(count);
+        }
+        // 获取当前的计数值，即同步器的state值
+        int getCount() {
+            return getState();
+        }
+        // 尝试共享式获取同步状态
+        protected int tryAcquireShared(int acquires) {
+            return (getState() == 0) ? 1 : -1;
+        }
+        // 尝试共享式释放同步状态
+        protected boolean tryReleaseShared(int releases) {
+            // Decrement count; signal when transition to zero
+            for (;;) {
+                int c = getState();
+                if (c == 0)
+                    return false;
+                int nextc = c-1;
+                if (compareAndSetState(c, nextc))
+                    return nextc == 0;
+            }
+        }
+    }
+    // CountDownLatch实例中持有同步器Sync
+    private final Sync sync;
+
+    // CountDownLatch构造器，必须指定计数值count
+    public CountDownLatch(int count) {
+        if (count < 0) throw new IllegalArgumentException("count < 0");
+        this.sync = new Sync(count);
+    }
+
+    /**
+     * Causes the current thread to wait until the latch has counted down to
+     * zero, unless the thread is {@linkplain Thread#interrupt interrupted}.
+     *
+     * <p>If the current count is zero then this method returns immediately.
+     *
+     * <p>If the current count is greater than zero then the current
+     * thread becomes disabled for thread scheduling purposes and lies
+     * dormant until one of two things happen:
+     * <ul>
+     * <li>The count reaches zero due to invocations of the
+     * {@link #countDown} method; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread.
+     * </ul>
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * @throws InterruptedException if the current thread is interrupted
+     *         while waiting
+     */
+    public void await() throws InterruptedException {
+        sync.acquireSharedInterruptibly(1);
+    }
+
+    /**
+     * Causes the current thread to wait until the latch has counted down to
+     * zero, unless the thread is {@linkplain Thread#interrupt interrupted},
+     * or the specified waiting time elapses.
+     *
+     * <p>If the current count is zero then this method returns immediately
+     * with the value {@code true}.
+     *
+     * <p>If the current count is greater than zero then the current
+     * thread becomes disabled for thread scheduling purposes and lies
+     * dormant until one of three things happen:
+     * <ul>
+     * <li>The count reaches zero due to invocations of the
+     * {@link #countDown} method; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread; or
+     * <li>The specified waiting time elapses.
+     * </ul>
+     *
+     * <p>If the count reaches zero then the method returns with the
+     * value {@code true}.
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * <p>If the specified waiting time elapses then the value {@code false}
+     * is returned.  If the time is less than or equal to zero, the method
+     * will not wait at all.
+     *
+     * @param timeout the maximum time to wait
+     * @param unit the time unit of the {@code timeout} argument
+     * @return {@code true} if the count reached zero and {@code false}
+     *         if the waiting time elapsed before the count reached zero
+     * @throws InterruptedException if the current thread is interrupted
+     *         while waiting
+     */
+    public boolean await(long timeout, TimeUnit unit)
+        throws InterruptedException {
+        return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
+    }
+
+    /**
+     * Decrements the count of the latch, releasing all waiting threads if
+     * the count reaches zero.
+     *
+     * <p>If the current count is greater than zero then it is decremented.
+     * If the new count is zero then all waiting threads are re-enabled for
+     * thread scheduling purposes.
+     *
+     * <p>If the current count equals zero then nothing happens.
+     */
+    public void countDown() {
+        sync.releaseShared(1);
+    }
+
+    /**
+     * Returns the current count.
+     *
+     * <p>This method is typically used for debugging and testing purposes.
+     *
+     * @return the current count
+     */
+    public long getCount() {
+        return sync.getCount();
+    }
+
+    /**
+     * Returns a string identifying this latch, as well as its state.
+     * The state, in brackets, includes the String {@code "Count ="}
+     * followed by the current count.
+     *
+     * @return a string identifying this latch, as well as its state
+     */
+    public String toString() {
+        return super.toString() + "[Count = " + sync.getCount() + "]";
+    }
+}
+
+```
+##### CyclicBarrier：基于ReentrantLock实现
+
+##### Semaphore：直接基于AQS实现
+
+##### Exchanger：直接基于CAS实现
 
 #### join操作，三个任务，如何多线程顺序执行
 #### Fork/Join框架，分而治之
@@ -1439,6 +1632,11 @@ public class DeadLock{
     - Full GC/Major GC：老年代GC，一般伴随一次到多次Minor GC，速度慢10倍以上
         - 当年老代满时会引发Full GC，Full GC将会同时回收年轻代、年老代
         - 当永久代满时也会引发Full GC，会导致Class、Method元信息的卸载
+- ***GC组合***
+    - client模式：serial + serial old
+    - server模式：parnew + CMS配合，serial old为后备（重点）
+    - server模式：parallel scavenge + parallel old
+    - server模式：G1（重点）
 - **内存分配回收策略**
     - 对象优先分配在Eden区：Eden区空间不足触发Minor GC
     - 大对象直接进入老年代：通过-XX:PretenureSizeThreshold参数设置对象大小，大于这个值的对象直接放到老年代，该参数只在Serial和pranew中有效
@@ -1687,7 +1885,7 @@ oop-klass、对象头
     - 代码混淆：打乱代码，并掺入随机或者特殊字符，降低代码可读性
     - 加密class：编译代码时使用插件将代码进行加密将class文件里面的内容读取成byte[]，然后进行加密后再写回到class文件，然后在启动项目代码时，指定使用我们自定义的ClassLoader进行类的加载就行了，而自定义的部分，主要就是在这里做解密工作！
     - 高级加密class：修改本地方法来进行加密和解密，黑箱运行
-    - 更改JVM：
+    - 更改JVM：复杂
 #### Java内存模型
 - 计算机内存模型
 - 缓存一致性
@@ -2016,6 +2214,7 @@ Spring mvc与Struts mvc的区别
 Lombok plugin、.ignore、Mybatis plugin
 
 ## 数据库
+- 排序一般采用主键，因为主键通常带有索引，可以增加速率
 - 锁机制
 - 事务机制
     - 事务的四大特性：
@@ -2036,6 +2235,17 @@ Lombok plugin、.ignore、Mybatis plugin
     - NVARCHAR2：按字符保存数据，采用双字节存储，较费空间，适用于含有汉字字符的字符串，使用统一的字符编码标准，可以有效防止乱码的出现。
 ### MYSQL
 #### 基础
+#### 存储引擎
+- MyISAM：默认的MySQL插件式存储引擎，它是在Web、数据仓储和其他应用环境下最常使用的存储引擎之一。注意，通过更改STORAGE_ENGINE配置变量，能够方便地更改MySQL服务器的默认存储引擎。
+- InnoDB：用于事务处理应用程序，具有众多特性，包括ACID事务支持。(提供行级锁)
+- Memory：将所有数据保存在RAM中，在需要快速查找引用和其他类似数据的环境下，可提供极快的访问
+- Archive：为大量很少引用的历史、归档、或安全审计信息的存储和检索提供了完美的解决方案。
+- BDB：可替代InnoDB的事务引擎，支持COMMIT、ROLLBACK和其他事务特性。
+- Merge：允许MySQL DBA或开发人员将一系列等同的MyISAM表以逻辑方式组合在一起，并作为1个对象引用它们。对于诸如数据仓储等VLDB环境十分适合。
+- Federated：能够将多个分离的MySQL服务器链接起来，从多个物理服务器创建一个逻辑数据库。十分适合于分布式环境或数据集市环境。
+- Cluster/NDB：MySQL的簇式数据库引擎，尤其适合于具有高性能查找要求的应用程序，这类查找需求还要求具有最高的正常工作时间和可用性。
+- Other：其他存储引擎包括CSV（引用由逗号隔开的用作数据库表的文件），Blackhole（用于临时禁止对数据库的应用程序输入），以及Example引擎（可为快速创建定制的插件式存储引擎提供帮助）。
+> 一般来说不使用事务的话，请使用MyISAM引擎，使用事务的话，一般使用InnoDB
 #### 排序方式
 - 通过有序索引顺序扫描直接返回有序数据
 - 对放回的数据进行排序，即Filesort
@@ -2110,6 +2320,10 @@ Lombok plugin、.ignore、Mybatis plugin
     - 复合索引中，不满足最左前缀原则的查询无法使用这个复合索引
     - 如果MYSQL估计使用索引比全表扫描慢，则不使用索引
     - 用or分开的条件，如果前面的条件中的列有索引，后面的没有，那么涉及的索引将不会使用
+- 使用原则
+    - 条件尽可能使用索引，可以极大的增加效率
+    - 排序order by后面的字段最好选用带有索引的字段，可以增加排序效率
+    - 
 #### SQL优化措施
 - 大批量导入数据的优化措施
     - 针对MyISAM引擎：在导入语句（load data）的前后分别添加关闭和打开表非唯一索引的更新语句
@@ -2251,15 +2465,35 @@ http://dubbo.apache.org/zh-cn/
 - HBase：
     - 概念：HBase是建立在Hadoop文件系统之上的分布式面向列的数据库。HBase是一个数据模型，类似于谷歌的大表设计，可以提供快速随机访问海量结构化数据。它利用了Hadoop的文件系统（HDFS）提供的容错能力。
 #### 分布式文件系统
-mfs、fastdfs
+- mfs
+- fastdfs
 #### 分布式缓存
-缓存一致性、缓存命中率、缓存冗余
+- 缓存一致性
+- 缓存命中率
+- 缓存冗余
+- 缓存问题
+    - 缓存击穿
+        - 描述：一个存在的key，在缓存过期的一刻，同时有大量的请求，这些请求都会击穿到DB，造成瞬时DB请求量大、压力骤增。
+        - 方案：在访问key之前，采用SETNX（set if not exists）来设置另一个短期key来锁住当前key的访问，访问结束再删除该短期key。
+    - 缓存穿透
+        - 描述：访问一个不存在的key，缓存不起作用，请求会穿透到DB，流量大时DB会挂掉。
+        - 方案：
+            1. 采用布隆过滤器，使用一个足够大的bitmap，用于存储可能访问的key，不存在的key直接被过滤；
+            2. 访问key未在DB查询到值，也将空值写进缓存，但可以设置较短过期时间
+    - 缓存雪崩
+        - 描述：大量的key设置了相同的过期时间，导致在缓存在同一时刻全部失效，造成瞬时DB请求量大、压力骤增，引起DB雪崩，进而引发大范围应用服务器雪崩。
+        - 方案：可以给缓存设置过期时间时加上一个随机值时间，使得每个key的过期时间分布开来，不会集中在同一时刻失效。
 #### 限流降级
-Hystrix、Sentinal
+- Hystrix
+- Sentinal
 #### 算法
-共识算法、Raft协议、Paxos 算法与 Raft 算法、拜占庭问题与算法
-
-2PC、3PC
+- 共识算法
+- Raft协议
+- Paxos算法
+- Raft算法
+- 拜占庭问题与算法
+- 2PC
+- 3PC
 #### 分布式ID
 - 性质:
     - 全局唯一，非单机唯一，而是分布式系统内唯一
@@ -2334,3 +2568,8 @@ TensorFlow、DeepLearning4J
 挖矿、共识机制、闪电网络、侧链、热点问题、分叉
 #### 以太坊
 #### 超级账本
+## ***日常总结***
+### 
+### 数据库
+- 在能使用索引的地方尽量使用索引，比如查询的条件字段、排序的字段等等，可以极大的增加执行效率
+- Oracle中如果保存的字符串中包含汉字，则将字段类型设置为NVARCHAR2，它可以按字符保存数据，防止乱码，如果不包含汉字，则可直接用NVARCHAR类型字段按字节保存数据。
