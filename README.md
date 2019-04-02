@@ -2061,6 +2061,39 @@ java.lang.management.*、 javax.management.*
 Spring mvc与Struts mvc的区别
 
 ### SpringCloud
+- Eureka：服务发现
+    - 原理：
+        1. Eureka包括两个组件：Eureka Server和Eureka Client；
+        2. Eureka Server提供服务发现功能，微服务启动时会向其注册自己的信息（IP，端口，微服务名称等）
+        3. Eureka Client是一个Java客户端，简化与Eureka Server的交互
+        4. 微服务启动后会周期性（默认30秒）向Eureka Server发送心跳，以使Eureka Server保证自己存活
+        5. 如果Eureka Server在一定时间（默认90秒）内不再收到某个微服务的心跳，则注销该服务
+        6. 多个Eureka Server之间可以通过互相复制信息在完成同步
+        7. Eureka Client用于缓存功能，可以缓存请求过的微服务信息，这样避免每次请求都访问Eureka Server，同时也提高了可用性，即使Eureka Server全部宕机，服务也可用
+        8. 微服务可以进行网络地址变更，会自动重新注册，对调用方透明
+    - 使用：
+        - Eureka Server
+            1. 新建springboot项目，并添加pom依赖：spring-cloud-starter-eureka-server
+            2. 启动类添加注解：@EnableEurekaServer
+            3. 添加配置：
+                - eureka.client.registerWithEureka=false：是否将自己注册到Eureka Server，默认为true
+                - eureka.client.fetchRegistry=false：是否从Eureka Server获取信息，默认为true，集群设为true
+                - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka：设置与Eureka Server交互地址
+        - Eureka Client
+            1. 微服务添加pom：spring-cloud-starter-eureka
+            2. 启动类添加注解：@EnableDiscoveryClient或者@EnableEurekaClient
+            2. 添加配置：
+                - spring.application.name=xxxx：定义注册到Eureka Server的服务名称
+                - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+- Zookeeper：服务发现
+- Ribbon：负载均衡
+    - 原理：
+
+- Hystrix：容错处理，防止雪崩效应，防止局部问题逐步放大到系统崩溃不可用
+- Feign：服务调用
+- Zuul：网关
+- Config：配置中心
+- Sleuth：服务跟踪
 服务发现与注册：Eureka、Zookeeper、Consul
 
 负载均衡：Feign、Spring Cloud Loadbalance
@@ -2116,17 +2149,30 @@ Spring mvc与Struts mvc的区别
     - 分布式锁
     - 分布式队列
 ### Dubbo
+### 日志
+#### 日志级别
+- ALL：最低等级的，用于打开所有日志记录
+- TRACE：很低的日志级别，一般不会使用
+- DEBUG：指出细粒度信息事件对调试应用程序是非常有帮助的，主要用于开发过程中打印一些运行信息
+- INFO：消息在粗粒度级别上突出强调应用程序的运行过程。打印一些你感兴趣的或者重要的信息，这个可以用于生产环境中输出程序运行的一些重要信息，但是不能滥用，避免打印过多的日志（用于打印程序应该出现的正常状态信息， 便于追踪定位）
+- WARN：表明会出现潜在错误的信息，有些信息不是错误信息，但是也要给程序员的一些提示（表明系统出现轻微的不合理但不影响运行和使用）
+- ERROR：指出虽然发生错误事件，但仍然不影响系统的继续运行。打印错误和异常信息，如果不想输出太多的日志，可以使用这个级别（表明出现了系统错误和异常，无法正常完成目标操作）
+- FATAL：指出每个严重的错误事件将会导致应用程序的退出。这个级别比较高了。重大错误，这种级别你可以直接停止程序了
+- OFF：最高等级的，用于关闭所有日志记录
+> Log4j推荐使用四个日志级别：ERROR、WARN、INFO、DEBUG，默认的输出级别为ERROR，高于此级别的日志将全部打印，一般生产环境设置为INFO，开发环境、测试环境设置为DEBUG
+#### Log4j
+#### Log4j2
+#### Slf4j
+## 服务器
+### JBoss
 
-### 服务器
-#### JBoss
+### tomcat
 
-#### tomcat
+### jetty
 
-#### jetty
+### Weblogic
 
-#### Weblogic
-
-#### Nginx
+### Nginx
 - Nginx是什么：是一款自由的、开源的、高性能HTTP服务器和反向代理服务器；同时也是一个IMAP、POP3、SMTP代理服务器；Nginx可以作为一个HTTP服务器进行网站的发布处理，另外Nginx可以作为反向代理进行负载均衡的实现。
 - Nginx功能：
     - Http代理，反向代理：作为web服务器最常用的功能之一，尤其是反向代理。
@@ -2218,10 +2264,15 @@ Spring mvc与Struts mvc的区别
 - 负载均衡：将服务器接收到的请求按照规则分发的过程，称为负载均衡
     - 硬件负载均衡：
     - 软件负载均衡：利用现有的技术结合主机硬件实现的一种消息队列分发机制
-### 工具
-#### 版本控制工具git & svn
-#### 项目管理工具maven & gradle
-#### IDE Intellij IDEA & Eclipse
+## 工具
+### 版本控制工具svn
+### 版本控制工具git
+### 项目管理工具maven
+### 项目管理工具gradle
+- 将maven项目转化为gradle项目命令：`gradle init --type pom`
+
+### IDE-IntellijIDEA
+### IDE-Eclipse
 常用插件：Maven Helper 、FindBugs-IDEA、阿里巴巴代码规约检测、GsonFormat
 
 Lombok plugin、.ignore、Mybatis plugin
