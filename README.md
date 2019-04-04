@@ -2050,6 +2050,29 @@ java.lang.management.*、 javax.management.*
         2. 可以通过rollbackFor来设置那些异常可以导致回滚，这些异常包括所有的受检和不受检异常
         3. 通过noRollbackFor来设置那些不会导致事务回滚的异常
 ### SpringBoot
+#### 微服务间调用方式：
+- RestTemplate
+- Feign
+#### 微服务调用的请求拦截器
+- ClientHttpRequestInterceptor：针对RestTemplate，自定义请求拦截器时可以实现该接口
+- RequestInterceptor：针对Feign,自定义请求拦截器时可以实现该接口
+#### RestTemplate
+- 配置
+- 用法
+    - GET
+        - getForEntity：返回一个ResponseEntity<>实例
+        - getForObject：返回一个指定目标类的对象实例（自动进行响应body与对象的转换）
+    - POST
+        - postForEntity：返回一个ResponseEntity<>实例
+        - postForObject：返回一个指定目标类型的对象实例（自动进行响应body与对象的转换）
+        - postForLocation：返回请求资源的URI
+    - PUT
+        - put：无返回值，put操作其实就是添加操作
+    - DELETE
+        - delete：无返回值，delete操作就是删除操作
+
+
+
 - Spring Boot 2.0
 - 起步依赖
 - 自动配置
@@ -2061,33 +2084,39 @@ java.lang.management.*、 javax.management.*
 Spring mvc与Struts mvc的区别
 
 ### SpringCloud
-- Eureka：服务发现
-    - 原理：
-        1. Eureka包括两个组件：Eureka Server和Eureka Client；
-        2. Eureka Server提供服务发现功能，微服务启动时会向其注册自己的信息（IP，端口，微服务名称等）
-        3. Eureka Client是一个Java客户端，简化与Eureka Server的交互
-        4. 微服务启动后会周期性（默认30秒）向Eureka Server发送心跳，以使Eureka Server保证自己存活
-        5. 如果Eureka Server在一定时间（默认90秒）内不再收到某个微服务的心跳，则注销该服务
-        6. 多个Eureka Server之间可以通过互相复制信息在完成同步
-        7. Eureka Client用于缓存功能，可以缓存请求过的微服务信息，这样避免每次请求都访问Eureka Server，同时也提高了可用性，即使Eureka Server全部宕机，服务也可用
-        8. 微服务可以进行网络地址变更，会自动重新注册，对调用方透明
-    - 使用：
-        - Eureka Server
-            1. 新建springboot项目，并添加pom依赖：spring-cloud-starter-eureka-server
-            2. 启动类添加注解：@EnableEurekaServer
-            3. 添加配置：
-                - eureka.client.registerWithEureka=false：是否将自己注册到Eureka Server，默认为true
-                - eureka.client.fetchRegistry=false：是否从Eureka Server获取信息，默认为true，集群设为true
-                - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka：设置与Eureka Server交互地址
-        - Eureka Client
-            1. 微服务添加pom：spring-cloud-starter-eureka
-            2. 启动类添加注解：@EnableDiscoveryClient或者@EnableEurekaClient
-            2. 添加配置：
-                - spring.application.name=xxxx：定义注册到Eureka Server的服务名称
-                - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
-- Zookeeper：服务发现
-- Ribbon：负载均衡
-    - 原理：
+#### Eureka：服务发现
+- 描述：
+    1. Eureka包括两个组件：Eureka Server和Eureka Client；
+    2. Eureka Server提供服务发现功能，微服务启动时会向其注册自己的信息（IP，端口，微服务名称等）
+    3. Eureka Client是一个Java客户端，简化与Eureka Server的交互
+    4. 微服务启动后会周期性（默认30秒）向Eureka Server发送心跳，以使Eureka Server保证自己存活
+    5. 如果Eureka Server在一定时间（默认90秒）内不再收到某个微服务的心跳，则剔除该服务（定时执行剔除操作，60秒一次）
+    6. 多个Eureka Server之间可以通过互相复制信息在完成同步
+    7. Eureka Client用于缓存功能，可以缓存请求过的微服务信息，这样避免每次请求都访问Eureka Server，同时也提高了可用性，即使Eureka Server全部宕机，服务也可用
+    8. 微服务可以进行网络地址变更，会自动重新注册，对调用方透明
+    9. Eureka Server功能：执行服务注册，执行服务下线，接收服务获取，接收服务续约，服务自动剔除（定时），发起服务注册（Server之间互相注册实现数据共享），自我保护
+    10. Eureka Client功能：发起服务注册，发起服务下线，发起服务续约心跳，发起服务调用（获取服务）
+    11. Eureka Server的自我保护是指在Eureka Server会统计所有注册服务的心跳失败次数，如果某服务在15分钟内低于85%，那么Eureka Server就会将该服务的注册信息保护起来，使其不会过期（不会被定时剔除），因为可能只是网络波动造成失败，待网络稳定即可，这是一种保守策略，认为服务尚且正常，未宕机。
+- 描述:[Eureka详解](Java_Technology/Java_Framework/Eureka详解.md)
+- Region与Zone
+    - Region：地域（可以看成是北京市），一个地域可以有多个分区，即一个Region可以包含多个Zone
+    - Zone：分区（可以看成是海淀区、石景山区等）
+- @EnableDiscoveryClient和@EnableEurekaClient
+    - @EnableDiscoveryClient：基于spring-cloud-commons，使用非Eureka作为服务发现组件时使用
+    - @EnableEurekaClient：基于spring-cloud-netflix，使用Eureka作为服务发现组件时使用
+- 配置项[Eureka配置详解](Java_Technology/Java_Framework/Eureka配置详解.md)
+- 
+#### Zookeeper：服务发现
+#### Consul：服务发现
+#### Ribbon：负载均衡
+- 负载均衡分类：
+    - 服务端负载均衡
+        - 硬件负载均衡：F5等
+        - 软件负载均衡：Nginx等
+    - 客户端复杂均衡：Ribbon等
+- 
+- 描述：
+    1. 
 
 - Hystrix：容错处理，防止雪崩效应，防止局部问题逐步放大到系统崩溃不可用
 - Feign：服务调用
