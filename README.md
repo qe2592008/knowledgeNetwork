@@ -322,6 +322,23 @@
 字典序法、递增进位制数法、递减进位制数法、邻位对换法
 #### 分支限界法
 #### hash算法
+- 概念：Hash算法又称为散列算法、哈希算法、杂凑算法等，是一种依据数据获取固定长度输出结果的算法
+- 特点：
+    - 散列过程必须在有限的时间和空间内完成
+    - 结果长度固定，便于获取长数据的标识，标签之类
+    - 基本是单向算法，即基本不可能根据结果反推出原始数据
+    - 抗碰撞性，理想的Hash函数是无碰撞的，但在实际算法的设计中很难做到这一点。
+    - 数据灵敏性，任何针对原始数据的修改，都会导致散列结果的变化
+- 散列函数
+- 密码学
+- 常见的Hash算法
+    - MD4（RFC 1320）：MIT的Ronald L. Rivest在1990年设计的，MD是Message Digest的缩写。其输出为128位。MD4已证明不够安全。
+    - MD5（RFC 1321）：是Rivest于1991年对MD4的改进版本。它对输入仍以512位分组，其输出是128位。MD5比MD4复杂，并且计算速度要慢一点，更安全一些。MD5已被证明不具备"强抗碰撞性"。
+    - SHA（Secure Hash Algorithm）：是一个Hash函数族，由NIST（National Institute of Standards and Technology）于1993年发布第一个算法。目前知名的SHA-1在1995年面世，它的输出为长度160位的hash值，因此抗穷举性更好。SHA-1设计时基于和MD4相同原理，并且模仿了该算法。SHA-1已被证明不具"强抗碰撞性"。
+        - SHA-1：不具备强抗碰撞性
+        - SHA-2：为了提高安全性，NIST 还设计出了 SHA-224、SHA-256、SHA-384，和 SHA-512 算法（统称为 SHA-2），跟 SHA-1 算法原理类似。
+        - SHA-3：SHA-3 相关算法也已被提出。
+#### 一致性Hash算法
 #### 递归算法
 #### LRU算法
 - 理解：最近最少使用（使用一次）算法
@@ -2196,6 +2213,40 @@ Spring mvc与Struts mvc的区别
 ### JBoss
 
 ### tomcat
+[Tomcat安装、配置、优化及负载均衡详解](https://www.cnblogs.com/rocomp/p/4802396.html)
+#### tomcat集群实现session共享
+- 使用Tomcat内置的Session复制方案
+```xml
+<!-- 第1步：修改server.xml，在Host节点下添加如下Cluster节点 -->
+<!-- 用于Session复制 -->
+<Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster" channelSendOptions="8">
+    <Manager className="org.apache.catalina.ha.session.DeltaManager" expireSessionsOnShutdown="false" notifyListenersOnReplication="true" />
+    <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+        <Membership className="org.apache.catalina.tribes.membership.McastService" address="228.0.0.4" 
+                    port="45564" frequency="500" dropTime="3000" />
+        <!-- 这里如果启动出现异常，则可以尝试把address中的"auto"改为"localhost" -->
+        <Receiver className="org.apache.catalina.tribes.transport.nio.NioReceiver" address="auto" port="4000" 
+                  autoBind="100" selectorTimeout="5000" maxThreads="6" />
+        <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
+            <Transport className="org.apache.catalina.tribes.transport.nio.PooledParallelSender" />
+        </Sender>
+        <Interceptor className="org.apache.catalina.tribes.group.interceptors.TcpFailureDetector" />
+        <Interceptor className="org.apache.catalina.tribes.group.interceptors.MessageDispatchInterceptor" />
+    </Channel>
+    <Valve className="org.apache.catalina.ha.tcp.ReplicationValve" filter="" />
+    <Valve className="org.apache.catalina.ha.session.JvmRouteBinderValve" />
+    <Deployer className="org.apache.catalina.ha.deploy.FarmWarDeployer" tempDir="/tmp/war-temp/" 
+              deployDir="/tmp/war-deploy/" watchDir="/tmp/war-listen/" watchEnabled="false" />
+    <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener" />
+</Cluster>
+ 
+<!-- 第2步：在web.xml中添加如下节点 -->
+<!-- 用于Session复制 -->
+<distributable/>
+```
+- 使用第三方（个人）基于Tomcat实现的Session管理
+- 使用Spring Session实现
+Spring Session提供了多种方式来存储Session信息，包括redis、mongo、gemfire、hazelcast、jdbc等。这里用redis来举例说明，首先进行依赖添加，然后进行配置即可。
 
 ### jetty
 
@@ -2545,13 +2596,16 @@ ELK
 - SOA
 - 微服务
 > SOA与微服务，二者是不同的东西，SOA基于笨重的ESB总线，而微服务基于Http或者RPC来连接服务，微服务的服务粒度更细
-
+### 布隆过滤器
+- 
 ### 幂等
 - 什么事幂等：
 - 实现方式：
     - 根据业务主键实现
     - 使用消息表记录每次请求，实现幂等
-
+### 集群
+#### 集群的目的
+集群的目的是为了实现服务的高可用性，提升系统的并发访问能力，同时降低服务器的硬件配置（成本）
 ### 分布式
 数据一致性、服务治理、服务降级
 #### 分布式事务
@@ -2701,12 +2755,24 @@ CPU、内存、磁盘I/O、网络I/O等
     - 使用DNS，但只能实现简单的轮流分配，不能处理故障
     - 负载均衡硬件设备，通过交换机的功能或专门的负载均衡设备可以实现
     - 软件实现：通过一台负载均衡服务器进行，上面安装软件，比如Nginx
-tomcat负载均衡、Nginx负载均衡
+- 策略
+    - HTTP重定向：通过修改HTTP响应头中的Location的值为新的Url，来让浏览器去重新访问新的地址来达到负载均衡的目的，优点是实现简单，缺点是大访问量下性能不佳，用户体验不佳，需要请求两次，页面会发生跳转
+    - 反向代理负载均衡：反向代理主要工作就是转发Http请求，工作在应用层（第七层），故也称为“七层负载均衡”，常见的就是Nginx了。优点是实现和部署都很简单，性能也比较好，缺点是单点故障
+        - Nginx处理session问题的方案：
+            1. 配置转发规则，将同一用户的请求转发到同一服务器
+            2. 使用共享的组建存储session，比如redis和memchache，推荐
+    - IP负载均衡：通过对网络层和传输层的IP数据包的ip和端口进行修改来达到负载均衡，工作在网络层和传输层，称为“四层负载均衡”，常见的就是LVS（Linux Virtual Server，Linux虚拟服务），通过IPVS（IP Virtual Server，IP虚拟服务）来实现。优点是性能比Nginx高出很多，毕竟它更接近底层，缺点是配置与部署比较复杂。[LVS](https://www.cnblogs.com/lixigang/p/5371815.html)
+        - LVS-NAT：地址转换-请求和响应均需要经过负载均衡组件
+        - LVS-RD：直接路由-只有请求会经过负载均衡组件，响应直接给用户，最常用的模式
+        - LVS-TUN：IP隧道-基本类似RD模式，只是TUN用于非同一网络的情况
+    - DNS负载均衡：DNS是域名解析服务，由于一个域名可以对应多个IP，所以DNS可以实现负载均衡，优点是配置简单，性能极佳，缺点是不能自由定义规则，而且，变更被映射的IP或者机器故障时很麻烦，还存在DNS生效延迟的问题。
+    - DNS/GSLB负载均衡：DNS和GSLB合作实现负载均衡，GSLB是全局负载均衡之意（Global Server Load Balance），最常见的实例就是CDN静态资源服务器就是使用这种方式实现为用户提供静态资源下载服务的。优点是支持多种配置策略，而且性能极佳，缺点是搭建和维护成本非常高。互联网一线公司，会自建CDN服务，中小型公司一般使用第三方提供的CDN。
 
-四层负载均衡、七层负载均衡
+tomcat负载均衡、Nginx负载均衡
 ### DNS
 DNS原理、DNS的设计
 ### CDN
+- 什么是CDN：CDN是静态资源服务器，一般情况下是用来解决大小较大的静态资源（html/Js/Css/图片等）的加载问题，让这些比较依赖网络下载的内容，尽可能离用户更近，提升用户体验。
 数据一致性
 ## 扩展
 ### AR&VR
