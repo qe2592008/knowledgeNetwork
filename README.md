@@ -229,6 +229,7 @@
         - 最坏时间复杂度
         - 平均时间复杂度
         - 均摊时间复杂度
+    - 复杂度排序：O(1) < O(log2N) < O(N) < O(N * log2N) < O(N2) < O(N3)  < O(N!)
 - 空间复杂度
 > 空间复杂度为O(1)的排序算法属于原地排序算法，指不会占用太多额外内存
 
@@ -250,6 +251,9 @@
     - 
 - 
 #### 散列表
+- 散列表，又称为哈希表，是基于Hash算法实现的一种支持快速定位存取的数据结构。散列表中的hash算法放宽了对hash碰撞的限制，也即散列表实现中需要着重对hash碰撞进行处理。
+- 结构概述：
+- hash碰撞：
 
 #### 树
 - 演化：
@@ -338,7 +342,15 @@
         - SHA-1：不具备强抗碰撞性
         - SHA-2：为了提高安全性，NIST 还设计出了 SHA-224、SHA-256、SHA-384，和 SHA-512 算法（统称为 SHA-2），跟 SHA-1 算法原理类似。
         - SHA-3：SHA-3 相关算法也已被提出。
+
 #### 一致性Hash算法
+- 由来：在现在的分布式缓存系统中一般都采用Hash取模的方式进行缓存定位存取，当新增缓存机器时会因为机器数量增加导致取模结果发生变化，进而导致缓存命中失败，大量的缓存失败形成穿透，威压数据库，严重导致数据库宕机，因此出现了一致性Hash算法来避免这种情况的发生
+- 算法：创建一个值为0至2<sup>32</sup>-1的哈希环（0和2<sup>32</sup>重合），然后将缓存系统通过哈希算法定位到环上，数据存取时，首先通过相同的哈希算法计算结果定位到环上，然后顺时针旋转，存取到第一个发现的缓存系统。
+- 优势：极大的缓解了增减缓存系统造成的影响，因为如果新增了一个缓存系统，那么只有在新系统逆时针方向的两台系统之间的数据会出现缓存不命中情况，而不会出现所有数据都无法命中的情况。
+- 有关虚拟节点：如果缓存系统在哈希环中分布不均匀，可以通过在环上均匀性创建虚拟节点的方式来变相达到均匀分布，其实任然是原来的系统数量，只是将一些系统在其他位置建立了一个副本节点（虚拟节点）。
+- [一致性哈希算法原理](https://www.cnblogs.com/lpfuture/p/5796398.html)
+- [白话解析：一致性哈希算法 consistent hashing](http://www.zsythink.net/archives/1182)
+- [对一致性Hash算法，Java代码实现的深入研究](https://www.cnblogs.com/xrq730/p/5186728.html)
 #### 递归算法
 #### LRU算法
 - 理解：最近最少使用（使用一次）算法
@@ -1565,6 +1577,7 @@ public class DeadLock{
 ### NIO技术
 ### JVM技术
 #### JVM内存结构
+- [关于 JVM 内存的 N 个问题](http://www.importnew.com/29920.html)
 - 运行时数据区：
     - 程序计数器：
     - 栈：
@@ -1681,6 +1694,13 @@ public class DeadLock{
 - -XX:MaxMetaspaceSize：元空间最大值
 - -XX:MinMetaspaceFreeRatio：在GC之后，最小的Metaspace剩余空间容量的百分比，减少为分配空间所导致的垃圾收集
 - -XX:MaxMetaspaceFreeRatio：在GC之后，最大的Metaspace剩余空间容量的百分比，减少为释放空间所导致的垃圾收集
+- [JVM调优总结（1）：一些概念](http://www.importnew.com/18694.html)
+- [JVM调优总结（2）：基本垃圾回收算法](http://www.importnew.com/18740.html)
+- [JVM调优总结（3）：垃圾回收面临的问题](http://www.importnew.com/18747.html)
+- [JVM调优总结（4）：分代垃圾回收](http://www.importnew.com/19255.html)
+- [JVM调优总结（5）：典型配置](http://www.importnew.com/19264.html)
+
+- [JVM之ParNew和CMS日志分析](http://www.importnew.com/30237.html)
 #### Java对象模型
 oop-klass、对象头
 #### HotSpot
@@ -1730,6 +1750,9 @@ oop-klass、对象头
 - JVM的语言无关性，只要能编译成为同一个class字节码格式文件，无论你之前是什么语言编写的都没有关系，JVM只关心结果是它能处理的文件即可，来源无所谓。
 #### 字节码、class文件格式
 很复杂，可见思维导图
+- [Java字节码结构剖析一：常量池](http://www.importnew.com/30461.html)
+- [Java字节码结构剖析二：字段表](http://www.importnew.com/30505.html)
+- [Java字节码结构剖析三：方法表](http://www.importnew.com/30521.html)
 #### 类加载机制
 - 类加载时机
     - new一个对象，调用类的静态方法、字段
@@ -2252,6 +2275,11 @@ Spring mvc与Struts mvc的区别
 - 与Zookeeper的区别：
 ### Dubbo
 ### 日志
+- [为什么要使用SLF4J而不是Log4J](http://www.importnew.com/7450.html)
+- [jdk-logging、log4j、logback日志介绍及原理](https://my.oschina.net/pingpangkuangmo/blog/406618)
+- [jcl与jul、log4j1、log4j2、logback的集成原理](https://my.oschina.net/pingpangkuangmo/blog/407895)
+- [slf4j与jdk-logging、log4j1、log4j2、logback的集成原理](https://my.oschina.net/pingpangkuangmo/blog/408382)
+- [slf4j、jcl、jul、log4j1、log4j2、logback大总结](https://my.oschina.net/pingpangkuangmo/blog/410224)
 #### 日志级别
 - ALL：最低等级的，用于打开所有日志记录
 - TRACE：很低的日志级别，一般不会使用
@@ -2262,9 +2290,388 @@ Spring mvc与Struts mvc的区别
 - FATAL：指出每个严重的错误事件将会导致应用程序的退出。这个级别比较高了。重大错误，这种级别你可以直接停止程序了
 - OFF：最高等级的，用于关闭所有日志记录
 > Log4j推荐使用四个日志级别：ERROR、WARN、INFO、DEBUG，默认的输出级别为ERROR，高于此级别的日志将全部打印，一般生产环境设置为INFO，开发环境、测试环境设置为DEBUG
-#### Log4j
-#### Log4j2
+#### Log4j、Log4j2、Slf4j、Logback、Logging的关系
+- Slf4j是简单日志门面，是日志框架的抽象，只是提供了日志功能接口。
+- commons-logging和Slf4j一样十一二点日志门面，但也提供了一个简单的实现（只有简单的功能）
+- Log4j是apache实现的一个开源日志组件（实现具体日志功能），并不是对slf4j的原生实现，所以slf4j api在调用log4j时需要一个适配层。
+- Log4j2是Log4j的升级版，同样不是Slf4j的原生实现，所以slf4j api在调用log4j2时也需要一个适配层。
+- Logback同样是由log4j的作者设计完成的（实现具体日志功能），拥有更好的特性，用来取代log4j的一个日志框架。是slf4j的原生实现，可以直接使用slf4j api进行调用。（推荐）
+- Logging是Java原生的日志框架，很少使用
 #### Slf4j
+Slf4j集成Log4j
+1. 添加依赖
+```xml
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-log4j12</artifactId>
+    <version>1.7.21</version>
+</dependency>
+```
+2. 配置文件
+log4j.xml
+```xml
+<?xml version="1.0"  encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <!--若干个appender的定义-->
+    <!--org.apache.log4j.ConsoleAppender 输出到控制台-->
+    <appender name="myConsole" class="org.apache.log4j.ConsoleAppender">
+        <!--输出格式-->
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%-d{yyyy-MM-dd HH:mm:ss,SSS} [%c]-[%p] %m%n"/>
+        </layout>
+    </appender>
+
+    <!--org.apache.log4j.DailyRollingFileAppender 每天产生一个日志文件-->
+    <appender name="myFile" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="output.log"/><!--文件位置-->
+        <param name="Append" value="true"/><!--是否选择追加-->
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%-d{yyyy-MM-dd HH:mm:ss,SSS} [%c]-[%p] %m%n"/>
+        </layout>
+    </appender>
+
+    <!--org.apache.log4j.RollingFileAppender 滚动日志文件输出 文件大小到达一定尺寸时重新产生新的文件-->
+    <!--<appender name="myFile" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="D:/output.log" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="500KB"/>
+        <param name="MaxBackupIndex" value="10" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%p (%c:%L)- %m%n" />
+        </layout>
+    </appender>-->
+
+    <!--将各个包中的类日志输出到不同的日志文件中
+        这样可以便于日志的分类。
+        可以通过这个设置，把业务逻辑的日志添加到数据库。起到过滤的作用
+    -->
+    <!--这段配置的就是说把包名为“com.zjut.a1”且优先级为debug的日志通过myFile这个appender来处理。
+    -->
+    <category name="com.zjut.a1">
+        <priority value="debug"/>
+        <appender-ref ref="myFile"/>
+    </category>
+
+
+    <!-- 根logger的设置-->
+    <root>
+        <!--优先级设置，假设设置为“info”，则无法输出debug级别的日志-->
+        <priority value="debug"/>
+        <!--<priority value="info"/>-->
+        <!--<priority value="warn"/>-->
+        <!--<priority value="error"/>-->
+        <!--<priority value="fatal"/>-->
+
+        <!--添加刚才设置的appender-->
+        <appender-ref ref="myConsole"/>
+        <appender-ref ref="myFile"/>
+    </root>
+</log4j:configuration>
+```
+3. 控制台输出日志的配置文件（复制可以直接用）
+```xml
+<?xml version="1.0"  encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+    <appender name="myConsole" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%-d{yyyy-MM-dd HH:mm:ss,SSS} [%c]-[%p] %m%n"/>
+        </layout>
+    </appender>
+    <root>
+        <priority value="debug"/>
+        <appender-ref ref="myConsole"/>
+    </root>
+</log4j:configuration>
+```
+4. 使用
+```java
+ // 类名.class
+Logger logger = LoggerFactory.getLogger(Program.class);
+// 输出字符串
+logger.debug("this is a debug msg");
+// 占位符
+logger.debug("hi，welcome {}，today is {}","admin","Sunday");
+```
+#### commons-logging
+- Jakarta Commons Logging(JCL):它是一个接口，自身的日志系统十分的弱小，它可以合理的猜测你想用的日志工具,然后进行自我设置,用户不需要进行任何设置
+- 配置步骤：
+    - 先在classpath下寻找commons-logging.properties文件
+    - 如果没有commons-logging.properties文件,则在classpath中寻找Log4j的包
+    - 如果没有Log4j的包,就使用java自生的日志实现类(JUL  jdk1.4+) 
+    - 如果还是没有,就使用commons-logging自己提供的一个简单日志实现类(SimpleLog)
+- Commons-Logging需要使用的基本jar包有 commons-logging-1.2.jar
+- 配置文件
+
+commons-logging.properties
+```properties
+#默认配置
+org.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+#指定log4j
+org.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger
+```
+- 基本的使用示范
+```java
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+ 
+public class CommonsLogging {
+	private static Log logger = LogFactory.getLog(CommonsLogging.class);
+	public static void main(String[] args) {
+		logger.info("this is an info");
+	}
+}
+```
+#### Log4j
+- 诞生于1996年，属于Apache，是最早的日志框架，Apache基金会曾建议sun将Log4j引入java标准库，但是被sun拒绝了，后来sun推出了自己的日志库JUL(可惜使用范围不是很广)，2015年Log4j停止更新,最新版本为1.2.17。Log4j=Loggers+Appenders+Layout(这写东西可以写在配置文件中也可以在类中进行重写覆盖掉原有的配置)。日志记录器(Loggers):只有级别高过配置中规定的才能输出,对日志信息进行级别限制。
+- 日志级别（推荐只使用：error,warn,info,debug）
+    - off:最高等级，用于关闭所有日志记录
+    - fatal:致命错误,级别较高,一般这种级别就不用调试时,直接重写吧
+    - error:指出虽然发生错误事件,但仍然不影响系统的继续运行
+    - warn:警告,有些信息不是错误信息,但是需要给程序员一些提示
+    - info:输出重要信息,使用较多
+    - debug:对调试应用程序非常有帮助
+    - all:最低等级，用于打开所有日志记录
+- 输出端(Appenders)：指定日志的打印地址
+- 日志格式化器(Layout)：控制日志信息的显示格式
+    - HTMLLayout:输出为HTML表格形式
+    - SimpleLayout(默认):格式：级别-信息(INFO-info)
+    - PatternLayout:自己指定输出格式
+    - TTCCLayout:包含时间,线程,类别
+- Log4j需要使用的基本jar包有 log4j-1.2.17.jar，但是若想实现一些其他的功能，比如说将日志以邮件的形式发送出去就需要引入 activation-1.1.jar 和 mail-1.4.7.jar
+- 配置文件
+
+log4j.properties
+```properties
+#设置输出级别和输出的目的地
+log4j.rootLogger = debug,stdout,D,logMail
+#将日志信息输出到控制台
+log4j.appender.stdout = org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target = System.out
+log4j.appender.stdout.layout = org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern = [%-5p] %d{yyyy-MM-dd HH:mm:ss,SSS} method:%l%n%m%n
+ 
+#设置外部存储
+log4j.appender.D = org.apache.log4j.DailyRollingFileAppender
+#设置存储地址
+log4j.appender.D.File = E://logs/log.log
+#默认是true:将指定消息增加到文件中,false:覆盖
+log4j.appender.D.Append = true
+#设置输出级别
+log4j.appender.D.Threshold = DEBUG 
+#设置日志显示格式
+log4j.appender.D.layout = org.apache.log4j.PatternLayout
+#自定义日志显示格式
+log4j.appender.D.layout.ConversionPattern = %-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n
+ 
+#用Email发送日志
+log4j.appender.logMail = org.apache.log4j.net.SMTPAppender
+#发送邮件的格式
+log4j.appender.logMail.layout = org.apache.log4j.HTMLLayout
+log4j.appender.logMail.layout.LocationInfo = true 
+log4j.appender.logMail.layout.Title = Struts2 Mail LogFile
+#日志的错误级别
+log4j.appender.logMail.Threshold = DEBUG
+log4j.appender.logMail.SMTPDebug = FALSE
+#邮件协议
+log4j.appender.logMail.SMTPHost = SMTP.qq.com
+#设置端口,可以提高安全性
+log4j.appender.MAIL.SMTPPort=587
+log4j.appender.logMail.From = 928752329@qq.com
+log4j.appender.logMail.To = 15256034003@163.com
+log4j.appender.logMail.SMTPUsername = 928752329@qq.com
+#这里一定要去邮箱设置里面修改一下设置,打开AMTP服务！！！！！
+log4j.appender.logMail.SMTPPassword = cdcmxpjjawpmbfgc
+#邮件主题
+log4j.appender.logMail.Subject = Log4j Log Messages
+ 
+#将日志登录到MySQL数据库 
+log4j.appender.logMySql = org.apache.log4j.jdbc.JDBCAppender
+log4j.appender.logMySql.layout = org.apache.log4j.PatternLayout
+log4j.appender.logMySql.Driver = com.mysql.jdbc.Driver
+log4j.appender.logMySql.URL = jdbc:mysql://127.0.0.1:3306/xly
+log4j.appender.logMySql.User = root
+log4j.appender.logMySql.Password = root
+log4j.appender.logMySql.Sql = INSERT INTOT_log4j(project_name,create_date,level,category,file_name,thread_name,line,all_category,message)values('Struts2','%d{yyyy-MM-ddHH:mm:ss}','%p','%c','%F','%t','%L','%l','%m')
+```
+- 基本的使用示范
+```java
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+ 
+public class Log4j {
+	// 创建Logger对象
+	static Logger logger = Logger.getLogger(Log4j.class);
+	public static void main(String[] args) {
+		// 使用默认的配置信息,不需要写log4j.properties
+		BasicConfigurator.configure();
+		// 设置日志输出级别,只有级别高于设置级别才能输出(如果不写,将使用配置文件中的默认级别;若写了,将覆盖配置文件中的级别)
+		logger.setLevel(Level.INFO);
+		
+		logger.info("i want to try this mail");
+		logger.warn("this is warn");
+		logger.error("this is an error");
+		logger.fatal("this is a fatal");
+	}
+}
+```
+#### Log4j2
+- Log4j2是属于Apache的Log4j的二代版本，但是内部的结构和一代有很大的差别，Log4j2里面可以配置的内容非常的多，功能也是十分的强大。Log4j2是有默认配置，即使你不配置它，它也能够正常的工作，若是想自定义配置文件只需要在classpath下放置log4j.xml就可以覆盖掉默认的配置文件。log4j2支持自动重新配置,log4j2每隔一段时间就会检查一遍这个文件是否修改,最小5s一次(可以使用monitorInterval设置)
+- 日志级别
+    - off:最高等级，用于关闭所有日志记录
+    - fatal:致命错误,级别较高,一般这种级别就不用调试时,直接重写吧
+    - error:指出虽然发生错误事件,但仍然不影响系统的继续运行
+    - warn:警告,有些信息不是错误信息,但是需要给程序员一些提示
+    - info:输出重要信息,使用较多
+    - debug:调试,一般作为最低级别
+    - debug:对调试应用程序非常有帮助
+    - all:最低等级，用于打开所有日志记录
+- Log4j2需要使用的基本jar包有 log4j-api-2.11.1.jar 和 log4j-core-2.11.1.jar
+- 配置文件
+
+log4j2.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 需要先配置Appenders,然后定义Logger,这样Appenders才会生效 -->
+<Configuration status="WARN" monitorInterval="30">
+  <Appenders>
+  	<!-- 在控制台输出 -->
+    <Console name="Console" target="SYSTEM_OUT">
+    	<!-- 设置输出级别(level) -->
+		<ThresholdFilter level ="info" onMatch="ACCEPT" onMismatch="DENY"/>
+		<!-- 日志输出格式 -->
+		<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+    
+	<!-- 将日志信息打印到文件中 -->
+    <File name="Log" fileName="E://logs/log.log" append="true">
+    	<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+    	<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+    </File>
+    
+	<!-- 每次大小超过size,就会在这个文件夹下面新建一个格式相同的txt文件 -->
+	<RollingFile name="RollingFile" fileName="E://logs/web.log" filePattern="logs/$${date:yyyy-MM}/web-%d{MM-dd-yyyy}-%i.log.gz">
+		<PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+		<!-- 设置每个文件的最大容量 -->
+		<SizeBasedTriggeringPolicy size="10 MB"/>
+		<!-- 设置了同一个文件夹下最多有多少个文件,默认是7个 -->
+		<DefaultRolloverStrategy max="20"/>
+	</RollingFile>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="Log"/>
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+```
+- 基本的使用示范
+```java
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+ 
+public class Log4j2 {
+	private static final Logger logger = LogManager.getLogger(Log4j2.class);
+ 
+	public static void main(String[] args) {
+		logger.error("this is an error");
+		logger.info("this is an info");
+		logger.warn("this is an warn");
+	}
+}
+```
+#### Logback
+-  Logback是由log4j的创始人离开Apache后又设计的一款开源日志 Logback最为一款二代日志系统，其强大的性能不言而喻。它原生实现了Slf4j，可以由slf4j-api直接调用
+- Logback需要使用的基本jar包有 logback-classic-1.0.13.jar 和 logback-core-1.0.13.jar
+- 配置文件
+
+logback.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->  
+    <property name="LOG_HOME" value="E://logs/log.log" />  
+    <!-- 控制台输出 -->   
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+       <!-- 日志输出编码 -->  
+       <Encoding>UTF-8</Encoding>   
+        <layout class="ch.qos.logback.classic.PatternLayout">   
+             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--> 
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n   
+            </pattern>   
+        </layout>   
+    </appender>   
+    <!-- 按照每天生成日志文件 -->   
+    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">   
+        <Encoding>UTF-8</Encoding>   
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${LOG_HOME}/myApp.log.%d{yyyy-MM-dd}.log</FileNamePattern>   
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>   
+        <layout class="ch.qos.logback.classic.PatternLayout">  
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--> 
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n   
+            </pattern>   
+       </layout> 
+        <!--日志文件最大的大小-->
+       <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+         <MaxFileSize>10MB</MaxFileSize>
+       </triggeringPolicy>
+    </appender> 
+   <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->  
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />  
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor"  level="DEBUG" />  
+    <logger name="org.hibernate.SQL" level="DEBUG" />  
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />  
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />  
+    
+    <!-- 日志输出级别 -->
+    <root level="INFO">   
+        <appender-ref ref="STDOUT" />   
+        <appender-ref ref="FILE" />   
+    </root> 
+     
+     <!--日志异步到数据库 -->  
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+        <!--日志异步到数据库 --> 
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+           <!--连接池 --> 
+           <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+              <driverClass>com.mysql.jdbc.Driver</driverClass>
+              <url>jdbc:mysql://127.0.0.1:3306/usta</url>
+              <user>root</user>
+              <password>root</password>
+            </dataSource>
+        </connectionSource>
+  </appender>
+</configuration>
+```
+- 基本的使用示范
+```java
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+ 
+public class Logback {
+	private static final Logger logger = LoggerFactory.getLogger(Logback.class);
+ 
+	public static void main(String[] args) {
+		logger.info("this is an info");
+		logger.error("this is an error");
+	}
+}
+```
+#### Logging
+
 ## 服务器
 ### JBoss
 
@@ -2846,8 +3253,15 @@ TensorFlow、DeepLearning4J
 挖矿、共识机制、闪电网络、侧链、热点问题、分叉
 #### 以太坊
 #### 超级账本
+
+
+
+
+
+
 ## ***日常总结***
 ### 
 ### 数据库
 - 在能使用索引的地方尽量使用索引，比如查询的条件字段、排序的字段等等，可以极大的增加执行效率
 - Oracle中如果保存的字符串中包含汉字，则将字段类型设置为NVARCHAR2，它可以按字符保存数据，防止乱码，如果不包含汉字，则可直接用NVARCHAR类型字段按字节保存数据。
+
