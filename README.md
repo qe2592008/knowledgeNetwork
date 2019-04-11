@@ -23,7 +23,7 @@
 			- [基数排序](#基数排序)
 		- [搜索算法](#搜索算法)
 		- [查找算法](#查找算法)
-		- [字符串匹配算法   KMP算法](#字符串匹配算法   KMP算法)
+		- [字符串匹配算法和KMP算法](#字符串匹配算法和KMP算法)
 		- [全排列算法](#全排列算法)
 		- [分支限界法](#分支限界法)
 		- [hash算法](#hash算法)
@@ -33,7 +33,7 @@
 		- [LRU-K算法](#LRU-K算法)
 		- [排序算法](#排序算法)
 		- [深度优先和广度优先搜索](#深度优先和广度优先搜索)
-	- [4. 数据结构](#4. 数据结构)
+	- [4、数据结构](#4、数据结构)
 		- [线性表](#线性表)
 		- [散列表](#散列表)
 		- [树](#树)
@@ -89,10 +89,10 @@
 		- [4.14、阅读源代码，并学会使用](#4.14、阅读源代码，并学会使用)
 	- [5、Java网络编程](#5、Java网络编程)
 		- [5.1、tcp、udp、http、https等常用协议](#5.1、tcp、udp、http、https等常用协议)
-		- [5.2、http/1.0 http/1.1 http/2之间的区别](#5.2、http/1.0 http/1.1 http/2之间的区别)
+		- [5.2、http/1.0，http/1.1，http/2之间的区别](#5.2、http/1.0，http/1.1，http/2之间的区别)
 		- [5.3、http/3](#5.3、http/3)
-		- [5.4、Java RMI，Socket，HttpClient](#5.4、Java RMI，Socket，HttpClient)
-		- [5.5、cookie 与 session](#5.5、cookie 与 session)
+		- [5.4、JavaRMI，Socket，HttpClient](#5.4、JavaRMI，Socket，HttpClient)
+		- [5.5、cookie与session](#5.5、cookie与session)
 		- [5.6、用Java写一个简单的静态文件的HTTP服务器](#5.6、用Java写一个简单的静态文件的HTTP服务器)
 		- [5.7、了解nginx和apache服务器的特性并搭建一个对应的服务器](#5.7、了解nginx和apache服务器的特性并搭建一个对应的服务器)
 		- [5.8、用Java实现FTP、SMTP协议](#5.8、用Java实现FTP、SMTP协议)
@@ -323,7 +323,7 @@
 
 #### 查找算法
 
-#### 字符串匹配算法   KMP算法
+#### 字符串匹配算法和KMP算法
 
 #### 全排列算法
 字典序法、递增进位制数法、递减进位制数法、邻位对换法
@@ -379,7 +379,7 @@
 二叉树的深度优先遍历与广度优先遍历
 
 图的深度优先搜索和广度优先搜索
-### 4. 数据结构
+### 4、数据结构
 #### 线性表
 - 数组
 - 链表
@@ -1595,7 +1595,7 @@ public class DeadLock{
     - TCP属于流模式传递，UDP属于数据报模式传递
     - TCP是可靠的传输协议，能保证传输的顺序，UDP不可靠，可能丢包，也不保证顺序
 - [TCP/IP详解学习笔记   这位仁兄写得太好了](https://www.cnblogs.com/fengzanfeng/articles/1339347.html)
-#### 5.2、http/1.0 http/1.1 http/2之间的区别
+#### 5.2、http/1.0，http/1.1，http/2之间的区别
 - http中 get和post区别
 - 常见的web请求返回的状态码
     - 200
@@ -1603,11 +1603,11 @@ public class DeadLock{
     - 404
     - 500
 #### 5.3、http/3
-#### 5.4、Java RMI，Socket，HttpClient
+#### 5.4、JavaRMI，Socket，HttpClient
 - Java RMI
 - Socket
 - HttpClient
-#### 5.5、cookie 与 session
+#### 5.5、cookie与session
 - cookie
 - session
 - cookie被禁用，如何实现session
