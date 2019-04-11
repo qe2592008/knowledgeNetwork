@@ -1,12 +1,12 @@
 # 知识网络
 
 - [一、IT技术基础](#一、IT技术基础)
-	- [1. 计算机原理](#1. 计算机原理)
+	- [1、计算机原理](#1、计算机原理)
 		- [二进制](#二进制)
 		- [编码](#编码)
 		- [CPU缓存，L1，L2，L3和伪共享](#CPU缓存，L1，L2，L3和伪共享)
-	- [2. 计算机网络](#2. 计算机网络)
-	- [3. 算法](#3. 算法)
+	- [2、计算机网络](#2、计算机网络)
+	- [3、算法](#3、算法)
 		- [时间复杂度](#时间复杂度)
 		- [空间复杂度](#空间复杂度)
 		- [基本算法思想](#基本算法思想)
@@ -38,127 +38,127 @@
 		- [散列表](#散列表)
 		- [树](#树)
 		- [图](#图)
-	- [5. 编译原理](#5. 编译原理)
-	- [6. 操作系统](#6. 操作系统)
-	- [7. 数据库原理](#7. 数据库原理)
+	- [5、编译原理](#5、编译原理)
+	- [6、操作系统](#6、操作系统)
+	- [7、数据库原理](#7、数据库原理)
 - [二、Java基础](#二、Java基础)
-	- [1. 面向对象](#1. 面向对象)
-	- [2. 值传递](#2. 值传递)
-	- [3. 概念区分](#3. 概念区分)
-	- [4. 内部类](#4. 内部类)
-	- [5. 基本数据类型](#5. 基本数据类型)
-	- [6. 自动拆装箱](#6. 自动拆装箱)
-	- [7. String](#7. String)
-	- [8. 关键字](#8. 关键字)
-	- [9. 集合](#9. 集合)
-	- [10. 枚举](#10. 枚举)
-	- [11. 注解](#11. 注解)
-	- [12. 泛型](#12. 泛型)
-	- [13. 异常](#13. 异常)
-	- [14. 正则表达式](#14. 正则表达式)
-	- [15. IO](#15. IO)
-	- [16. 序列化](#16. 序列化)
-	- [17. 第三方工具库](#17. 第三方工具库)
-	- [18. API&SPI](#18. API&SPI)
-	- [19. 编码](#19. 编码)
-	- [20. 时间处理](#20. 时间处理)
-	- [21. 重点接口解读](#21. 重点接口解读)
-	- [22. 源码阅读](#22. 源码阅读)
+	- [1、面向对象](#1、面向对象)
+	- [2、值传递](#2、值传递)
+	- [3、概念区分](#3、概念区分)
+	- [4、内部类](#4、内部类)
+	- [5、基本数据类型](#5、基本数据类型)
+	- [6、自动拆装箱](#6、自动拆装箱)
+	- [7、String](#7、String)
+	- [8、关键字](#8、关键字)
+	- [9、集合](#9、集合)
+	- [10、枚举](#10、枚举)
+	- [11、注解](#11、注解)
+	- [12、泛型](#12、泛型)
+	- [13、异常](#13、异常)
+	- [14、正则表达式](#14、正则表达式)
+	- [15、IO](#15、IO)
+	- [16、序列化](#16、序列化)
+	- [17、第三方工具库](#17、第三方工具库)
+	- [18、API&SPI](#18、API&SPI)
+	- [19、编码](#19、编码)
+	- [20、时间处理](#20、时间处理)
+	- [21、重点接口解读](#21、重点接口解读)
+	- [22、源码阅读](#22、源码阅读)
 - [三、Java高级](#三、Java高级)
-	- [1. 设计模式](#1. 设计模式)
-	- [2. 反射技术](#2. 反射技术)
-	- [3. 动态代理](#3. 动态代理)
-	- [4. 并发编程](#4. 并发编程)
-		- [4.1 并发与并行](#4.1 并发与并行)
-		- [4.2 线程](#4.2 线程)
-		- [4.3 线程池](#4.3 线程池)
-		- [4.4 线程安全](#4.4 线程安全)
-		- [4.5 线程安全解决途径](#4.5 线程安全解决途径)
-		- [4.6 synchronized](#4.6 synchronized)
-		- [4.7 volatile](#4.7 volatile)
-		- [4.8 Lock](#4.8 Lock)
-		- [4.9 同步工具](#4.9 同步工具)
+	- [1、设计模式](#1、设计模式)
+	- [2、反射技术](#2、反射技术)
+	- [3、动态代理](#3、动态代理)
+	- [4、并发编程](#4、并发编程)
+		- [4.1、并发与并行](#4.1、并发与并行)
+		- [4.2、线程](#4.2、线程)
+		- [4.3、线程池](#4.3、线程池)
+		- [4.4、线程安全](#4.4、线程安全)
+		- [4.5、线程安全解决途径](#4.5、线程安全解决途径)
+		- [4.6、synchronized](#4.6、synchronized)
+		- [4.7、volatile](#4.7、volatile)
+		- [4.8、Lock](#4.8、Lock)
+		- [4.9、同步工具](#4.9、同步工具)
 			- [CountDownLatch：直接基于AQS实现](#CountDownLatch：直接基于AQS实现)
 			- [CyclicBarrier：基于ReentrantLock实现](#CyclicBarrier：基于ReentrantLock实现)
 			- [Semaphore：直接基于AQS实现](#Semaphore：直接基于AQS实现)
 			- [Exchanger：直接基于CAS实现](#Exchanger：直接基于CAS实现)
-		- [4.10 Fork/Join框架，分而治之](#4.10 Fork/Join框架，分而治之)
-		- [4.11 ThreadLocal](#4.11 ThreadLocal)
-		- [4.12  死锁](#4.12  死锁)
-		- [4.13 实际问题](#4.13 实际问题)
-		- [4.14 阅读源代码，并学会使用](#4.14 阅读源代码，并学会使用)
-	- [5. Java网络编程](#5. Java网络编程)
-		- [5.1 tcp、udp、http、https等常用协议](#5.1 tcp、udp、http、https等常用协议)
-		- [5.2 http/1.0 http/1.1 http/2之间的区别](#5.2 http/1.0 http/1.1 http/2之间的区别)
-		- [5.3 http/3](#5.3 http/3)
-		- [5.4 Java RMI，Socket，HttpClient](#5.4 Java RMI，Socket，HttpClient)
-		- [5.5 cookie 与 session](#5.5 cookie 与 session)
-		- [5.6 用Java写一个简单的静态文件的HTTP服务器](#5.6 用Java写一个简单的静态文件的HTTP服务器)
-		- [5.7 了解nginx和apache服务器的特性并搭建一个对应的服务器](#5.7 了解nginx和apache服务器的特性并搭建一个对应的服务器)
-		- [5.8 用Java实现FTP、SMTP协议](#5.8 用Java实现FTP、SMTP协议)
-		- [5.9 进程间通讯的方式](#5.9 进程间通讯的方式)
-		- [5.10 什么是CDN？如果实现？](#5.10 什么是CDN？如果实现？)
-		- [5.11 DNS？](#5.11 DNS？)
-		- [5.12 反向代理](#5.12 反向代理)
-		- [5.13 浏览器与服务器通讯过程](#5.13 浏览器与服务器通讯过程)
-	- [6. NIO技术](#6. NIO技术)
-	- [7. JVM技术](#7. JVM技术)
-		- [7.1 JVM内存结构](#7.1 JVM内存结构)
-		- [7.2 垃圾回收](#7.2 垃圾回收)
-		- [7.3 JVM参数及调优](#7.3 JVM参数及调优)
-		- [7.4 Java对象模型](#7.4 Java对象模型)
-		- [7.5 HotSpot](#7.5 HotSpot)
-		- [7.6 虚拟机性能监控与故障处理工具](#7.6 虚拟机性能监控与故障处理工具)
-		- [7.7 平台无关性](#7.7 平台无关性)
-		- [7.8 字节码、class文件格式](#7.8 字节码、class文件格式)
-		- [7.9 类加载机制](#7.9 类加载机制)
-		- [7.10 执行引擎（未完成）](#7.10 执行引擎（未完成）)
-		- [7.11 编译与反编译](#7.11 编译与反编译)
-		- [7.12 Java内存模型](#7.12 Java内存模型)
-		- [7.13 尾递归，尾调用](#7.13 尾递归，尾调用)
-		- [7.14 位运算](#7.14 位运算)
-	- [8. 性能优化](#8. 性能优化)
-		- [8.1 Java性能优化](#8.1 Java性能优化)
-	- [9. 新技术](#9. 新技术)
-		- [9.1 Java8](#9.1 Java8)
-		- [9.2 Java9](#9.2 Java9)
-		- [9.3 Java10](#9.3 Java10)
-		- [9.4 Java11](#9.4 Java11)
-		- [9.5 Spring5](#9.5 Spring5)
-		- [9.6 SpringBoot2.0](#9.6 SpringBoot2.0)
-	- [10. 高级源码](#10. 高级源码)
-	- [11. 线上问题分析](#11. 线上问题分析)
-		- [11.1 dump获取](#11.1 dump获取)
-		- [11.2 dump分析](#11.2 dump分析)
-		- [11.3 dump分析及获取工具](#11.3 dump分析及获取工具)
-		- [11.4 自己编写各种outofmemory，stackoverflow程序](#11.4 自己编写各种outofmemory，stackoverflow程序)
-		- [11.5 Arthas](#11.5 Arthas)
-		- [11.6 常见问题解决思路](#11.6 常见问题解决思路)
-		- [11.7 使用工具尝试解决以下问题，并写下总结](#11.7 使用工具尝试解决以下问题，并写下总结)
-	- [12. JMS](#12. JMS)
-	- [13. JMX](#13. JMX)
+		- [4.10、Fork/Join框架，分而治之](#4.10、Fork/Join框架，分而治之)
+		- [4.11、ThreadLocal](#4.11、ThreadLocal)
+		- [4.12、死锁](#4.12、死锁)
+		- [4.13、实际问题](#4.13、实际问题)
+		- [4.14、阅读源代码，并学会使用](#4.14、阅读源代码，并学会使用)
+	- [5、Java网络编程](#5、Java网络编程)
+		- [5.1、tcp、udp、http、https等常用协议](#5.1、tcp、udp、http、https等常用协议)
+		- [5.2、http/1.0 http/1.1 http/2之间的区别](#5.2、http/1.0 http/1.1 http/2之间的区别)
+		- [5.3、http/3](#5.3、http/3)
+		- [5.4、Java RMI，Socket，HttpClient](#5.4、Java RMI，Socket，HttpClient)
+		- [5.5、cookie 与 session](#5.5、cookie 与 session)
+		- [5.6、用Java写一个简单的静态文件的HTTP服务器](#5.6、用Java写一个简单的静态文件的HTTP服务器)
+		- [5.7、了解nginx和apache服务器的特性并搭建一个对应的服务器](#5.7、了解nginx和apache服务器的特性并搭建一个对应的服务器)
+		- [5.8、用Java实现FTP、SMTP协议](#5.8、用Java实现FTP、SMTP协议)
+		- [5.9、进程间通讯的方式](#5.9、进程间通讯的方式)
+		- [5.10、什么是CDN？如果实现？](#5.10、什么是CDN？如果实现？)
+		- [5.11、DNS？](#5.11、DNS？)
+		- [5.12、反向代理](#5.12、反向代理)
+		- [5.13、浏览器与服务器通讯过程](#5.13、浏览器与服务器通讯过程)
+	- [6、NIO技术](#6、NIO技术)
+	- [7、JVM技术](#7、JVM技术)
+		- [7.1、JVM内存结构](#7.1、JVM内存结构)
+		- [7.2、垃圾回收](#7.2、垃圾回收)
+		- [7.3、JVM参数及调优](#7.3、JVM参数及调优)
+		- [7.4、Java对象模型](#7.4、Java对象模型)
+		- [7.5、HotSpot](#7.5、HotSpot)
+		- [7.6、虚拟机性能监控与故障处理工具](#7.6、虚拟机性能监控与故障处理工具)
+		- [7.7、平台无关性](#7.7、平台无关性)
+		- [7.8、字节码、class文件格式](#7.8、字节码、class文件格式)
+		- [7.9、类加载机制](#7.9、类加载机制)
+		- [7.10、执行引擎（未完成）](#7.10、执行引擎（未完成）)
+		- [7.11、编译与反编译](#7.11、编译与反编译)
+		- [7.12、Java内存模型](#7.12、Java内存模型)
+		- [7.13、尾递归，尾调用](#7.13、尾递归，尾调用)
+		- [7.14、位运算](#7.14、位运算)
+	- [8、性能优化](#8、性能优化)
+		- [8.1、Java性能优化](#8.1、Java性能优化)
+	- [9、新技术](#9、新技术)
+		- [9.1、Java8](#9.1、Java8)
+		- [9.2、Java9](#9.2、Java9)
+		- [9.3、Java10](#9.3、Java10)
+		- [9.4、Java11](#9.4、Java11)
+		- [9.5、Spring5](#9.5、Spring5)
+		- [9.6、SpringBoot2.0](#9.6、SpringBoot2.0)
+	- [10、高级源码](#10、高级源码)
+	- [11、线上问题分析](#11、线上问题分析)
+		- [11.1、dump获取](#11.1、dump获取)
+		- [11.2、dump分析](#11.2、dump分析)
+		- [11.3、dump分析及获取工具](#11.3、dump分析及获取工具)
+		- [11.4、自己编写各种outofmemory，stackoverflow程序](#11.4、自己编写各种outofmemory，stackoverflow程序)
+		- [11.5、Arthas](#11.5、Arthas)
+		- [11.6、常见问题解决思路](#11.6、常见问题解决思路)
+		- [11.7、使用工具尝试解决以下问题，并写下总结](#11.7、使用工具尝试解决以下问题，并写下总结)
+	- [12、JMS](#12、JMS)
+	- [13、JMX](#13、JMX)
 - [四、Java框架](#四、Java框架)
-	- [1. Servlet](#1. Servlet)
-	- [2. Spring](#2. Spring)
-	- [3. SpringBoot](#3. SpringBoot)
+	- [1、Servlet](#1、Servlet)
+	- [2、Spring](#2、Spring)
+	- [3、SpringBoot](#3、SpringBoot)
 		- [微服务间调用方式：](#微服务间调用方式：)
 		- [微服务调用的请求拦截器](#微服务调用的请求拦截器)
 		- [RestTemplate](#RestTemplate)
-	- [4. SpringMVC](#4. SpringMVC)
-	- [5. SpringCloud](#5. SpringCloud)
+	- [4、SpringMVC](#4、SpringMVC)
+	- [5、SpringCloud](#5、SpringCloud)
 		- [Eureka：服务发现](#Eureka：服务发现)
 		- [Zookeeper：服务发现](#Zookeeper：服务发现)
 		- [Consul：服务发现](#Consul：服务发现)
 		- [Ribbon：负载均衡](#Ribbon：负载均衡)
-	- [6. SpringSecurity](#6. SpringSecurity)
-	- [7. SpringCache](#7. SpringCache)
-	- [8. MyBatis](#8. MyBatis)
-	- [9. Hiberate](#9. Hiberate)
-	- [10. 测试](#10. 测试)
-	- [11. Zookeeper](#11. Zookeeper)
-	- [12. Nacos：](#12. Nacos：)
-	- [13. Dubbo](#13. Dubbo)
-	- [14. 日志](#14. 日志)
+	- [6、SpringSecurity](#6、SpringSecurity)
+	- [7、SpringCache](#7、SpringCache)
+	- [8、MyBatis](#8、MyBatis)
+	- [9、Hiberate](#9、Hiberate)
+	- [10、测试](#10、测试)
+	- [11、Zookeeper](#11、Zookeeper)
+	- [12、Nacos：](#12、Nacos：)
+	- [13、Dubbo](#13、Dubbo)
+	- [14、日志](#14、日志)
 		- [日志级别](#日志级别)
 		- [Log4j、Log4j2、Slf4j、Logback、Logging的关系](#Log4j、Log4j2、Slf4j、Logback、Logging的关系)
 		- [Slf4j](#Slf4j)
@@ -171,24 +171,24 @@
 		- [Logback](#Logback)
 		- [Logging](#Logging)
 - [五、服务器](#五、服务器)
-	- [1. JBoss](#1. JBoss)
-	- [2. tomcat](#2. tomcat)
+	- [1、JBoss](#1、JBoss)
+	- [2、tomcat](#2、tomcat)
 		- [tomcat集群实现session共享](#tomcat集群实现session共享)
-	- [3. jetty](#3. jetty)
-	- [4. Weblogic](#4. Weblogic)
-	- [5. Nginx](#5. Nginx)
+	- [3、jetty](#3、jetty)
+	- [4、Weblogic](#4、Weblogic)
+	- [5、Nginx](#5、Nginx)
 - [六、工具](#六、工具)
-	- [1. svn](#1. svn)
-	- [2. git](#2. git)
-	- [3. maven](#3. maven)
-	- [4. gradle](#4. gradle)
-	- [5. IntellijIDEA](#5. IntellijIDEA)
-	- [6. Eclipse](#6. Eclipse)
+	- [1、svn](#1、svn)
+	- [2、git](#2、git)
+	- [3、maven](#3、maven)
+	- [4、gradle](#4、gradle)
+	- [5、IntellijIDEA](#5、IntellijIDEA)
+	- [6、Eclipse](#6、Eclipse)
 - [七、数据库](#七、数据库)
-	- [1. 基础](#1. 基础)
-	- [2. SQL](#2. SQL)
-	- [3. ORACLE](#3. ORACLE)
-	- [4. MYSQL](#4. MYSQL)
+	- [1、基础](#1、基础)
+	- [2、SQL](#2、SQL)
+	- [3、ORACLE](#3、ORACLE)
+	- [4、MYSQL](#4、MYSQL)
 		- [基础](#基础)
 		- [存储引擎](#存储引擎)
 		- [排序方式](#排序方式)
@@ -201,19 +201,19 @@
 		- [事务](#事务)
 		- [备份恢复](#备份恢复)
 		- [调优](#调优)
-	- [5. SQL SERVER](#5. SQL SERVER)
+	- [5、SQLSERVER](#5、SQLSERVER)
 - [八、Nosql](#八、Nosql)
-	- [1. Redis](#1. Redis)
-	- [2. MongoDB](#2. MongoDB)
-	- [3. Memcache](#3. Memcache)
-	- [4. HBase](#4. HBase)
+	- [1、Redis](#1、Redis)
+	- [2、MongoDB](#2、MongoDB)
+	- [3、Memcache](#3、Memcache)
+	- [4、HBase](#4、HBase)
 - [九、大数据](#九、大数据)
 	- [Zookeeper](#Zookeeper)
 	- [Solr，Lucene，ElasticSearch](#Solr，Lucene，ElasticSearch)
 	- [Storm，流式计算，了解Spark，S4](#Storm，流式计算，了解Spark，S4)
 	- [Hadoop，离线计算](#Hadoop，离线计算)
 	- [HDFS、MapReduce](#HDFS、MapReduce)
-	- [分布式日志收集 flume，kafka，logstash](#分布式日志收集 flume，kafka，logstash)
+	- [分布式日志收集flume，kafka，logstash](#分布式日志收集flume，kafka，logstash)
 	- [数据挖掘，mahout](#数据挖掘，mahout)
 - [十、网络安全](#十、网络安全)
 - [十一、架构](#十一、架构)
@@ -234,9 +234,9 @@
 		- [分布式ID](#分布式ID)
 	- [微服务](#微服务)
 		- [ServiceMesh](#ServiceMesh)
-		- [Docker & Kubernets](#Docker & Kubernets)
-		- [Spring Boot](#Spring Boot)
-		- [Spring Cloud](#Spring Cloud)
+		- [Docker、Kubernets](#Docker、Kubernets)
+		- [SpringBoot](#SpringBoot)
+		- [SpringCloud](#SpringCloud)
 	- [高并发](#高并发)
 		- [分库分表](#分库分表)
 		- [CDN技术](#CDN技术)
@@ -262,17 +262,16 @@
 		- [以太坊](#以太坊)
 		- [超级账本](#超级账本)
 - [十三、***日常总结***](#十三、***日常总结***)
-	- [](#)
 	- [数据库](#数据库)
 
 > 简单内容直接呈现，复杂内容链接文章
 ## 一、IT技术基础
-### 1. 计算机原理
+### 1、计算机原理
 #### 二进制
 #### 编码
 #### CPU缓存，L1，L2，L3和伪共享
-### 2. 计算机网络
-### 3. 算法
+### 2、计算机网络
+### 3、算法
 #### 时间复杂度
 - 分析技巧
 - 分类
@@ -441,11 +440,11 @@
     - 后序遍历：先左再右后根
 #### 图
 
-### 5. 编译原理
-### 6. 操作系统
-### 7. 数据库原理
+### 5、编译原理
+### 6、操作系统
+### 7、数据库原理
 ## 二、Java基础
-### 1. 面向对象
+### 1、面向对象
 - 面向对象和面向过程的区别：
     - **面向对象**：将一类事物抽象成类，将事物的属性抽象成变量，事物的行为抽象成方法，然后将其封装起来的编程思想。重点关注的是对象。
     - **面向过程**：重点关注的是执行步骤，利用函数将每个步骤实现，逐个调用的方式。
@@ -462,12 +461,12 @@
         - 里氏替换原则
         - 依赖倒置原则
         - 接口隔离原则
-### 2. 值传递
+### 2、值传递
 重点：传递关注的是传递的内容本身，而不是其所代表的含义或者指向的内容。
 - 值传递：表示传递的是值的拷贝，在新方法中对值进行更改不会影响原来的值
 - 引用传递：表示传递的是对象的引用地址，那么新方法中针对对象的改变将会体现在原来的引用中，因为两个引用执行相同的对象
 - [为什么说Java中只有值传递](https://www.cnblogs.com/wchxj/p/8729503.html)：如果某个方法的参数是一个对象，那么传递的时候就会直接传递这个对象在栈空间的句柄，那么这种是不是引用传递呢，不是，因为传递的关注点并不是对象而是那个对象地址值，在传递的时候，同样是拷贝了一封对象地址值传递的，那么这里就是值传递，引用传递指的是直接将原来的引用地址传进来。Java在这里进行了处理，并不是传原来的引用地址，而是原来引用地址的一份拷贝。
-### 3. 概念区分
+### 3、概念区分
 - 方法重写与重载
     - 方法重写：重写针对的是继承体系中，子类重写父类的方法，可以使用@Override标注。
     - 方法重载：重载指的是同一个类中，多个参数形式不同的同名方法，返回值不参与区分是否重载
@@ -498,13 +497,13 @@
         - 可以定义main方法，并且可以运行
         - 其它基本和普通的类没有区别
         - 抽象类的继承是单继承，多实现
-### 4. 内部类
+### 4、内部类
 - [四大内部类](https://www.cnblogs.com/xrq730/p/4875907.html)
     - 成员内部类：定义在另一个类内部的非静态内部类，级别和成员变量和方法一致，依附于外部类而存在
     - 静态内部类：定义在另一个类内部的静态内部类（static修饰），超脱了外部类而存在
     - 局部内部类：定义在一个方法或者一个作用于（{}）中的内部类，与方法的局部变量一致，只在作用域内有效
     - 匿名内部类：直接通过new 接口的方式定义个内部类，不存在类名，函数式接口的匿名内部类可以使用Lambda表达式来替换。
-### 5. 基本数据类型
+### 5、基本数据类型
 - 8种基本数据类型：
     - byte：1字节，-128~127（-2<sup>7</sup>~2<sup>7</sup>-1）
     - short：2字节，-32768~32717（-2<sup>15</sup>~2<sup>15</sup>-1）
@@ -520,14 +519,14 @@
 - [什么是单精度和双精度]   //TODO
 - **为什么不能用浮点型表示金额**：因为使用浮点数能精确表示的小数很少，大部分都无法精确表示，这和十进制无法精确表达1/3一样。
 - [浮点数为什么不精确？为什么银行的金额不能用浮点数计算](https://blog.csdn.net/keke_xin/article/details/84831024)
-### 6. 自动拆装箱
+### 6、自动拆装箱
 - **什么是包装类型**：包装类型是针对八个基本数据类型定义的包装类，用于在面向对象的Java中执行一些只有对象才能执行的操作。
 - **什么是自动拆装箱**：拆装箱就是基本类型和包装类型的转换操作，由编译器来完成拆装箱操作。
 - [Integer的缓存机制](Java_Technology\Java_Base_Technology\Integer的缓存机制.md)（享元模式：池）
 - [Integer的缓存机制](https://blog.csdn.net/yrwan95/article/details/82785129)
 - Byte、Short、Long的均是将-128到127缓存起来备用。
 - 包装类型的比较需要使用equals，不能直接使用==，除非将其手动转换为基本类型。
-### 7. String
+### 7、String
 - [字符串的不可变性](https://blog.csdn.net/qunzer/article/details/25157309)：String类被final修饰，是为最终类，不可被继承修改,且底层保存字符序列的字符数组也被final修饰，一旦赋值不再改变，这是String不变的原理。这种不变性也保证了其可以作为Map中键的常客。
 - [JDK6和JDK7中substring的原理及区别](Java_Technology\Java_Base_Technology\JDK6和JDK7中substring的原理及区别.md)
 - replaceFirst、replaceAll、replace区别
@@ -563,7 +562,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - JDK 1.7
     - 同上
     - 若字符串常量池中没有指定的字符串常量值，则在常量池中保留一份堆中字符串的引用地址。 
-### 8. 关键字
+### 8、关键字
 - [Java关键字](https://www.cnblogs.com/chenglc/p/6922834.html)
 - transient原理及用法：使用于序列化机制中，用于屏蔽不想参与序列化的字段，被其修饰的字段不参与序列化与反序列化。一般使用writeObject和readObject方法来自定义其值的序列化与反序列化，通常是直接写入流中或从流中获取赋值。
 - [instanceof原理及用法](https://www.jianshu.com/p/134891584105)
@@ -572,7 +571,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - [final原理及用法](https://www.jianshu.com/p/f89475e3b234)
 - [static原理及用法](https://www.jianshu.com/p/f2b9aabb01c6)
 - const原理及用法：C/C++中的关键字，Java中作为保留字存在，和goto一样
-### 9. 集合
+### 9、集合
 - 常用集合类的使用
     - ArrayList：数组实现的列表，查找元素速度快，增删元素较慢，适用于保存偏于查询的数据
     - LinkedList：链表实现的列表，同时也是队列，增删匀速快，查询元素慢，适用于保存偏于增删操作的数据
@@ -632,7 +631,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     fail-fast：快速失败，ju包下的集合类均是快速失败的，当多个线程对同一个集合进行操作，就可能产生fail-fast。
     fail-safe：安全失败，所有针对同一集合结构的更改操作都会在一个复制的集合上进行。
 
-### 10. 枚举
+### 10、枚举
 - [深入理解Java枚举类型(enum)](https://blog.csdn.net/javazejian/article/details/71333103)
 - 枚举的用法
     - 枚举可以实现多个接口
@@ -649,7 +648,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - **枚举的序列化如何实现**：[深度分析 Java 的枚举类型：枚举的线程安全性及序列化问题](http://blog.jobbole.com/94074/)
     枚举的序列化是由JVM所控制，禁用的定制方法，所以其实永远的单例。
 - 枚举的线程安全性问题
-### 11. 注解
+### 11、注解
 - [深入理解Java注解类型(@Annotation)](https://blog.csdn.net/javazejian/article/details/71860633)
 - [元注解](Java_Technology/Java_Base_Technology/元注解.md)：用于标注注解的注解，标注在注解类之上的注解。定义注解的注解。
     - @Target：指明目标注解的作用范围
@@ -663,7 +662,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - @Suppvisewarnings：忽略警告
 - [注解与反射的结合](Java_Technology/Java_Base_Technology/注解与反射结合使用.md)
 - [Spring常用注解](#Spring)
-### 12. 泛型
+### 12、泛型
 - **泛型**：Java编译器语法糖的一种，泛型只在编译期有效，编译器会执行类型擦除，来去掉泛型。
 - 泛型与继承
 - **类型擦除**：编译阶段，编译器在完成类型检查之后就会执行类型擦除，将泛型去除。
@@ -691,7 +690,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - List：原始类型，可以使用任意类型，可以添加任意类型元素。
     - List\<?\>：通配符类型，形参，可以接受任何对应List<E>的参数化类型，包括List，来作为实参，形参并不能添加元素。
     - List\<Object\>：类型参数为Object的参数化类型，实参，仅仅能够接受List和其本身类型，可以添加任意类型元素。
-### 13. 异常
+### 13、异常
 - [Java中的异常和处理详解](http://www.importnew.com/26613.html)
 - [如何优雅的设计Java异常](http://www.importnew.com/28000.html)
 - **异常类型**
@@ -768,11 +767,11 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - NoClassDefFoundError与ClassNotFoundException区别：
     - NoClassDefFoundError：错误（运行时错误），不需要捕捉，一般表示在类加载的解析阶段找不到指定的类的Class定义，这种情况在编译的时候类还是存在的，可能是类初始化失败导致。
     - ClassNotFoundException：受检异常（编译期异常），需要显式捕捉处理，否则无法通过编译，一般表示在反射调用目标类的时候或者使用类加载器加载某个类的时候找不到类的Class文件。其实就是不存在该类的Class文件。
-### 14. 正则表达式
+### 14、正则表达式
 - java.lang.util.regex.Pattern：规则模型
 - java.lang.util.regex.Matcher：匹配器
 - [JAVA正则表达式：Pattern类与Matcher类详解(转)](https://www.cnblogs.com/ggjucheng/p/3423731.html)
-### 15. IO
+### 15、IO
 - IO流分类：
     - 传输格式：
         - 字符流：
@@ -812,7 +811,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - NIO：同步非阻塞IO
     - AIO：异步非阻塞IO
 - Netty   //TODO
-### 16. 序列化
+### 16、序列化
 - 什么是序列化与反序列化
     - 序列化：把对象转换为字节序列的过程
     - 反序列化：把字节序列恢复为对象的过程
@@ -840,7 +839,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - ProtoBuff序列化：[Google Protocol Buffer 的使用和原理](https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/index.html)
     - Thrift序列化
     - Avro序列化
-### 17. 第三方工具库
+### 17、第三方工具库
 - commons.lang
 - commons.*... 
 - guava-libraries 
@@ -850,14 +849,14 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
         - [Netty工具类HashedWheelTimer源码走读(二)](https://my.oschina.net/haogrgr/blog/490266)
         - [Netty工具类HashedWheelTimer源码走读(三)](https://my.oschina.net/haogrgr/blog/490348)
     - 
-### 18. API&SPI
+### 18、API&SPI
 - API和SPI的关系和区别
     - API：指的是应用对服务调用方提供的接口，用于提供某种服务、功能
     - SPI：指的是应用对服务实现方提供的接口，用于实现某种服务、功能
 - [SPI的使用及原理](Java_Technology/Java_Base_Technology/SPI的使用及原理.md)
 - API面向的是服务调用方
 - SPI面向的是服务实现方
-### 19. 编码
+### 19、编码
 - Unicode编码（统一编码）：对世界上所有的字符进行了编码与标识，包括两部分，基本字符集和增补字符集
     - 基本字符集：U+0000-U+FFFF
     - 增补字符集：U+10000-U+10FFFF
@@ -878,7 +877,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - **URL编解码**
 - Big Endian和Little Endian
 - 如何解决乱码问题:反向去解码，一般出现乱码的原因就是解码方式出错导致的，而且可能经过多重错误编码和解码，要获取源码，需要反向编码和解码，只需要知道你使用的错误的编码类型，如果类型未知，则较难实现数据复原。
-### 20. 时间处理
+### 20、时间处理
 - 时区：将全球以经线均分为24个时区，相邻时区的时间相差一个小时
 - 冬令时和夏令时：在冬季或者夏季将时间人为的调慢或调快1个小时，称之为冬令时或夏令时。
 - 时间戳：指的是从1070年1月1号0点0分0秒到现在的总秒数
@@ -900,7 +899,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 使用ThreadLocal
 - 如何在东八区的计算机上获取美国时间：可以通过设置时区的方式获取到，一种是在代码中设置，另一种是在计算机上设置，因为如果不显式设置使用的时区，会默认读取计算机上的时区信息。
 - Java 8中的时间处理
-### 21. 重点接口解读
+### 21、重点接口解读
 - Comparator：比较器，用以实现比较方式，函数式接口，一般使用Lambda方式作为参数传递
 - Comparable：可比较的，多被集合类实现，表示可以进行比较，内置的比较方式，如果存在Comparator，将会失效
 - Runnable：线程任务，一般用于定义一个线程的执行内容，函数式接口，可作为Lambda使用
@@ -911,7 +910,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - Appendable：表示能够被追加 char 序列和值的对象。如果某个类的实例打算接收来自 Formatter 的格式化输出，那么该类必须实现 Appendable 接口，比如StringBuffer和StringBuilder
 - Flushable：可刷新流，实现了该接口的类可以将缓存中的数据刷新到流中。一般在输出流中实现
 
-### 22. 源码阅读
+### 22、源码阅读
 - [String源码解读]()   // TODO
 - [Integer源码解读]()   // TODO
 - [Long源码解读]()   // TODO
@@ -930,7 +929,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - [URLClassLoader源码解读]()   // TODO
 
 ## 三、Java高级
-### 1. 设计模式
+### 1、设计模式
 - [设计模式的六大原则](Java_Technology/Java_Advanced_Technology/DesignPatterns/设计模式的六大原则.md)：
     - 单一职责原则（Single Responsibility Principle）：一个类只负责一个功能领域中的相应职责，或者可以定义为：就一个类而言，应该只有一个引起它变化的原因
     - 开闭原则（Open Close Principle）：一个软件实体应当对扩展开放，对修改关闭。即软件实体应尽量在不修改原有代码的情况下进行扩展
@@ -992,7 +991,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - **实现IOC**：用到了多种设计模式：？？   // TODO
 - NIO和reactor设计模式   // TODO
     处理一个或多个客户端并发请求服务的事件设计模式，当请求抵达后，服务处理程序使用I/O多路复用策略，然后同步地派发这些请求至相关的请求处理程序。
-### 2. 反射技术
+### 2、反射技术
 - Java反射技术：反射是Java语言的一个特性，它允许程序在运行时（注意不是编译的时候）来进行自我检查并且对内部的成员进行操作。
 - 获取Class的三种方式：
     - `Class class = "".getClass();`
@@ -1011,7 +1010,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - Class类：Class类可以算是反射的基础了，也是反射的开始，一切的原始就是先要获取到目标的Class对象，然后依此来展开一些列反射操作。
 - `java.lang.reflect.*`包：这个包中都是反射使用的类
 - 反射尽量不要在程序运行期执行，尽量放到程序的启动初始化阶段执行，因为反射执行效率要比直接调用低很多
-### 3. 动态代理
+### 3、动态代理
 - 静态代理：手动创建代理类，需要与目标类实现同一接口，当目标类较多时，需要逐一手动创建，费事
 - 动态代理：通过反射来在运行时动态创建代理类
 - 静态代理与动态代理的区别：
@@ -1049,11 +1048,11 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     3. 创建一个Enhancer实例enhancer，设置其超类为目标类，设置回调为Interceptor实例，设置好二者之后，就可以调用create方法来创建代理类实例，然后发起调用即可
 - [JDK动态代理实现原理](https://www.jianshu.com/p/471c80a7e831)
 - [CGLIB动态代理实现原理](https://www.jianshu.com/p/9a61af393e41?from=timeline)
-### 4. 并发编程
-#### 4.1 并发与并行
+### 4、并发编程
+#### 4.1、并发与并行
 - 并发：指的是多个任务线程一起执行，但需要抢占CPU时间片，同一时刻只能有一个任务线程在执行，可发生在单核和多核环境
 - 并行：指的是多个任务线程一起执行，齐头并进，一般是指在多核CPU环境下，多个线程在不同的CPU下执行的情况
-#### 4.2 线程
+#### 4.2、线程
 - 线程模型
     - 内核线程实现：轻量级进程和内核线程一对一线程模型，需要内核态与用户态的频繁切换，较耗资源，Java采用的就是这种模型
     - 用户线程实现：进程和用户线程一对多的线程模型，完全由程序来控制线程的生命周期与CPU映射，一般依赖于线程库来完成
@@ -1105,7 +1104,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     Java虚拟机为每一个对象都维护了两个队列：一个等待队列用于持有该对象上的等待线程，一个同步队列用于存储该对象上的申请锁的线程，wait方法会将当前线程释放锁并存到锁对象的等待队列，notify方法会唤醒对象等待队列中的任一线程，但是只有该线程再次获取到对象锁之后才能移出等待队列；同步队列中存放的就是处于阻塞中的线程，阻塞于获取锁，再次唤醒的线程需要与同步队列中的线程共同竞争来获取锁，如果未获取到？？
 - 线程间通信
 
-#### 4.3 线程池
+#### 4.3、线程池
 - 线程池涉及的接口与类
     - Executor（接口）：执行器接口，只有一个execute方法，表示执行任务，解耦任务的提交和执行
     - ExecutorService（接口）：继承Executor接口，扩展了执行器的功能：终止（结束）功能，提交有返回值的任务，追踪任务集合结果
@@ -1221,10 +1220,10 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - CPU密集型任务：尽量压榨CPU，参考设置为NCPU+1
     - IO密集型任务：参考设置为2*NCPU
 - 自己设计线程池（自定义线程池）
-#### 4.4 线程安全
+#### 4.4、线程安全
 - 什么是线程安全：多线程环境下各个线程执行并发访问共享资源可能发生线程安全问题
 - 线程安全和内存模型的关系：Java内存模型主要指的是主内存与线程工作内存的关系，线程访问某个共享变量需要先从工作内存读取，如果工作内存中不存在要访问的变量的副本，则线程才会访问主内存，同时在工作内存保留一份副本。这样一来当多线程同时访问一个共享变量时，在各自的工作内存中保留有该变量的副本，如果其中一个线程修改了变量副本的值，其他线程是不知道的，因为它们工作内存有这个变量副本，它们访问的时候直接从工作内存读取，根本不知道该变量已经被更改了，读取到的还是旧值。
-#### 4.5 线程安全解决途径
+#### 4.5、线程安全解决途径
 - 乐观锁与悲观锁
     - 悲观锁：总是很悲观的认为如果不加锁就会出错，所以直接加锁
     - 乐观锁：总是很乐观的认为不会出错而先尝试执行，如果失败则再次尝试，直到成功
@@ -1278,7 +1277,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - 可重入锁
 - 阻塞锁
 
-#### 4.6 synchronized
+#### 4.6、synchronized
 - synchronized是实现原理：synchronized关键字通过编译之后，会在同步块的前后分别添加monitorenter和monitorexit这两个字节码指令（class字节码中）
 - synchronized和lock之间区别
     - synchronized是Java原生的锁机制，Lock是编程实现的显示锁机制
@@ -1289,14 +1288,14 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 原子性：synchronized通过将临界区代码的执行串行化的方式来保证操作的原子性，因为串行化，相互之间不会有影响
     - 可见性：加锁会触发刷新处理器缓存操作，保证读取到内存中的最新值，释放锁会触发冲刷处理器缓存，保证变量最新值存入主内存，从而保证可见性
     - 有序性：临界区的代码无法重排序到临界区之外，内部可随意重排序，但对外而言是和未重排序效果一致的。
-#### 4.7 volatile
+#### 4.7、volatile
 - happens-before
 - 内存屏障
 - 编译器指令重排和CPU指令重排
 - volatile的实现原理
 - volatile和原子性、可见性和有序性之间的关系
 - 有了synchronized为什么还需要volatile：volatile是一种轻量级的锁，针对确定原子操作的变量可以实现线程安全，不需要加上繁重的synchronized
-#### 4.8 Lock
+#### 4.8、Lock
 - [AQS解读]()：AQS是实现同步组件的基础同步器，作为各同步组件的内部类存在。
 - 实现
     - 重入锁：[ReentrantLock]()：
@@ -1327,7 +1326,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 唤醒：
         - condition.signal()：唤醒一个等待在Condition上的线程，返回的线程必然获取了Condition相关的锁
         - condition.signalAll()：唤醒所有等待在Condition上的线程，返回的线程必然获取了Condition相关的锁
-#### 4.9 同步工具
+#### 4.9、同步工具
 ##### CountDownLatch：直接基于AQS实现
 - 概念：CountDownLatch是一个同步组件，可以使一个或多个线程等待其他线程执行后再执行
 - 原理：CountDownLatch内部维护了一个计数器，这个计数器其实就是AbstractQueuedSynchronizer（AQS）的state，CountDownLatch的构造器在创建countDownLatch实例时会指定计数量，然后提供了countDown方法用于将计数值减1，执行一次减1，并提供了await方法用于等待计数值降为0,await方法底层在尝试可中断的共享式获取锁，如果获取锁失败会挂起直到获取成功，才能退出await方法，而获取成功的条件是同步器的state值为0
@@ -1494,9 +1493,9 @@ public class CountDownLatch {
 ##### Exchanger：直接基于CAS实现
 
 
-#### 4.10 Fork/Join框架，分而治之
+#### 4.10、Fork/Join框架，分而治之
 
-#### 4.11 ThreadLocal
+#### 4.11、ThreadLocal
 - ThreadLocal作用：用于实现线程私有变量，该变量将一直存在与线程中，与方法调用无关，直到线程销毁，如此一来，我们可以在线程的所有方法中通过ThreadLocal来使用这个变量，这个变量的生命周期将会是整个线程周期，除非手动调用remove操作清除变量。
 - ThreadLocal结构：ThreadLocal有一个静态内部类ThreadLocalMap，这个Map被Thread所持有，即每个线程天然持有一个ThreadLocal.ThreadLocalMap对象；ThreadLocalMap内部使用一个Entry来存储线程变量，其中以一个弱引用ThreadLocal对象作为键，以线程变量作为值。每个线程可以设置多个线程变量，只是需要为每个线程变量创建一个ThreadLocal对象。这些线程变量将全部存储在线程的私有属性ThreadLocalMap中。
 - ThreadLocal用法：一般将ThreadLocal作为共享变量，或单独成类，或作为成员属性，主要目的就是为了实现多线程共用，虽然ThreadLocal实例被多线程共用，但是针对每个线程而言，其设置的线程变量都保存在自身内部的ThreadLcoalMap中，它是线程私有的，每个线程都有，那么也就实现了线程安全性，此时在多个线程中作为键的ThreadLocal会是同一个。那么是什么样的变量需要使用ThreadLocal来进行存储呢？当遇到需要在整个线程中多处使用的变量时，可以将其保存到ThreadLcoal，更重要的是针对那些不便于传递的变量，可以保存到ThreadLcoal中。
@@ -1509,7 +1508,7 @@ public class CountDownLatch {
     - 初始容量：16
     - 扩容阈值：容量的2/3
     - 扩容规则：容量翻倍
-#### 4.12  死锁
+#### 4.12、死锁
 - 死锁的原因
 - 死锁如何排查
 - 死锁的解决办法
@@ -1536,10 +1535,10 @@ public class DeadLock{
     }
 }
 ```
-#### 4.13 实际问题
+#### 4.13、实际问题
 - 写代码来解决生产者消费者问题
 - join操作，三个任务，如何多线程顺序执行
-#### 4.14 阅读源代码，并学会使用
+#### 4.14、阅读源代码，并学会使用
 - [Thread源码解读]()
 - [Runnable源码解读]()
 - [Callable源码解读]()
@@ -1554,8 +1553,8 @@ public class DeadLock{
 - [AbstractQueuedSynchronizer源码解读](https://www.cnblogs.com/leesf456/p/5350186.html)
 - [LockSupport]()
 - [Condition源码解读]()
-### 5. Java网络编程
-#### 5.1 tcp、udp、http、https等常用协议
+### 5、Java网络编程
+#### 5.1、tcp、udp、http、https等常用协议
 - TCP协议：可靠的传输控制协议
 - UDP协议：不可靠的数据报传输协议
 - HTTP协议：超文本传输协议
@@ -1596,33 +1595,33 @@ public class DeadLock{
     - TCP属于流模式传递，UDP属于数据报模式传递
     - TCP是可靠的传输协议，能保证传输的顺序，UDP不可靠，可能丢包，也不保证顺序
 - [TCP/IP详解学习笔记   这位仁兄写得太好了](https://www.cnblogs.com/fengzanfeng/articles/1339347.html)
-#### 5.2 http/1.0 http/1.1 http/2之间的区别
+#### 5.2、http/1.0 http/1.1 http/2之间的区别
 - http中 get和post区别
 - 常见的web请求返回的状态码
     - 200
     - 302
     - 404
     - 500
-#### 5.3 http/3
-#### 5.4 Java RMI，Socket，HttpClient
+#### 5.3、http/3
+#### 5.4、Java RMI，Socket，HttpClient
 - Java RMI
 - Socket
 - HttpClient
-#### 5.5 cookie 与 session
+#### 5.5、cookie 与 session
 - cookie
 - session
 - cookie被禁用，如何实现session
-#### 5.6 用Java写一个简单的静态文件的HTTP服务器
+#### 5.6、用Java写一个简单的静态文件的HTTP服务器
 
-#### 5.7 了解nginx和apache服务器的特性并搭建一个对应的服务器
+#### 5.7、了解nginx和apache服务器的特性并搭建一个对应的服务器
 
-#### 5.8 用Java实现FTP、SMTP协议
+#### 5.8、用Java实现FTP、SMTP协议
 
-#### 5.9 进程间通讯的方式
+#### 5.9、进程间通讯的方式
 
-#### 5.10 什么是CDN？如果实现？
+#### 5.10、什么是CDN？如果实现？
 
-#### 5.11 DNS？
+#### 5.11、DNS？
 - 什么是DNS：DNS是域名解析系统，主要用于将域名解析为IP地址
 - 记录类型:A记录、CNAME记录、AAAA记录等
 - 域名解析
@@ -1630,15 +1629,15 @@ public class DeadLock{
 - DNS污染：网域服务器缓存污染或者域名服务器缓存投毒，
 - DNS劫持
 - 公共DNS：114 DNS、Google DNS、OpenDNS
-#### 5.12 反向代理
+#### 5.12、反向代理
 - 正向代理
 - 反向代理
 - 反向代理服务器
-#### 5.13 浏览器与服务器通讯过程
+#### 5.13、浏览器与服务器通讯过程
 
-### 6. NIO技术
-### 7. JVM技术
-#### 7.1 JVM内存结构
+### 6、NIO技术
+### 7、JVM技术
+#### 7.1、JVM内存结构
 - [关于 JVM 内存的 N 个问题](http://www.importnew.com/29920.html)
 - 运行时数据区：
     - 程序计数器：
@@ -1665,7 +1664,7 @@ public class DeadLock{
     - Class文件常量池：存在于class文件中
     - 运行时常量池：存在于方法区中，1.7以后挪到了元空间
     - 字符串常量池符串常量池：存在于方法区中，1.7以后挪到了堆中
-#### 7.2 垃圾回收
+#### 7.2、垃圾回收
 - GC算法：
     - 标记清除：先标记，再清除。效率低、有空间碎片
     - 复制：先复制，再清除。空间利用率极低（50%）
@@ -1740,7 +1739,7 @@ public class DeadLock{
     - FullGC的次数越来越多，最频繁时隔不到1分钟就进行一次FullGC
     - 年老代的内存越来越大并且每次FullGC后年老代没有内存被释放
     - 之后系统会无法响应新的请求，逐渐到达OutOfMemoryError的临界值。
-#### 7.3 JVM参数及调优
+#### 7.3、JVM参数及调优
 - -Xss：线程堆栈空间大小
 - -Xmn：新生代容量，所以老年代容量 = 堆容量 - 新生代容量
 - -Xms：堆容量初始值
@@ -1763,9 +1762,9 @@ public class DeadLock{
 - [JVM调优总结（5）：典型配置](http://www.importnew.com/19264.html)
 
 - [JVM之ParNew和CMS日志分析](http://www.importnew.com/30237.html)
-#### 7.4 Java对象模型
+#### 7.4、Java对象模型
 oop-klass、对象头
-#### 7.5 HotSpot
+#### 7.5、HotSpot
 - 对象
     - 创建：new指令->定位类的符号引用->类加载->分配内存->初始化0值->设置对象头->执行\<init\>初始化
     - 内存布局：对象头、实例数据、对齐填充
@@ -1779,7 +1778,7 @@ oop-klass、对象头
         - 直接指针：栈中直接保存对象实例数据地址，其中在对象头中保存类型指针，指向对象类型数据。HotSpot采用直接指针
 - 即时编译器(见下方)
 - 编译优化(见下方)
-#### 7.6 虚拟机性能监控与故障处理工具
+#### 7.6、虚拟机性能监控与故障处理工具
 - jps：虚拟机进程状况工具（JVM Process Status Tool），用于罗列正在运行的虚拟机进程
     - -l：输出主类全名
     - -v：输出JVM启动参数
@@ -1806,16 +1805,16 @@ oop-klass、对象头
 - TProfiler
 - Arthas
 - [Eclipse Mat](http://www.cnblogs.com/duanxz/p/3958504.html)（内存分析器工具）
-#### 7.7 平台无关性
+#### 7.7、平台无关性
 - Java如何实现的平台无关：通过class字节码文件和JVM配合来实现的，首先使用JVM来屏蔽各种操作系统平台的不统一，统一对上层提供一致的入口。然后我们的Java程序会先被编译成class字节码然后被JVM加载执行。
 - JVM还支持哪些语言（Kotlin、Groovy、JRuby、Jython、Scala）
 - JVM的语言无关性，只要能编译成为同一个class字节码格式文件，无论你之前是什么语言编写的都没有关系，JVM只关心结果是它能处理的文件即可，来源无所谓。
-#### 7.8 字节码、class文件格式
+#### 7.8、字节码、class文件格式
 很复杂，可见思维导图
 - [Java字节码结构剖析一：常量池](http://www.importnew.com/30461.html)
 - [Java字节码结构剖析二：字段表](http://www.importnew.com/30505.html)
 - [Java字节码结构剖析三：方法表](http://www.importnew.com/30521.html)
-#### 7.9 类加载机制
+#### 7.9、类加载机制
 - 类加载时机
     - new一个对象，调用类的静态方法、字段
     - 反射调用一个类
@@ -1866,7 +1865,7 @@ oop-klass、对象头
 - 引用分类
     - 符号引用：使用符号描述引用的目标，符号可以使任何形式的字面量，无歧义即可，定义在class文件中
     - 直接引用：指直接指向目标的指针、相对偏移量或者间接定位目标的句柄，实现于运行时环境中，和JVM内存布局相关
-#### 7.10 执行引擎（未完成）
+#### 7.10、执行引擎（未完成）
 - 栈帧
     - 局部变量表：存放方法参数和局部变量，以变量槽slot为单位，一般一个slot为32位。32位的JVM数据类型可以用1个slot存储，64位的JVM必须用2个slot来存储
     - 操作数栈：先入后出的操作栈，主要作用是用于参与操作运算，不同于局部变量表，局部变量表相对来说属于内存部件，而操作栈类似于CPU寄存器部件
@@ -1889,7 +1888,7 @@ oop-klass、对象头
     - returnAddress：指向一条字节码指令地址，实现异常处理，现已废弃，32位
     - long：长整型，64位，占用2个slot
     - double：双精度浮点型，64位，占用2个slot
-#### 7.11 编译与反编译
+#### 7.11、编译与反编译
 - 什么是编译（前端编译、后端编译）
     - 前端编译：指javac编译器，用于将java文件编译为class字节码文件
     - 后端编译：指JIT编译器，用于将class字节码编译为机器指令
@@ -1988,7 +1987,7 @@ oop-klass、对象头
     - 加密class：编译代码时使用插件将代码进行加密将class文件里面的内容读取成byte[]，然后进行加密后再写回到class文件，然后在启动项目代码时，指定使用我们自定义的ClassLoader进行类的加载就行了，而自定义的部分，主要就是在这里做解密工作！
     - 高级加密class：修改本地方法来进行加密和解密，黑箱运行
     - 更改JVM：复杂
-#### 7.12 Java内存模型
+#### 7.12、Java内存模型
 - 计算机内存模型
 - 缓存一致性
 - MESI协议
@@ -2002,15 +2001,15 @@ oop-klass、对象头
 - volatile
 - final
 - 锁
-#### 7.13 尾递归，尾调用
-#### 7.14 位运算
+#### 7.13、尾递归，尾调用
+#### 7.14、位运算
 用位运算实现加、减、乘、除、取余
 
-### 8. 性能优化
+### 8、性能优化
 - [Java 性能优化：教你提高代码运行的效率](https://mp.weixin.qq.com/s/B4D-qudb7p3ubutsyBcOqg)
 - [Java性能优化措施(代码级)(转)](Java_Technology/Java_Base_Technology/Java性能优化措施(代码级)(转).md)
 - 优化目的：减小代码体积，提升运行速率
-#### 8.1 Java性能优化
+#### 8.1、Java性能优化
 - 尽量指定类、方法的final修饰符
 - 尽量重用对象
 - 尽可能使用局部变量
@@ -2067,13 +2066,13 @@ oop-klass、对象头
 - 减少锁粒度
 - 数据压缩
 - 结果缓存
-### 9. 新技术
-#### 9.1 Java8
+### 9、新技术
+#### 9.1、Java8
 - [lambda表达式](https://www.cnblogs.com/figure9/archive/2014/10/24/4048421.html)
 - [Stream API](https://www.jianshu.com/p/3dc56886c2eb)
 - [Optional](https://www.jianshu.com/p/61e3332d7383)
 - 时间API
-#### 9.2 Java9
+#### 9.2、Java9
 - modularity System 模块系统,Jigsaw
 - HTTP/2
 - JShell
@@ -2085,43 +2084,43 @@ oop-klass、对象头
 - java9的垃圾收集机制，默认G1
 - I/O 流新特性
 - Reactive Streams
-#### 9.3 Java10
+#### 9.3、Java10
 - 局部变量类型推断
 - G1的并行Full GC
 - ThreadLocal握手机制
-#### 9.4 Java11
+#### 9.4、Java11
 - ZGC
 - Epsilon
 - 增强var
-#### 9.5 Spring5
+#### 9.5、Spring5
 - 响应式编程
-#### 9.6 SpringBoot2.0
+#### 9.6、SpringBoot2.0
 
-### 10. 高级源码
+### 10、高级源码
 为什么Thread里有一个ThreadLocalMap类型的变量
 ThreadLocalMap为什么作为ThreadLocal的内部类
 ThreadLocalMap的扩缩容机制以及碰撞检测
 ThreadLocalMap的Entry为什么使用弱引用类型
 有些类中的capacity,threshold,position,mark,limit这些成员变量有什么用，如何影响类内部的运算？如何设置？
-### 11. 线上问题分析
+### 11、线上问题分析
 [JVM性能调优](https://www.cnblogs.com/csniper/p/5592593.html)
 [Java系列笔记(4) - JVM监控与调优](http://www.cnblogs.com/zhguang/p/Java-JVM-GC.html)
-#### 11.1 dump获取
+#### 11.1、dump获取
 线程Dump、内存Dump、gc情况
 - 自动堆转储：OutOfMemoryError是不可预料的，我们很难确定应该何时获得堆转储。有几个JVM标志可以起到帮助。
     - -XX:+HeapDumpOnOutOfMemoryError该标志默认为false，打开该标志，JVM会在抛出OutOfMemoryError时创建堆转储。
     - -XX:HeapDumpPath=\<path\>该标志知道了堆转储将被写入的位置，默认为当前工作目录下生产java_pid\<pid\>.hprof文件。
     - -XX:+HeapDumpAfterFullGC 这会在运行一次Full GC后生成一个堆转储文件。
     - -XX:+HeapDumpBeforeFullGC 这会在运行一次Full GC之前生成一个堆转储文件。
-#### 11.2 dump分析
+#### 11.2、dump分析
 - 分析死锁
 - 分析内存泄露
-#### 11.3 dump分析及获取工具
+#### 11.3、dump分析及获取工具
 - jstack、jstat、jmap、jhat、Arthas
 - jhat：JVM内置的原始的堆转储分析工具，它会读取堆转储文件，并运行一个小型的HTTP服务器，该服务器运行你通过一系列网易链接查看堆转储信息。
 - jvisualvm：jvisualvm的监视（Monitor） 选项卡可以从一个运行中的程序获得堆转储文件，也可以打开之前生成堆转储文件。
 - mat：开源的EclipseLink内存分析器工具（EclipseLink Memory Analyzer Tool，mat）可以加载一个或多个堆转储文件并执行分析。它可以生成报告，向我们建议可能存在问题的地方，也可以用于流量堆，并对堆执行类SQL的查询。
-#### 11.4 自己编写各种outofmemory，stackoverflow程序
+#### 11.4、自己编写各种outofmemory，stackoverflow程序
 - HeapOutOfMemory：堆内存溢出
 - Young OutOfMemory：年轻代内存溢出
 - MethodArea OutOfMemory：方法区内存溢出
@@ -2129,14 +2128,14 @@ ThreadLocalMap的Entry为什么使用弱引用类型
 - DirectMemory OutOfMemory：直接内存溢出
 - Stack OutOfMemory：栈内存溢出（没有足够内存为新线程分配栈空间）
 - Stack OverFlow：堆栈溢出（栈帧深度过深导致StackOverflowError）
-#### 11.5 Arthas
+#### 11.5、Arthas
 Arthas是什么：是一种命令式的Java应用诊断工具。
 jvm相关、class/classloader相关、monitor/watch/trace相关、options、管道、后台异步任务
 
 文档：https://alibaba.github.io/arthas/advanced-use.html
-#### 11.6 常见问题解决思路
+#### 11.6、常见问题解决思路
 内存溢出、线程死锁、类加载冲突
-#### 11.7 使用工具尝试解决以下问题，并写下总结
+#### 11.7、使用工具尝试解决以下问题，并写下总结
 当一个Java程序响应很慢时如何查找问题、
 
 当一个Java程序频繁FullGC时如何解决问题、
@@ -2154,22 +2153,22 @@ jvm相关、class/classloader相关、monitor/watch/trace相关、options、管�
 使用Arthas排查线上应用日志打满问题
 
 利用Arthas排查Spring Boot应用NoSuchMethodError
-### 12. JMS
+### 12、JMS
 - [JMS(Java消息服务)入门教程](https://www.cnblogs.com/chenpi/p/5559349.html)
 - **什么是Java消息服务**：两个应用程序之间进行异步通信的API，它为标准消息协议和消息服务提供了一组通用接口，包括创建、发送、读取消息等，用于支持JAVA应用程序开发。
 - JMS消息传送模型
     - 点对点消息传送模型：消息一对一传送，一个发送者对应一个接受者
     - 发布/订阅消息传递模型：消息一对多传送，一个发送者对应多个接受者
-### 13. JMX
+### 13、JMX
 java.lang.management.*、 javax.management.*
 ## 四、Java框架
-### 1. Servlet
+### 1、Servlet
 - 生命周期
 - 线程安全问题
 - filter和listener
 - web.xml中常用配置及作用
 
-### 2. Spring
+### 2、Spring
 - Bean的初始化
 - AOP原理
 - 实现Spring的IOC
@@ -2203,7 +2202,7 @@ java.lang.management.*、 javax.management.*
         1. 默认情况下，任何未处理的不受检异常（运行时异常）都会导致事务回滚，受检异常不会导致事务回滚
         2. 可以通过rollbackFor来设置那些异常可以导致回滚，这些异常包括所有的受检和不受检异常
         3. 通过noRollbackFor来设置那些不会导致事务回滚的异常
-### 3. SpringBoot
+### 3、SpringBoot
 #### 微服务间调用方式：
 - RestTemplate
 - Feign
@@ -2232,12 +2231,12 @@ java.lang.management.*、 javax.management.*
 - 自动配置
 - Spring Boot的starter原理
 - 自己实现一个starter
-### 4. SpringMVC
+### 4、SpringMVC
 什么是MVC
 
 Spring mvc与Struts mvc的区别
 
-### 5. SpringCloud
+### 5、SpringCloud
 #### Eureka：服务发现
 - 描述：
     1. Eureka包括两个组件：Eureka Server和Eureka Client；
@@ -2289,9 +2288,9 @@ Spring mvc与Struts mvc的区别
 
 服务网关、安全、消息
 
-### 6. SpringSecurity
-### 7. SpringCache
-### 8. MyBatis
+### 6、SpringSecurity
+### 7、SpringCache
+### 8、MyBatis
 
 
 
@@ -2307,7 +2306,7 @@ Spring mvc与Struts mvc的区别
 
 
 
-### 9. Hiberate
+### 9、Hiberate
 - 什么是ORMapping
 - Hibernate的缓存机制
 - Hibernate的懒加载
@@ -2315,12 +2314,12 @@ Spring mvc与Struts mvc的区别
     - Hibernate
     - Ibatis
     - MyBatis
-### 10. 测试
+### 10、测试
 - junit
 - mock
 - mockito
 - 内存数据库（h2）
-### 11. Zookeeper
+### 11、Zookeeper
 - 概念：Zookeeper是一个高可用的分布式数据管理和协调框架，并且能够很好的保证分布式环境中数据的一致性。分布式应用程序可以基于 ZooKeeper 实现诸如数据发布/订阅、负载均衡、命名服务、分布式协调/通知、集群管理、Master 选举、配置维护，名字服务、分布式同步、分布式和分布式队列等功能。
 - 功能：[【分布式】Zookeeper应用场景](https://www.cnblogs.com/leesf456/p/6036548.html)
     - 数据发布/订阅，即配置中心
@@ -2331,12 +2330,12 @@ Spring mvc与Struts mvc的区别
     - Master选举
     - 分布式锁
     - 分布式队列
-### 12. Nacos：
+### 12、Nacos：
 - 历史：阿里巴巴不得不说在开源方面是国内做的最好的，没有之一吧。先是druid数据库连接池。笔者有幸在学习之处就使用到它，它是在2012年开源的，但是大规模的使用却是在2015年。后来又推出了dubbo RPC框架。这个在2012年开源的，但是后续没有人维护，再到后来携程pull了一个分支自己去维护，也就是dubbox。直到2017年dubbo开始复活，并且每个月发布新的版本。在国内dubbo的使用还是比较多的。然后就是接触到了RocketMQ。有个消息中间件，和dubbo一样，同样是apache基金会顶级项目。这三款开源产品现在是比较流行的。今年Spring Cloud默认的注册中心Eureka现在是闭源啦，然后就是Hytrix这个服务隔离也闭源啦。因此阿里巴巴开源团队以及国内的一些开源大神开始用nacos准备替换Eureka,还有一个功能是可以作为配置中心，之前携程的Apollo也是作为配置中心的。好了，话不多说，下面的实例工程是我使用nacos作为zookeeper的替代者作为注册中心。需要说明的是nacos现在的版本是0.6.1。因此它暂时还是不能用在生产上，但是预计2019年会正式的开源使用。
 - Nacos是阿里发布的新一代微服务管理组件，Zookeeper的接任者，主要提供微服务中服务发现与服务管理功能、配置服务功能、DNS服务功能、流量管理功能等。
 - 与Zookeeper的区别：
-### 13. Dubbo
-### 14. 日志
+### 13、Dubbo
+### 14、日志
 - [为什么要使用SLF4J而不是Log4J](http://www.importnew.com/7450.html)
 - [jdk-logging、log4j、logback日志介绍及原理](https://my.oschina.net/pingpangkuangmo/blog/406618)
 - [jcl与jul、log4j1、log4j2、logback的集成原理](https://my.oschina.net/pingpangkuangmo/blog/407895)
@@ -2735,9 +2734,9 @@ public class Logback {
 #### Logging
 
 ## 五、服务器
-### 1. JBoss
+### 1、JBoss
 
-### 2. tomcat
+### 2、tomcat
 [Tomcat安装、配置、优化及负载均衡详解](https://www.cnblogs.com/rocomp/p/4802396.html)
 #### tomcat集群实现session共享
 - 使用Tomcat内置的Session复制方案
@@ -2773,11 +2772,11 @@ public class Logback {
 - 使用Spring Session实现
 Spring Session提供了多种方式来存储Session信息，包括redis、mongo、gemfire、hazelcast、jdbc等。这里用redis来举例说明，首先进行依赖添加，然后进行配置即可。
 
-### 3. jetty
+### 3、jetty
 
-### 4. Weblogic
+### 4、Weblogic
 
-### 5. Nginx
+### 5、Nginx
 - Nginx是什么：是一款自由的、开源的、高性能HTTP服务器和反向代理服务器；同时也是一个IMAP、POP3、SMTP代理服务器；Nginx可以作为一个HTTP服务器进行网站的发布处理，另外Nginx可以作为反向代理进行负载均衡的实现。
 - Nginx功能：
     - Http代理，反向代理：作为web服务器最常用的功能之一，尤其是反向代理。
@@ -2870,24 +2869,24 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
     - 硬件负载均衡：
     - 软件负载均衡：利用现有的技术结合主机硬件实现的一种消息队列分发机制
 ## 六、工具
-### 1. svn
+### 1、svn
 - 版本控制工具
-### 2. git
+### 2、git
 - 版本控制工具
-### 3. maven
+### 3、maven
 - 项目管理工具
-### 4. gradle
+### 4、gradle
 - 项目管理工具
 - 将maven项目转化为gradle项目命令：`gradle init --type pom`
 
-### 5. IntellijIDEA
+### 5、IntellijIDEA
 - IDE
-### 6. Eclipse
+### 6、Eclipse
 - IDE
 - 常用插件：Maven Helper 、FindBugs-IDEA、阿里巴巴代码规约检测、GsonFormat、Lombok plugin、.ignore、Mybatis plugin
 
 ## 七、数据库
-### 1. 基础
+### 1、基础
 - 排序一般采用主键，因为主键通常带有索引，可以增加速率
 - 锁机制
 - 事务机制
@@ -2906,13 +2905,13 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
         - 已提交读：可避免脏读，不可避免不可重复读和幻读
         - 可重复读：可避免脏读、不可重复读，不可避免幻读
         - 串行化：可避免脏读、不可重复读、幻读
-### 2. SQL
+### 2、SQL
 
-### 3. ORACLE
+### 3、ORACLE
 - VARCHAR2与NVARCHAR2的区别：
     - VARCAHR2：按字节保存数据，采用单字节存储，节省空间，适用于全部英文字符的字符串。
     - NVARCHAR2：按字符保存数据，采用双字节存储，较费空间，适用于含有汉字字符的字符串，使用统一的字符编码标准，可以有效防止乱码的出现。
-### 4. MYSQL
+### 4、MYSQL
 #### 基础
 #### 存储引擎
 - MyISAM：默认的MySQL插件式存储引擎，它是在Web、数据仓储和其他应用环境下最常使用的存储引擎之一。注意，通过更改STORAGE_ENGINE配置变量，能够方便地更改MySQL服务器的默认存储引擎。
@@ -3046,7 +3045,7 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
 #### 事务
 #### 备份恢复
 #### 调优
-### 5. SQL SERVER
+### 5、SQLSERVER
 
 ## 八、Nosql
 - [Redis、MemCache、MongoDB对比](https://www.cnblogs.com/lina520/p/7919551.html)
@@ -3091,10 +3090,10 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
         - 一致性：Memcache 在并发场景下，用cas保证一致性；redis事务支持比较弱，只能保证事务中的每个操作连续执行；mongoDB不支持事务。
         - 数据分析：mongoDB内置了数据分析的功能(mapreduce),其他两者不支持。
         - 应用场景：redis：数据量较小的更性能操作和运算上；memcache：用于在动态系统中减少数据库负载，提升性能;做缓存，提高性能（适合读多写少，对于数据量比较大，可以采用sharding）；MongoDB:主要解决海量数据的访问效率问题。
-### 1. Redis
-### 2. MongoDB
-### 3. Memcache
-### 4. HBase
+### 1、Redis
+### 2、MongoDB
+### 3、Memcache
+### 4、HBase
 ## 九、大数据
 ### Zookeeper
 - 基本概念
@@ -3112,7 +3111,7 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
 
 ### HDFS、MapReduce
 
-### 分布式日志收集 flume，kafka，logstash
+### 分布式日志收集flume，kafka，logstash
 ELK
 ### 数据挖掘，mahout
 
@@ -3257,9 +3256,9 @@ http://dubbo.apache.org/zh-cn/
 SOA、康威定律
 #### ServiceMesh
 sidecar
-#### Docker & Kubernets
-#### Spring Boot
-#### Spring Cloud
+#### Docker、Kubernets
+#### SpringBoot
+#### SpringCloud
 ### 高并发
 #### 分库分表
 
@@ -3327,7 +3326,6 @@ TensorFlow、DeepLearning4J
 
 
 ## 十三、***日常总结***
-### 
 ### 数据库
 - 在能使用索引的地方尽量使用索引，比如查询的条件字段、排序的字段等等，可以极大的增加执行效率
 - Oracle中如果保存的字符串中包含汉字，则将字段类型设置为NVARCHAR2，它可以按字符保存数据，防止乱码，如果不包含汉字，则可直接用NVARCHAR类型字段按字节保存数据。
