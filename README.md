@@ -301,8 +301,8 @@
 #### 3.3-基本算法思想
 - 贪心算法
 - 分治算法
-- 动态规划算法
 - 回溯算法
+- 动态规划
 - 枚举算法
 #### 3.4-排序算法
 ##### 3.4.1-按复杂度分类
@@ -431,6 +431,12 @@
 - 深度优先遍历
 - 广度优先遍历
 ##### 图的深度优先搜索和广度优先搜索
+- 深度优先搜索DFS（基于栈实现）（采用递归实现）：回溯思想的体现（类似走迷宫，一条路一条路尝试，不通则后退返回走另一条尝试）
+    - 时间复杂度：O(E)
+    - 空间复杂度：O(V)
+- 广度优先搜索BFS（层级搜索）（基于队列实现）：先查找离起始顶点最近的顶点，然后是次近的，依次逐层往外搜索，每个顶点都只会被放到队列一次
+    - 时间复杂度：O(E)
+    - 空间复杂度：O(V)
 #### 3.16-迪杰斯特拉算法
 #### 3.17-最小生成树
 ### 4-数据结构
@@ -510,7 +516,9 @@
 - 十字链表
 ##### 搜索算法
 - 深度优先搜索（基于栈实现）：
-- 广度优先搜索（层级搜索）（基于队列实现）：先查找离起始顶点最近的顶点，然后是次近的，依次往外搜索
+- 广度优先搜索（层级搜索）（基于队列实现）：先查找离起始顶点最近的顶点，然后是次近的，依次逐层往外搜索，每个顶点都只会被放到队列一次
+- A*
+- IDA*
 ##### 图的生成树
 图的生成树是一颗含有其所有顶点的无环连通子图,一幅加权图的最小生成树(MST)是它的一颗权值(树中的所有边的权值之和)最小的生成树
 ### 5-算法应用
@@ -2167,6 +2175,54 @@ oop-klass、对象头
 - [lambda表达式](https://www.cnblogs.com/figure9/archive/2014/10/24/4048421.html)
 - [Stream API](https://www.jianshu.com/p/3dc56886c2eb)
 - [Optional](https://www.jianshu.com/p/61e3332d7383)
+- Stream中如何实现list转map
+使用Stream中的Collectors的toMap方法：
+```java
+public class CollectorsTest {
+    public static void toMapTest(List<String> list){
+        Map<String,String> map = list.stream().limit(3).collect(Collectors.toMap(e -> e.substring(0,1),e -> e));
+        Map<String,String> map1 = list.stream().collect(Collectors.toMap(e -> e.substring(0,1),e->e,(a,b)-> b));
+        Map<String,String> map2 = list.stream().collect(Collectors.toMap(e -> e.substring(0,1),e->e,(a,b)-> b,HashMap::new));
+        System.out.println(map.toString() + "\n" + map1.toString() + "\n" + map2.toString());
+    }
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("123","456","789","1101","212121121","asdaa","3e3e3e","2321eew");
+        toMapTest(list);
+    }
+}
+```
+- Stream中如何实现map转list
+使用Stream中的Collectors的toList方法：
+```java
+public class CollectorsTest {
+    public static void toListTest(Map<String, String> map) {
+        List<String> list = map.entrySet().stream().map(e -> e.getKey() + "_" + e.getValue()).collect(Collectors.toList());
+    }
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<>();
+        map.put("1","one");
+        map.put("2","two");
+        map.put("3","three");
+        toListTest(map);
+    }
+}
+```
+- Stream中如何实现list转list
+使用Stream中的Collectors的ToList方法：
+```java
+public class CollectorsTest {
+    public static void toListTest(List<String> list) {
+        List<String> ll = list.stream().collect(Collectors.toList());
+    }
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("123","456","789","1101","212121121","asdaa","3e3e3e","2321eew");
+        toListTest(list);
+    }
+}
+```
+- Stream中map与flatmap的区别
+    - map属于一维映射，针对原流中的每个元素进行操作，并返回同一层次的结果
+    - flatmap不同于map，属于二维映射，它会将原流中每个元素扁平化，将扁平化的结果作为最后的结果返回，需要注意的是要对原流中的元素进行扁平化操作，需要预先将其分解，比如原流元素为字符串，我们要先将其每个元素执行map映射操作，分解为字符数组，这样原始字符串流转变为字符数组流，然后再执行flatmap映射，这时会将字符数组流变成一个字符流。
 - 时间API
 #### 9.2-Java9
 - modularity System 模块系统,Jigsaw
