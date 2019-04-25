@@ -135,7 +135,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         implements ConcurrentMap<K, V>, Serializable {
     public V put(K key, V value) {
         Segment<K,V> s;
-        // 不支持null值
+        // 值不支持null
         if (value == null)
             throw new NullPointerException();
         int hash = hash(key);// 计算key的hash值

@@ -700,7 +700,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - TreeSet：基于红黑树实现的无序集合，天然有序，用于保存有序的去重数据
     - **LinkedHashMap**：基于Hash和链表（循环双向链表）实现的键值对集合，保存了插入顺序。其实就是对HashMap的所有元素使用一个链表连起来罢了。视为一个有序的HashMap。有两种排序方式：
         - 插入顺序，默认为插入顺序，accessOrder=false：按照元素存入map中的顺序排序
-        - 访问顺序，accessOrder=true：按照访问Map元素的顺序排序
+        - 访问顺序，accessOrder=true：按照访问Map元素的顺序排序，天生的LRU实现
         - 注意：以上两个排序其实都是在双向链表中实现了，这个链表和HashMap其实是并列存在的。在两个里面均保存了元素的引用。
     - **LinkedHashSet**：同上，视为有序的HashSet，它只支持按照元素的插入顺序排序。
         - 其实LinkedHashSet底层是基于LinkedHashMap实现的，
