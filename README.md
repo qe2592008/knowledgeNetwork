@@ -649,7 +649,7 @@
 - 字符串拼接的几种方式和区别
     - +：效率最慢，少数字符串或者数值拼接时使用，直观
     - concat方法：通过Arrays.copyOf()实现拼接，适用于字符串少的拼接
-    - String.format方法：
+    - String.format方法：通过StringBuilder来实现
     - StringUtils.join()：org.apache.commons.lang3中提供的方式，通过StringBuilder实现拼接
     - String.join()：JDK 1.8中新增的方式，通过StringBuilder实现拼接
     - StringBuilder：速度最快速的方式
@@ -682,11 +682,13 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 ### 8-关键字
 - [Java关键字](https://www.cnblogs.com/chenglc/p/6922834.html)
 - transient原理及用法：使用于序列化机制中，用于屏蔽不想参与序列化的字段，被其修饰的字段不参与序列化与反序列化。一般使用writeObject和readObject方法来自定义其值的序列化与反序列化，通常是直接写入流中或从流中获取赋值。
-- [instanceof原理及用法](https://www.jianshu.com/p/134891584105)
-- [volatile原理及用法](https://www.jianshu.com/p/75c95a676385)
+- [instanceof原理及用法](https://www.cnblogs.com/V1haoge/p/8492158.html)
+- [volatile原理及用法](https://www.cnblogs.com/V1haoge/p/7833881.html)
+    - 可见性及其原理
+    - 有序性及其原理
 - [synchronized原理及用法](#synchronized)
-- [final原理及用法](https://www.jianshu.com/p/f89475e3b234)
-- [static原理及用法](https://www.jianshu.com/p/f2b9aabb01c6)
+- [final原理及用法](https://www.cnblogs.com/V1haoge/p/8482909.html)
+- [static原理及用法](https://www.cnblogs.com/V1haoge/p/8477914.html)
 - const原理及用法：C/C++中的关键字，Java中作为保留字存在，和goto一样
 ### 9-集合
 - 常用集合类的使用
