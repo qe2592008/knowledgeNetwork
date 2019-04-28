@@ -3071,7 +3071,26 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
         - 可重复读：可避免脏读、不可重复读，不可避免幻读
         - 串行化：可避免脏读、不可重复读、幻读
 ### 2-SQL
-
+- select：查询
+- distinct：去重
+- from：来源
+- where：条件
+- [inner] join：内连接，可省略inner,甚至全部省略，只用where
+- left [outer] join：左外连接，可省略outer
+- right [outer] join：右外链接，可省略outer
+- on：配合内外连接使用，接连接条件
+- in：在一定范围，接子查询或者值列表
+- not in：不在一定范围，接子查询或者值列表
+- exits：存在，接子查询，返回布尔值
+- not exits：不存在，接子查询，返回布尔值
+- order by：排序
+- asc/desc：排序规则
+- group by having：分组，having是对分组后的结果进行条件筛选
+- union：直接合并后再去重的结果
+- union all：直接合并结果
+- with rollup：配合group by使用，在group分组字段的基础上再进行统计数据
+- limit m,n：分页，m可省略，默认为0
+- sum\count\max\min：聚合函数，一般与group by配合使用
 ### 3-ORACLE
 - VARCHAR2与NVARCHAR2的区别：
     - VARCAHR2：按字节保存数据，采用单字节存储，节省空间，适用于全部英文字符的字符串。
@@ -3223,19 +3242,37 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
 - 分类：错误日志、二进制日志（BINLOG日志）、查询日志、慢查询日志
 - 错误日志：记录MySql启动和停止时，以及服务器运行时发生严重错误时的相关信息
     - 设置日志位置：--log-error[=file_name]
-- 二进制日志：记录所有DDL（数据定义语言）和DML（数据操作语言）语句，但是不包括数据查询语句，用于灾难恢复。
+    - 作用：系统故障时查看，便于快速定位故障原因
+- 二进制日志（binlog）：记录所有DDL（数据定义语言）和DML（数据操作语言）语句，但是不包括数据查询语句，用于灾难恢复。
     - 设置日志位置：--log-bin[=file_name]
     - 格式：
-        - STATEMENT：语句
-        - ROW：
-        - MINED：
-- 查询日志：
-- 慢查询日志：
+        - STATEMENT：记录SQL语句
+        - ROW：记录执行影响的行
+        - MINED：默认，混合STATEMENT和ROW，默认情况下采用STATEMENT，特殊情况下采用ROW
+    - 作用：主要用于数据恢复、数据复制，默认不开启
+- 查询日志：记录客户端所有语句，包括DDL、DML、查询语句
+    - 启用查询日志：--general_log[={0|1}];--general_log_file=file_name
+    - 设置日志位置：--log-output[=value,...]；默认FILE(保存到文件)，也可以设置为TABLE(保存到general_log表)或者设置为NONE（不保存）
+    - 作用：用于查看数据库的所有操作记录，默认不开启
+- 慢查询日志：记录所有执行时间超过指定时间的SQL语句
+    - 指定时间设置：set global long_query_time=0.01    设置为0.01秒
+    - 启用慢查询日志：
+        - 旧方式：--log-slow-queries[=file_name]，未指定文件名使用默认的host_name-slow.log
+        - 新方式：--slow_query_log[={0|1}];--slow_query_log_file[=file_name]，新的方式将启动命令与日志位置设置命令区分开了
+    - 作用：通过查看慢查询日志来定位执行缓慢的SQL，针对性优化，提升系统性能
 #### 锁机制
 #### 约束
 #### 事务
 #### 备份恢复
 #### 调优
+#### 复制
+- 复制的主要用途是将主库的DDL和DML操作通过二进制日志传送到从库，然后在从库进行执行，从而使得主从数据保持一致
+- 复制属于异步操作，复制需要时间，那么主从库的数据必然存在不一致的情况，所以针对非实时性的数据查询操作才会在从库查询，实时性数据还是需要从主库查询的
+- 复制原理：主库提交事务时将数据变更操作记录到binlog日志中并写入磁盘，当有从库连接到主库时，主库将binlog推送到从库，从库接收二进制数据写入relaylog，然后启动执行线程执行二进制的脚本来同步数据
+- 复制架构：
+    - 一主多从：实现主从分离，读写分离，主库宕机，从库挑梁
+    - 多级复制：其实是两主多从，两级主库，降低第一主库的推送压力
+    - 爽主复制：两个库互为主从
 ### 5-SQLSERVER
 ## 八-Nosql
 - [Redis、MemCache、MongoDB对比](https://www.cnblogs.com/lina520/p/7919551.html)
