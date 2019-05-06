@@ -1632,8 +1632,18 @@ public class CountDownLatch {
     - 扩容规则：容量翻倍
 #### 4.12-死锁
 - 死锁的原因
+    一般情况是因为多个线程互相持有对方想要持有的锁，从而造成无限期等待获取锁而造成死锁，死锁的四大条件：
+    - 互斥条件(Mutual exclusion)：资源不能被共享，只能由一个进程使用
+    - 请求与保持条件(Hold and wait)：进程已获得了一些资源，但因请求其它资源被阻塞时，对已获得的资源保持不放
+    - 不可抢占条件(No pre-emption)：有些系统资源是不可抢占的，当某个进程已获得这种资源后，系统不能强行收回，只能由进程使用完时自己释放
+    - 循环等待条件(Circular wait)：若干个进程形成环形链，每个都占用对方申请的下一个资源
 - 死锁如何排查
+    死锁需要使用线程转储文件来进行分析排查（jstack）
 - 死锁的解决办法
+    - 死锁预防：破坏导致死锁必要条件中的任意一个就可以预防死锁
+    - 死锁避免：避免是指进程在每次申请资源时判断这些操作是否安全
+    - 死锁检测：死锁预防和避免都是事前措施，而死锁的检测则是判断系统是否处于死锁状态，如果是，则执行死锁解除策略
+    - 死锁解除：这是与死锁检测结合使用的，它使用的方式就是剥夺。即将某进程所拥有的资源强行收回，分配给其他的进程
 - 写一个死锁的程序
 ```java
 public class DeadLock{
@@ -1657,6 +1667,13 @@ public class DeadLock{
     }
 }
 ```
+- 如何避免死锁
+    - 避免嵌套锁，已锁定一个资源，避免再锁定另一资源
+    - 只锁需要的部分，只针对需要的资源进行加锁，要细粒度
+    - 避免无限期等待，如果两个线程使用 thread join 无限期互相等待也会造成死锁，设置等待的超时时间来避免无限期等待
+    - 设置加锁顺序，当线程需要获取多个锁时，按照一定的顺序来获取锁，避免死锁
+    - 设置加锁时限，在获取锁的时候尝试加一个获取锁的时限，超过时限不需要再获取锁，放弃操作（对锁的请求。）若一个线程在一定的时间里没有成功的获取到锁，则会进行回退并释放之前获取到的锁，然后等待一段时间后进行重试。在这段等待时间中其他线程有机会尝试获取相同的锁，这样就能保证在没有获取锁的时候继续执行比的事情。
+    - 死锁检测，当一个线程获取锁，在一个数据结构中记录下来，如果有线程请求锁也会记录下来，当一个线程请求失败时，遍历数据结构检查是否发生死锁
 #### 4.13-实际问题
 - 写代码来解决生产者消费者问题
 - join操作，三个任务，如何多线程顺序执行
@@ -2283,21 +2300,21 @@ ThreadLocalMap的Entry为什么使用弱引用类型
     - -XX:+HeapDumpAfterFullGC 这会在运行一次Full GC后生成一个堆转储文件。
     - -XX:+HeapDumpBeforeFullGC 这会在运行一次Full GC之前生成一个堆转储文件。
 #### 11.2-dump分析
-- 分析死锁
-- 分析内存泄露
+- 分析死锁（通过jstack命令获取程序的线程转储文件，然后分析文件中的阻塞的线程和等待锁定的资源来找到发生死锁的位置）
+- 分析内存泄露（应该释放的内存未被释放导致内存泄漏）
 #### 11.3-dump分析及获取工具
 - jstack、jstat、jmap、jhat、Arthas
 - jhat：JVM内置的原始的堆转储分析工具，它会读取堆转储文件，并运行一个小型的HTTP服务器，该服务器运行你通过一系列网易链接查看堆转储信息。
 - jvisualvm：jvisualvm的监视（Monitor） 选项卡可以从一个运行中的程序获得堆转储文件，也可以打开之前生成堆转储文件。
 - mat：开源的EclipseLink内存分析器工具（EclipseLink Memory Analyzer Tool，mat）可以加载一个或多个堆转储文件并执行分析。它可以生成报告，向我们建议可能存在问题的地方，也可以用于流量堆，并对堆执行类SQL的查询。
 #### 11.4-自己编写各种outofmemory，stackoverflow程序
-- HeapOutOfMemory：堆内存溢出
-- Young OutOfMemory：年轻代内存溢出
-- MethodArea OutOfMemory：方法区内存溢出
-- ConstantPool OutOfMemory：常量池内存溢出
-- DirectMemory OutOfMemory：直接内存溢出
-- Stack OutOfMemory：栈内存溢出（没有足够内存为新线程分配栈空间）
-- Stack OverFlow：堆栈溢出（栈帧深度过深导致StackOverflowError）
+- HeapOutOfMemory：堆内存溢出（无限创建对象）
+- Young OutOfMemory：年轻代内存溢出（）
+- MethodArea OutOfMemory：方法区内存溢出（）
+- ConstantPool OutOfMemory：常量池内存溢出（）
+- DirectMemory OutOfMemory：直接内存溢出（）
+- Stack OutOfMemory：栈内存溢出（没有足够内存为新线程分配栈空间）（）
+- Stack OverFlow：堆栈溢出（栈帧深度过深导致StackOverflowError）（递归）
 #### 11.5-Arthas
 Arthas是什么：是一种命令式的Java应用诊断工具。
 jvm相关、class/classloader相关、monitor/watch/trace相关、options、管道、后台异步任务
@@ -2330,6 +2347,8 @@ jvm相关、class/classloader相关、monitor/watch/trace相关、options、管�
     - 点对点消息传送模型：消息一对一传送，一个发送者对应一个接受者
     - 发布/订阅消息传递模型：消息一对多传送，一个发送者对应多个接受者
 ### 13-JMX
+所谓JMX，是Java Management Extensions(Java管理扩展)的缩写，是一个为应用程序植入管理功能的框架。用户可以在任何Java应用程序中使用这些代理和服务实现管理。
+
 java.lang.management.*、 javax.management.*
 ## 四-Java框架
 ### 1-Servlet
@@ -3323,6 +3342,11 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
 ### 1-Redis
 - Redis的命令都是原子的
 #### 1.1-数据结构
+- 字符串
+- 列表
+- 集合
+- 有序集合
+- 哈希
 #### 1.2-持久化
 - RDB模式：定期备份内存数据到磁盘（Redis默认的持久化方式）
     - 描述：获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份
@@ -3353,6 +3377,7 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
     - 文件事件：接收、执行客户端命令并返回结果
     - 时间事件：定时执行的一些命令或操作
 #### 1.4-复制
+复制指的是主从复制
 #### 1.5-哨兵
 #### 1.6-集群
 #### 1.7-发布订阅
