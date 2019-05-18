@@ -1775,6 +1775,44 @@ public class DeadLock{
 #### 5.13-浏览器与服务器通讯过程
 
 ### 6-NIO技术
+#### 6.1-Buffer
+- 描述：Buffer是缓存，一般是与通道Channel一一对应的，一个通道一个缓存。缓存主要用于暂存要写入通道或者从通道读取的数据
+- 模式
+    - 写模式：默认
+    - 读模式：可切换
+- 属性
+    - Capacity：容量，不变
+    - position：位置，表示下一个操作的内存位置；写模式表示下一个要写的内存位置，读模式表示下一个可读的内存位置
+    - limit：上限值，表示可操作的内存的最大值；写模式表示的可写最大值，等于Capacity，读模式表示可读的最大值，等于写模式的position
+    - mark：标记值，读模式下使用，表示在某一位置做一个标记，可通过reset方法将指针定位到标记位
+- 种类
+    - ByteBuffer
+    - CharBuffer
+    - ShortBuffer
+    - IntBuffer
+    - LongBuffer
+    - FloatBuffer
+    - DoubleBuffer
+- 操作
+    - 创建：ByteBuffer.allocate(28)
+    - 读缓存：inChannel.write(buffer)或buffer.get()
+    - 写缓存：inChannel.read(buffer)或buffer.put(123)
+    - 模式切换：buffer.flip()
+    - 标记/复位：buffer.mark(),buffer.reset()
+    - 清除
+        - buffer.compact()：清除已读数据
+        - buffer.clear()：清楚所以数据
+#### 6.2-Channel
+- 描述：
+- 种类：
+    - FileChannel：只有阻塞模式，用于处理文件数据读写
+    - DatagramChannel：默认为阻塞模式，可设置为非阻塞模式，用于处理UDP数据读写
+    - SocketChannel：默认为阻塞模式，可设置为非阻塞模式，用于处理客户端TCP数据读写
+    - ServerSocketChannel：默认为阻塞模式，可设置为非阻塞模式，用于处理服务端TCP数据读写
+- FileChannel
+    - 
+#### 6.3-Selector
+- 
 ### 7-JVM技术
 #### 7.1-JVM内存结构
 - [关于 JVM 内存的 N 个问题](http://www.importnew.com/29920.html)
@@ -2352,11 +2390,42 @@ jvm相关、class/classloader相关、monitor/watch/trace相关、options、管�
 java.lang.management.*、 javax.management.*
 ## 四-Java框架
 ### 1-Servlet
-- 生命周期
+- Servlet结构
+    - Servlet接口->GenericServlet->HttpServlet
+    - HttpServletRequest
+        - Session
+        - Cookie
+    - HttpServletResponse
+- Servlet生命周期
+加载并实例化->初始化（init方法）->处理请求（service方法）->服务终止销毁（destory方法）
 - 线程安全问题
-- filter和listener
+- Filter过滤器
+    - 原理：每个请求都会按顺序经过每个配置的Filter，然后再交由Servlet进行请求处理，然后响应结果还是会按照相反的顺序经过每个配置的Filter，最后返回客户端
+    - 实现：实现Filter接口即可，主要实现doFilter方法
+- Listener监听器
+    - 原理：监听器主要监听web应用的各种事件，一旦事件发生就会触发监听器，然后通知监听的部件
+    - 分类：
+        - Servlet上下文监听器
+            - **ServletContextListener**
+            - **ServletContextAttributeListener**
+        - 请求会话监听器
+            - **HttpSessionListener**
+            - HttpSessionActivationListener
+            - HttpSessionAttributeListener
+            - HttpSessionBindingListener
+        - 请求监听器
+            - **ServletRequestListener**
+            - **ServletRequestAttributeListener**
+    - 实现：主要实现上面显示的那些Listener即可，实现其中的对应方法即可
 - web.xml中常用配置及作用
-
+- Servlet3.0新特性
+    - 注解
+        - @WebServlet
+        - @WebFilter
+        - @WebListener
+        - @WebInitParam
+    - 异步处理：asyncSupported
+    - 文件上传支持：@MultipartConfig
 ### 2-Spring
 - Bean的初始化
 - AOP原理
