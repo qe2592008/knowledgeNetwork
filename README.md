@@ -929,9 +929,9 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 信号驱动I/O：不常用
     - 异步 I/O（AIO）：效率最高
 - [BIO、NIO和AIO的区别、用法、原理](Java_Technology/Java_Base_Technology/BIO、NIO和AIO的区别、用法、原理.md)    // TODO
-    - BIO：同步阻塞IO
-    - NIO：同步非阻塞IO
-    - AIO：异步非阻塞IO
+    - BIO：同步阻塞IO：
+    - NIO：同步非阻塞IO：基于通道来实现多路复用
+    - AIO：异步非阻塞IO：基于事件和回调机制
 - Netty   //TODO
 ### 16-序列化
 - 什么是序列化与反序列化
@@ -1246,7 +1246,7 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
 - 创建线程池参数：
     - **corePoolSize**：线程池核心线程数，当提交任务时，优先创建核心线程，当核心线程达到指定的核心线程数之后才会往队列存储，即使是存在空闲的核心线程也要新创建一个来执行新任务，目的就是优先将核心线程创建完毕
     - **maximumPoolSize**：线程池最大线程数，这是线程池允许的线程数的最大值，一般会设置的大于corePoolSize，这样当队列满了之后，将检查线程池内的线程数是否达到该数目吗，若未达到则创建新线程执行任务，否则就是走饱和策略了
-    - **keepAliveTime**：线程空闲存活时间，指的是非核心线程的空闲存活时指的是非核心线程的空闲存活时间，当非核心线程空闲时（队列空）等待keepAliveTime时间之后还没有新任务，则销毁线程非核心线程的空闲存活时指的是非核心线程的空闲存活时间，当非核心线程空闲时（队列空）等待keepAliveTime时间之后还没有新任务，则销毁线程非核心线程的空闲存活时指的是非核心线程的空闲存活时间，当非核心线程空闲时（队列空）等待keepAliveTime时间之后还没有新任务，则销毁线程
+    - **keepAliveTime**：线程空闲存活时间，指的是非核心线程的空闲存活时指的是非核心线程的空闲存活时间，当非核心线程空闲时（队列空）等待keepAliveTime时间之后还没有新任务，则销毁线程
     - unit：线程空闲存活时间单位，可选单位包括：天、时、分、秒、毫秒、微秒、纳秒等，TimeUnit
     - **workQueue**：工作队列（阻塞队列），当核心线程数达到corePoolSize之后，再来的新任务就进入阻塞队列等待执行，通常去以下三种类型：
         - ArrayBlockingQueue：基于数组的FIFO队列，创建时必须指定大小
@@ -1410,11 +1410,14 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
     - 原子性：synchronized通过将临界区代码的执行串行化的方式来保证操作的原子性，因为串行化，相互之间不会有影响
     - 可见性：加锁会触发刷新处理器缓存操作，保证读取到内存中的最新值，释放锁会触发冲刷处理器缓存，保证变量最新值存入主内存，从而保证可见性
     - 有序性：临界区的代码无法重排序到临界区之外，内部可随意重排序，但对外而言是和未重排序效果一致的。
+- synchronized 锁升级原理：在锁对象的对象头里面有一个 threadid 字段，在第一次访问的时候 threadid 为空，jvm 让其持有偏向锁，并将 threadid 设置为其线程 id，再次进入的时候会先判断 threadid 是否与其线程 id 一致，如果一致则可以直接使用此对象，如果不一致，则升级偏向锁为轻量级锁，通过自旋循环一定次数来获取锁，执行一定次数之后，如果还没有正常获取到要使用的对象，此时就会把锁从轻量级升级为重量级锁，此过程就构成了 synchronized 锁的升级。
 #### 4.7-volatile
 - happens-before
 - 内存屏障
 - 编译器指令重排和CPU指令重排
-- volatile的实现原理
+- volatile的实现原理：
+    - 可见性原理：基于JMM（Java 内存模型）
+    - 有序性原理：使用了内存屏障来防止编译期和CPU进行指令重排序
 - volatile和原子性、可见性和有序性之间的关系
 - 有了synchronized为什么还需要volatile：volatile是一种轻量级的锁，针对确定原子操作的变量可以实现线程安全，不需要加上繁重的synchronized
 #### 4.8-Lock
@@ -1449,11 +1452,12 @@ intern方法的作用是在常量池中保留字符串的一份引用或者字�
         - condition.signal()：唤醒一个等待在Condition上的线程，返回的线程必然获取了Condition相关的锁
         - condition.signalAll()：唤醒所有等待在Condition上的线程，返回的线程必然获取了Condition相关的锁
 #### 4.9-同步工具
-##### CountDownLatch：直接基于AQS实现
+- [Java并发编程：CountDownLatch、CyclicBarrier和 Semaphore](http://www.importnew.com/21889.html)
+##### CountDownLatch：计数器，直接基于AQS实现
 - 概念：CountDownLatch是一个同步组件，可以使一个或多个线程等待其他线程执行后再执行
 - 原理：CountDownLatch内部维护了一个计数器，这个计数器其实就是AbstractQueuedSynchronizer（AQS）的state，CountDownLatch的构造器在创建countDownLatch实例时会指定计数量，然后提供了countDown方法用于将计数值减1，执行一次减1，并提供了await方法用于等待计数值降为0,await方法底层在尝试可中断的共享式获取锁，如果获取锁失败会挂起直到获取成功，才能退出await方法，而获取成功的条件是同步器的state值为0
 - 场景
-- [源码]()
+- 源码
 ```java
 public class CountDownLatch {
     // AQS的实现类Sync作为CountDownLatch的内部类，用AQS的state来持有计数count值
@@ -1608,20 +1612,1507 @@ public class CountDownLatch {
 }
 
 ```
-##### CyclicBarrier：基于ReentrantLock实现
+##### CyclicBarrier：栅栏，基于ReentrantLock实现
+- 概念：可以实现让一组线程等待至某个状态之后一起同时执行
+- 原理：底层使用ReentrantLock锁来实现，在创建CyclicBarrier实例的时候会初始化一个parties值，这个值表示有多少个线程要同时执行，同时count=parties，然后在每个线程中都调用await方法来等待，每当有一个线程调用该方法，底层就会对count进行自减，一旦count结果为0，即表示最后一个线程调用了await方法，那么同时唤醒所有线程。这里的等待和唤醒是依靠Condition实现的。
+- 场景
+    - 最常用的就是测试环境模拟高并发
+- 源码
+```java
+ublic class CyclicBarrier {
+    /**
+     * Each use of the barrier is represented as a generation instance.
+     * The generation changes whenever the barrier is tripped, or
+     * is reset. There can be many generations associated with threads
+     * using the barrier - due to the non-deterministic way the lock
+     * may be allocated to waiting threads - but only one of these
+     * can be active at a time (the one to which {@code count} applies)
+     * and all the rest are either broken or tripped.
+     * There need not be an active generation if there has been a break
+     * but no subsequent reset.
+     */
+    private static class Generation {
+        boolean broken = false;
+    }
 
-##### Semaphore：直接基于AQS实现
+    /** The lock for guarding barrier entry */
+    private final ReentrantLock lock = new ReentrantLock();
+    /** Condition to wait on until tripped */
+    private final Condition trip = lock.newCondition();
+    /** The number of parties */
+    private final int parties;
+    /* The command to run when tripped */
+    private final Runnable barrierCommand;
+    /** The current generation */
+    private Generation generation = new Generation();
 
-##### Exchanger：直接基于CAS实现
+    /**
+     * Number of parties still waiting. Counts down from parties to 0
+     * on each generation.  It is reset to parties on each new
+     * generation or when broken.
+     */
+    private int count;
 
+    /**
+     * Updates state on barrier trip and wakes up everyone.
+     * Called only while holding lock.
+     */
+    private void nextGeneration() {
+        // signal completion of last generation
+        trip.signalAll();
+        // set up next generation
+        count = parties;
+        generation = new Generation();
+    }
 
+    /**
+     * Sets current barrier generation as broken and wakes up everyone.
+     * Called only while holding lock.
+     */
+    private void breakBarrier() {
+        generation.broken = true;
+        count = parties;
+        trip.signalAll();
+    }
+
+    /**
+     * Main barrier code, covering the various policies.
+     */
+    private int dowait(boolean timed, long nanos)
+        throws InterruptedException, BrokenBarrierException,
+               TimeoutException {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            final Generation g = generation;
+
+            if (g.broken)
+                throw new BrokenBarrierException();
+
+            if (Thread.interrupted()) {
+                breakBarrier();
+                throw new InterruptedException();
+            }
+
+            int index = --count;
+            if (index == 0) {  // tripped
+                boolean ranAction = false;
+                try {
+                    final Runnable command = barrierCommand;
+                    if (command != null)
+                        command.run();
+                    ranAction = true;
+                    nextGeneration();
+                    return 0;
+                } finally {
+                    if (!ranAction)
+                        breakBarrier();
+                }
+            }
+
+            // loop until tripped, broken, interrupted, or timed out
+            for (;;) {
+                try {
+                    if (!timed)
+                        trip.await();
+                    else if (nanos > 0L)
+                        nanos = trip.awaitNanos(nanos);
+                } catch (InterruptedException ie) {
+                    if (g == generation && ! g.broken) {
+                        breakBarrier();
+                        throw ie;
+                    } else {
+                        // We're about to finish waiting even if we had not
+                        // been interrupted, so this interrupt is deemed to
+                        // "belong" to subsequent execution.
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+                if (g.broken)
+                    throw new BrokenBarrierException();
+
+                if (g != generation)
+                    return index;
+
+                if (timed && nanos <= 0L) {
+                    breakBarrier();
+                    throw new TimeoutException();
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Creates a new {@code CyclicBarrier} that will trip when the
+     * given number of parties (threads) are waiting upon it, and which
+     * will execute the given barrier action when the barrier is tripped,
+     * performed by the last thread entering the barrier.
+     *
+     * @param parties the number of threads that must invoke {@link #await}
+     *        before the barrier is tripped
+     * @param barrierAction the command to execute when the barrier is
+     *        tripped, or {@code null} if there is no action
+     * @throws IllegalArgumentException if {@code parties} is less than 1
+     */
+    public CyclicBarrier(int parties, Runnable barrierAction) {
+        if (parties <= 0) throw new IllegalArgumentException();
+        this.parties = parties;
+        this.count = parties;
+        this.barrierCommand = barrierAction;
+    }
+
+    /**
+     * Creates a new {@code CyclicBarrier} that will trip when the
+     * given number of parties (threads) are waiting upon it, and
+     * does not perform a predefined action when the barrier is tripped.
+     *
+     * @param parties the number of threads that must invoke {@link #await}
+     *        before the barrier is tripped
+     * @throws IllegalArgumentException if {@code parties} is less than 1
+     */
+    public CyclicBarrier(int parties) {
+        this(parties, null);
+    }
+
+    /**
+     * Returns the number of parties required to trip this barrier.
+     *
+     * @return the number of parties required to trip this barrier
+     */
+    public int getParties() {
+        return parties;
+    }
+
+    /**
+     * Waits until all {@linkplain #getParties parties} have invoked
+     * {@code await} on this barrier.
+     *
+     * <p>If the current thread is not the last to arrive then it is
+     * disabled for thread scheduling purposes and lies dormant until
+     * one of the following things happens:
+     * <ul>
+     * <li>The last thread arrives; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * one of the other waiting threads; or
+     * <li>Some other thread times out while waiting for barrier; or
+     * <li>Some other thread invokes {@link #reset} on this barrier.
+     * </ul>
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * <p>If the barrier is {@link #reset} while any thread is waiting,
+     * or if the barrier {@linkplain #isBroken is broken} when
+     * {@code await} is invoked, or while any thread is waiting, then
+     * {@link BrokenBarrierException} is thrown.
+     *
+     * <p>If any thread is {@linkplain Thread#interrupt interrupted} while waiting,
+     * then all other waiting threads will throw
+     * {@link BrokenBarrierException} and the barrier is placed in the broken
+     * state.
+     *
+     * <p>If the current thread is the last thread to arrive, and a
+     * non-null barrier action was supplied in the constructor, then the
+     * current thread runs the action before allowing the other threads to
+     * continue.
+     * If an exception occurs during the barrier action then that exception
+     * will be propagated in the current thread and the barrier is placed in
+     * the broken state.
+     *
+     * @return the arrival index of the current thread, where index
+     *         {@code getParties() - 1} indicates the first
+     *         to arrive and zero indicates the last to arrive
+     * @throws InterruptedException if the current thread was interrupted
+     *         while waiting
+     * @throws BrokenBarrierException if <em>another</em> thread was
+     *         interrupted or timed out while the current thread was
+     *         waiting, or the barrier was reset, or the barrier was
+     *         broken when {@code await} was called, or the barrier
+     *         action (if present) failed due to an exception
+     */
+    public int await() throws InterruptedException, BrokenBarrierException {
+        try {
+            return dowait(false, 0L);
+        } catch (TimeoutException toe) {
+            throw new Error(toe); // cannot happen
+        }
+    }
+
+    /**
+     * Waits until all {@linkplain #getParties parties} have invoked
+     * {@code await} on this barrier, or the specified waiting time elapses.
+     *
+     * <p>If the current thread is not the last to arrive then it is
+     * disabled for thread scheduling purposes and lies dormant until
+     * one of the following things happens:
+     * <ul>
+     * <li>The last thread arrives; or
+     * <li>The specified timeout elapses; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * one of the other waiting threads; or
+     * <li>Some other thread times out while waiting for barrier; or
+     * <li>Some other thread invokes {@link #reset} on this barrier.
+     * </ul>
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * <p>If the specified waiting time elapses then {@link TimeoutException}
+     * is thrown. If the time is less than or equal to zero, the
+     * method will not wait at all.
+     *
+     * <p>If the barrier is {@link #reset} while any thread is waiting,
+     * or if the barrier {@linkplain #isBroken is broken} when
+     * {@code await} is invoked, or while any thread is waiting, then
+     * {@link BrokenBarrierException} is thrown.
+     *
+     * <p>If any thread is {@linkplain Thread#interrupt interrupted} while
+     * waiting, then all other waiting threads will throw {@link
+     * BrokenBarrierException} and the barrier is placed in the broken
+     * state.
+     *
+     * <p>If the current thread is the last thread to arrive, and a
+     * non-null barrier action was supplied in the constructor, then the
+     * current thread runs the action before allowing the other threads to
+     * continue.
+     * If an exception occurs during the barrier action then that exception
+     * will be propagated in the current thread and the barrier is placed in
+     * the broken state.
+     *
+     * @param timeout the time to wait for the barrier
+     * @param unit the time unit of the timeout parameter
+     * @return the arrival index of the current thread, where index
+     *         {@code getParties() - 1} indicates the first
+     *         to arrive and zero indicates the last to arrive
+     * @throws InterruptedException if the current thread was interrupted
+     *         while waiting
+     * @throws TimeoutException if the specified timeout elapses.
+     *         In this case the barrier will be broken.
+     * @throws BrokenBarrierException if <em>another</em> thread was
+     *         interrupted or timed out while the current thread was
+     *         waiting, or the barrier was reset, or the barrier was broken
+     *         when {@code await} was called, or the barrier action (if
+     *         present) failed due to an exception
+     */
+    public int await(long timeout, TimeUnit unit)
+        throws InterruptedException,
+               BrokenBarrierException,
+               TimeoutException {
+        return dowait(true, unit.toNanos(timeout));
+    }
+
+    /**
+     * Queries if this barrier is in a broken state.
+     *
+     * @return {@code true} if one or more parties broke out of this
+     *         barrier due to interruption or timeout since
+     *         construction or the last reset, or a barrier action
+     *         failed due to an exception; {@code false} otherwise.
+     */
+    public boolean isBroken() {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            return generation.broken;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Resets the barrier to its initial state.  If any parties are
+     * currently waiting at the barrier, they will return with a
+     * {@link BrokenBarrierException}. Note that resets <em>after</em>
+     * a breakage has occurred for other reasons can be complicated to
+     * carry out; threads need to re-synchronize in some other way,
+     * and choose one to perform the reset.  It may be preferable to
+     * instead create a new barrier for subsequent use.
+     */
+    public void reset() {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            breakBarrier();   // break the current generation
+            nextGeneration(); // start a new generation
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Returns the number of parties currently waiting at the barrier.
+     * This method is primarily useful for debugging and assertions.
+     *
+     * @return the number of parties currently blocked in {@link #await}
+     */
+    public int getNumberWaiting() {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            return parties - count;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+##### Semaphore：信号量，直接基于AQS实现
+- 概念：用于控制可同时访问的线程个数
+- 原理：创建信号量时，会指定一个量值permits（许可），表示同时只能有permits个线程访问目标（当permits为1时，效果和锁一致），当一个线程要访问目标资源时，需要通过acquire方法来获取一个许可，如果获取不到则阻塞线程，直到获取到为止，而在任务执行完成后要通过release方法来释放这个许可，如此来看的话，其实它就是一种另类的锁，锁只允许同一时刻有一个线程可以访问目标资源，而信号量允许同一时刻有指定数量个线程可以访问目标资源。相同的是它同样支持公平锁和非公平锁两种模式，默认采用非公平锁模式。
+- 场景
+- 源码
+```java
+public class Semaphore implements java.io.Serializable {
+    private static final long serialVersionUID = -3222578661600680210L;
+    /** All mechanics via AbstractQueuedSynchronizer subclass */
+    private final Sync sync;
+
+    /**
+     * Synchronization implementation for semaphore.  Uses AQS state
+     * to represent permits. Subclassed into fair and nonfair
+     * versions.
+     */
+    abstract static class Sync extends AbstractQueuedSynchronizer {
+        private static final long serialVersionUID = 1192457210091910933L;
+
+        Sync(int permits) {
+            setState(permits);
+        }
+
+        final int getPermits() {
+            return getState();
+        }
+
+        final int nonfairTryAcquireShared(int acquires) {
+            for (;;) {
+                int available = getState();
+                int remaining = available - acquires;
+                if (remaining < 0 ||
+                    compareAndSetState(available, remaining))
+                    return remaining;
+            }
+        }
+
+        protected final boolean tryReleaseShared(int releases) {
+            for (;;) {
+                int current = getState();
+                int next = current + releases;
+                if (next < current) // overflow
+                    throw new Error("Maximum permit count exceeded");
+                if (compareAndSetState(current, next))
+                    return true;
+            }
+        }
+
+        final void reducePermits(int reductions) {
+            for (;;) {
+                int current = getState();
+                int next = current - reductions;
+                if (next > current) // underflow
+                    throw new Error("Permit count underflow");
+                if (compareAndSetState(current, next))
+                    return;
+            }
+        }
+
+        final int drainPermits() {
+            for (;;) {
+                int current = getState();
+                if (current == 0 || compareAndSetState(current, 0))
+                    return current;
+            }
+        }
+    }
+
+    /**
+     * NonFair version
+     */
+    static final class NonfairSync extends Sync {
+        private static final long serialVersionUID = -2694183684443567898L;
+
+        NonfairSync(int permits) {
+            super(permits);
+        }
+
+        protected int tryAcquireShared(int acquires) {
+            return nonfairTryAcquireShared(acquires);
+        }
+    }
+
+    /**
+     * Fair version
+     */
+    static final class FairSync extends Sync {
+        private static final long serialVersionUID = 2014338818796000944L;
+
+        FairSync(int permits) {
+            super(permits);
+        }
+
+        protected int tryAcquireShared(int acquires) {
+            for (;;) {
+                if (hasQueuedPredecessors())
+                    return -1;
+                int available = getState();
+                int remaining = available - acquires;
+                if (remaining < 0 ||
+                    compareAndSetState(available, remaining))
+                    return remaining;
+            }
+        }
+    }
+
+    /**
+     * Creates a {@code Semaphore} with the given number of
+     * permits and nonfair fairness setting.
+     *
+     * @param permits the initial number of permits available.
+     *        This value may be negative, in which case releases
+     *        must occur before any acquires will be granted.
+     */
+    public Semaphore(int permits) {
+        sync = new NonfairSync(permits);
+    }
+
+    /**
+     * Creates a {@code Semaphore} with the given number of
+     * permits and the given fairness setting.
+     *
+     * @param permits the initial number of permits available.
+     *        This value may be negative, in which case releases
+     *        must occur before any acquires will be granted.
+     * @param fair {@code true} if this semaphore will guarantee
+     *        first-in first-out granting of permits under contention,
+     *        else {@code false}
+     */
+    public Semaphore(int permits, boolean fair) {
+        sync = fair ? new FairSync(permits) : new NonfairSync(permits);
+    }
+
+    /**
+     * Acquires a permit from this semaphore, blocking until one is
+     * available, or the thread is {@linkplain Thread#interrupt interrupted}.
+     *
+     * <p>Acquires a permit, if one is available and returns immediately,
+     * reducing the number of available permits by one.
+     *
+     * <p>If no permit is available then the current thread becomes
+     * disabled for thread scheduling purposes and lies dormant until
+     * one of two things happens:
+     * <ul>
+     * <li>Some other thread invokes the {@link #release} method for this
+     * semaphore and the current thread is next to be assigned a permit; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread.
+     * </ul>
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * for a permit,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * @throws InterruptedException if the current thread is interrupted
+     */
+    public void acquire() throws InterruptedException {
+        sync.acquireSharedInterruptibly(1);
+    }
+
+    /**
+     * Acquires a permit from this semaphore, blocking until one is
+     * available.
+     *
+     * <p>Acquires a permit, if one is available and returns immediately,
+     * reducing the number of available permits by one.
+     *
+     * <p>If no permit is available then the current thread becomes
+     * disabled for thread scheduling purposes and lies dormant until
+     * some other thread invokes the {@link #release} method for this
+     * semaphore and the current thread is next to be assigned a permit.
+     *
+     * <p>If the current thread is {@linkplain Thread#interrupt interrupted}
+     * while waiting for a permit then it will continue to wait, but the
+     * time at which the thread is assigned a permit may change compared to
+     * the time it would have received the permit had no interruption
+     * occurred.  When the thread does return from this method its interrupt
+     * status will be set.
+     */
+    public void acquireUninterruptibly() {
+        sync.acquireShared(1);
+    }
+
+    /**
+     * Acquires a permit from this semaphore, only if one is available at the
+     * time of invocation.
+     *
+     * <p>Acquires a permit, if one is available and returns immediately,
+     * with the value {@code true},
+     * reducing the number of available permits by one.
+     *
+     * <p>If no permit is available then this method will return
+     * immediately with the value {@code false}.
+     *
+     * <p>Even when this semaphore has been set to use a
+     * fair ordering policy, a call to {@code tryAcquire()} <em>will</em>
+     * immediately acquire a permit if one is available, whether or not
+     * other threads are currently waiting.
+     * This &quot;barging&quot; behavior can be useful in certain
+     * circumstances, even though it breaks fairness. If you want to honor
+     * the fairness setting, then use
+     * {@link #tryAcquire(long, TimeUnit) tryAcquire(0, TimeUnit.SECONDS) }
+     * which is almost equivalent (it also detects interruption).
+     *
+     * @return {@code true} if a permit was acquired and {@code false}
+     *         otherwise
+     */
+    public boolean tryAcquire() {
+        return sync.nonfairTryAcquireShared(1) >= 0;
+    }
+
+    /**
+     * Acquires a permit from this semaphore, if one becomes available
+     * within the given waiting time and the current thread has not
+     * been {@linkplain Thread#interrupt interrupted}.
+     *
+     * <p>Acquires a permit, if one is available and returns immediately,
+     * with the value {@code true},
+     * reducing the number of available permits by one.
+     *
+     * <p>If no permit is available then the current thread becomes
+     * disabled for thread scheduling purposes and lies dormant until
+     * one of three things happens:
+     * <ul>
+     * <li>Some other thread invokes the {@link #release} method for this
+     * semaphore and the current thread is next to be assigned a permit; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread; or
+     * <li>The specified waiting time elapses.
+     * </ul>
+     *
+     * <p>If a permit is acquired then the value {@code true} is returned.
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * to acquire a permit,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * <p>If the specified waiting time elapses then the value {@code false}
+     * is returned.  If the time is less than or equal to zero, the method
+     * will not wait at all.
+     *
+     * @param timeout the maximum time to wait for a permit
+     * @param unit the time unit of the {@code timeout} argument
+     * @return {@code true} if a permit was acquired and {@code false}
+     *         if the waiting time elapsed before a permit was acquired
+     * @throws InterruptedException if the current thread is interrupted
+     */
+    public boolean tryAcquire(long timeout, TimeUnit unit)
+        throws InterruptedException {
+        return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
+    }
+
+    /**
+     * Releases a permit, returning it to the semaphore.
+     *
+     * <p>Releases a permit, increasing the number of available permits by
+     * one.  If any threads are trying to acquire a permit, then one is
+     * selected and given the permit that was just released.  That thread
+     * is (re)enabled for thread scheduling purposes.
+     *
+     * <p>There is no requirement that a thread that releases a permit must
+     * have acquired that permit by calling {@link #acquire}.
+     * Correct usage of a semaphore is established by programming convention
+     * in the application.
+     */
+    public void release() {
+        sync.releaseShared(1);
+    }
+
+    /**
+     * Acquires the given number of permits from this semaphore,
+     * blocking until all are available,
+     * or the thread is {@linkplain Thread#interrupt interrupted}.
+     *
+     * <p>Acquires the given number of permits, if they are available,
+     * and returns immediately, reducing the number of available permits
+     * by the given amount.
+     *
+     * <p>If insufficient permits are available then the current thread becomes
+     * disabled for thread scheduling purposes and lies dormant until
+     * one of two things happens:
+     * <ul>
+     * <li>Some other thread invokes one of the {@link #release() release}
+     * methods for this semaphore, the current thread is next to be assigned
+     * permits and the number of available permits satisfies this request; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread.
+     * </ul>
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * for a permit,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     * Any permits that were to be assigned to this thread are instead
+     * assigned to other threads trying to acquire permits, as if
+     * permits had been made available by a call to {@link #release()}.
+     *
+     * @param permits the number of permits to acquire
+     * @throws InterruptedException if the current thread is interrupted
+     * @throws IllegalArgumentException if {@code permits} is negative
+     */
+    public void acquire(int permits) throws InterruptedException {
+        if (permits < 0) throw new IllegalArgumentException();
+        sync.acquireSharedInterruptibly(permits);
+    }
+
+    /**
+     * Acquires the given number of permits from this semaphore,
+     * blocking until all are available.
+     *
+     * <p>Acquires the given number of permits, if they are available,
+     * and returns immediately, reducing the number of available permits
+     * by the given amount.
+     *
+     * <p>If insufficient permits are available then the current thread becomes
+     * disabled for thread scheduling purposes and lies dormant until
+     * some other thread invokes one of the {@link #release() release}
+     * methods for this semaphore, the current thread is next to be assigned
+     * permits and the number of available permits satisfies this request.
+     *
+     * <p>If the current thread is {@linkplain Thread#interrupt interrupted}
+     * while waiting for permits then it will continue to wait and its
+     * position in the queue is not affected.  When the thread does return
+     * from this method its interrupt status will be set.
+     *
+     * @param permits the number of permits to acquire
+     * @throws IllegalArgumentException if {@code permits} is negative
+     */
+    public void acquireUninterruptibly(int permits) {
+        if (permits < 0) throw new IllegalArgumentException();
+        sync.acquireShared(permits);
+    }
+
+    /**
+     * Acquires the given number of permits from this semaphore, only
+     * if all are available at the time of invocation.
+     *
+     * <p>Acquires the given number of permits, if they are available, and
+     * returns immediately, with the value {@code true},
+     * reducing the number of available permits by the given amount.
+     *
+     * <p>If insufficient permits are available then this method will return
+     * immediately with the value {@code false} and the number of available
+     * permits is unchanged.
+     *
+     * <p>Even when this semaphore has been set to use a fair ordering
+     * policy, a call to {@code tryAcquire} <em>will</em>
+     * immediately acquire a permit if one is available, whether or
+     * not other threads are currently waiting.  This
+     * &quot;barging&quot; behavior can be useful in certain
+     * circumstances, even though it breaks fairness. If you want to
+     * honor the fairness setting, then use {@link #tryAcquire(int,
+     * long, TimeUnit) tryAcquire(permits, 0, TimeUnit.SECONDS) }
+     * which is almost equivalent (it also detects interruption).
+     *
+     * @param permits the number of permits to acquire
+     * @return {@code true} if the permits were acquired and
+     *         {@code false} otherwise
+     * @throws IllegalArgumentException if {@code permits} is negative
+     */
+    public boolean tryAcquire(int permits) {
+        if (permits < 0) throw new IllegalArgumentException();
+        return sync.nonfairTryAcquireShared(permits) >= 0;
+    }
+
+    /**
+     * Acquires the given number of permits from this semaphore, if all
+     * become available within the given waiting time and the current
+     * thread has not been {@linkplain Thread#interrupt interrupted}.
+     *
+     * <p>Acquires the given number of permits, if they are available and
+     * returns immediately, with the value {@code true},
+     * reducing the number of available permits by the given amount.
+     *
+     * <p>If insufficient permits are available then
+     * the current thread becomes disabled for thread scheduling
+     * purposes and lies dormant until one of three things happens:
+     * <ul>
+     * <li>Some other thread invokes one of the {@link #release() release}
+     * methods for this semaphore, the current thread is next to be assigned
+     * permits and the number of available permits satisfies this request; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread; or
+     * <li>The specified waiting time elapses.
+     * </ul>
+     *
+     * <p>If the permits are acquired then the value {@code true} is returned.
+     *
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * to acquire the permits,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     * Any permits that were to be assigned to this thread, are instead
+     * assigned to other threads trying to acquire permits, as if
+     * the permits had been made available by a call to {@link #release()}.
+     *
+     * <p>If the specified waiting time elapses then the value {@code false}
+     * is returned.  If the time is less than or equal to zero, the method
+     * will not wait at all.  Any permits that were to be assigned to this
+     * thread, are instead assigned to other threads trying to acquire
+     * permits, as if the permits had been made available by a call to
+     * {@link #release()}.
+     *
+     * @param permits the number of permits to acquire
+     * @param timeout the maximum time to wait for the permits
+     * @param unit the time unit of the {@code timeout} argument
+     * @return {@code true} if all permits were acquired and {@code false}
+     *         if the waiting time elapsed before all permits were acquired
+     * @throws InterruptedException if the current thread is interrupted
+     * @throws IllegalArgumentException if {@code permits} is negative
+     */
+    public boolean tryAcquire(int permits, long timeout, TimeUnit unit)
+        throws InterruptedException {
+        if (permits < 0) throw new IllegalArgumentException();
+        return sync.tryAcquireSharedNanos(permits, unit.toNanos(timeout));
+    }
+
+    /**
+     * Releases the given number of permits, returning them to the semaphore.
+     *
+     * <p>Releases the given number of permits, increasing the number of
+     * available permits by that amount.
+     * If any threads are trying to acquire permits, then one
+     * is selected and given the permits that were just released.
+     * If the number of available permits satisfies that thread's request
+     * then that thread is (re)enabled for thread scheduling purposes;
+     * otherwise the thread will wait until sufficient permits are available.
+     * If there are still permits available
+     * after this thread's request has been satisfied, then those permits
+     * are assigned in turn to other threads trying to acquire permits.
+     *
+     * <p>There is no requirement that a thread that releases a permit must
+     * have acquired that permit by calling {@link Semaphore#acquire acquire}.
+     * Correct usage of a semaphore is established by programming convention
+     * in the application.
+     *
+     * @param permits the number of permits to release
+     * @throws IllegalArgumentException if {@code permits} is negative
+     */
+    public void release(int permits) {
+        if (permits < 0) throw new IllegalArgumentException();
+        sync.releaseShared(permits);
+    }
+
+    /**
+     * Returns the current number of permits available in this semaphore.
+     *
+     * <p>This method is typically used for debugging and testing purposes.
+     *
+     * @return the number of permits available in this semaphore
+     */
+    public int availablePermits() {
+        return sync.getPermits();
+    }
+
+    /**
+     * Acquires and returns all permits that are immediately available.
+     *
+     * @return the number of permits acquired
+     */
+    public int drainPermits() {
+        return sync.drainPermits();
+    }
+
+    /**
+     * Shrinks the number of available permits by the indicated
+     * reduction. This method can be useful in subclasses that use
+     * semaphores to track resources that become unavailable. This
+     * method differs from {@code acquire} in that it does not block
+     * waiting for permits to become available.
+     *
+     * @param reduction the number of permits to remove
+     * @throws IllegalArgumentException if {@code reduction} is negative
+     */
+    protected void reducePermits(int reduction) {
+        if (reduction < 0) throw new IllegalArgumentException();
+        sync.reducePermits(reduction);
+    }
+
+    /**
+     * Returns {@code true} if this semaphore has fairness set true.
+     *
+     * @return {@code true} if this semaphore has fairness set true
+     */
+    public boolean isFair() {
+        return sync instanceof FairSync;
+    }
+
+    /**
+     * Queries whether any threads are waiting to acquire. Note that
+     * because cancellations may occur at any time, a {@code true}
+     * return does not guarantee that any other thread will ever
+     * acquire.  This method is designed primarily for use in
+     * monitoring of the system state.
+     *
+     * @return {@code true} if there may be other threads waiting to
+     *         acquire the lock
+     */
+    public final boolean hasQueuedThreads() {
+        return sync.hasQueuedThreads();
+    }
+
+    /**
+     * Returns an estimate of the number of threads waiting to acquire.
+     * The value is only an estimate because the number of threads may
+     * change dynamically while this method traverses internal data
+     * structures.  This method is designed for use in monitoring of the
+     * system state, not for synchronization control.
+     *
+     * @return the estimated number of threads waiting for this lock
+     */
+    public final int getQueueLength() {
+        return sync.getQueueLength();
+    }
+
+    /**
+     * Returns a collection containing threads that may be waiting to acquire.
+     * Because the actual set of threads may change dynamically while
+     * constructing this result, the returned collection is only a best-effort
+     * estimate.  The elements of the returned collection are in no particular
+     * order.  This method is designed to facilitate construction of
+     * subclasses that provide more extensive monitoring facilities.
+     *
+     * @return the collection of threads
+     */
+    protected Collection<Thread> getQueuedThreads() {
+        return sync.getQueuedThreads();
+    }
+
+    /**
+     * Returns a string identifying this semaphore, as well as its state.
+     * The state, in brackets, includes the String {@code "Permits ="}
+     * followed by the number of permits.
+     *
+     * @return a string identifying this semaphore, as well as its state
+     */
+    public String toString() {
+        return super.toString() + "[Permits = " + sync.getPermits() + "]";
+    }
+}
+```
+##### Exchanger：交换器，直接基于CAS实现
+- 概念：主要用于线程之间进行数据交换
+- 原理：作用于两个线程之间，在两个线程中都存在同一个Exchanger实例的exchange方法调用，当一个线程调用exchange方法的时候（到达同步点），如果另一线程还没调用该方法，则阻塞等待，当另一个线程也调用了exchange方法（同步点），这时两个线程同处于同步点，既可以彼此交换数据。
+- 场景
+- 源码
+ ```java
+public class Exchanger<V> {
+
+    /*
+     * Overview: The core algorithm is, for an exchange "slot",
+     * and a participant (caller) with an item:
+     *
+     * for (;;) {
+     *   if (slot is empty) {                       // offer
+     *     place item in a Node;
+     *     if (can CAS slot from empty to node) {
+     *       wait for release;
+     *       return matching item in node;
+     *     }
+     *   }
+     *   else if (can CAS slot from node to empty) { // release
+     *     get the item in node;
+     *     set matching item in node;
+     *     release waiting thread;
+     *   }
+     *   // else retry on CAS failure
+     * }
+     *
+     * This is among the simplest forms of a "dual data structure" --
+     * see Scott and Scherer's DISC 04 paper and
+     * http://www.cs.rochester.edu/research/synchronization/pseudocode/duals.html
+     *
+     * This works great in principle. But in practice, like many
+     * algorithms centered on atomic updates to a single location, it
+     * scales horribly when there are more than a few participants
+     * using the same Exchanger. So the implementation instead uses a
+     * form of elimination arena, that spreads out this contention by
+     * arranging that some threads typically use different slots,
+     * while still ensuring that eventually, any two parties will be
+     * able to exchange items. That is, we cannot completely partition
+     * across threads, but instead give threads arena indices that
+     * will on average grow under contention and shrink under lack of
+     * contention. We approach this by defining the Nodes that we need
+     * anyway as ThreadLocals, and include in them per-thread index
+     * and related bookkeeping state. (We can safely reuse per-thread
+     * nodes rather than creating them fresh each time because slots
+     * alternate between pointing to a node vs null, so cannot
+     * encounter ABA problems. However, we do need some care in
+     * resetting them between uses.)
+     *
+     * Implementing an effective arena requires allocating a bunch of
+     * space, so we only do so upon detecting contention (except on
+     * uniprocessors, where they wouldn't help, so aren't used).
+     * Otherwise, exchanges use the single-slot slotExchange method.
+     * On contention, not only must the slots be in different
+     * locations, but the locations must not encounter memory
+     * contention due to being on the same cache line (or more
+     * generally, the same coherence unit).  Because, as of this
+     * writing, there is no way to determine cacheline size, we define
+     * a value that is enough for common platforms.  Additionally,
+     * extra care elsewhere is taken to avoid other false/unintended
+     * sharing and to enhance locality, including adding padding (via
+     * sun.misc.Contended) to Nodes, embedding "bound" as an Exchanger
+     * field, and reworking some park/unpark mechanics compared to
+     * LockSupport versions.
+     *
+     * The arena starts out with only one used slot. We expand the
+     * effective arena size by tracking collisions; i.e., failed CASes
+     * while trying to exchange. By nature of the above algorithm, the
+     * only kinds of collision that reliably indicate contention are
+     * when two attempted releases collide -- one of two attempted
+     * offers can legitimately fail to CAS without indicating
+     * contention by more than one other thread. (Note: it is possible
+     * but not worthwhile to more precisely detect contention by
+     * reading slot values after CAS failures.)  When a thread has
+     * collided at each slot within the current arena bound, it tries
+     * to expand the arena size by one. We track collisions within
+     * bounds by using a version (sequence) number on the "bound"
+     * field, and conservatively reset collision counts when a
+     * participant notices that bound has been updated (in either
+     * direction).
+     *
+     * The effective arena size is reduced (when there is more than
+     * one slot) by giving up on waiting after a while and trying to
+     * decrement the arena size on expiration. The value of "a while"
+     * is an empirical matter.  We implement by piggybacking on the
+     * use of spin->yield->block that is essential for reasonable
+     * waiting performance anyway -- in a busy exchanger, offers are
+     * usually almost immediately released, in which case context
+     * switching on multiprocessors is extremely slow/wasteful.  Arena
+     * waits just omit the blocking part, and instead cancel. The spin
+     * count is empirically chosen to be a value that avoids blocking
+     * 99% of the time under maximum sustained exchange rates on a
+     * range of test machines. Spins and yields entail some limited
+     * randomness (using a cheap xorshift) to avoid regular patterns
+     * that can induce unproductive grow/shrink cycles. (Using a
+     * pseudorandom also helps regularize spin cycle duration by
+     * making branches unpredictable.)  Also, during an offer, a
+     * waiter can "know" that it will be released when its slot has
+     * changed, but cannot yet proceed until match is set.  In the
+     * mean time it cannot cancel the offer, so instead spins/yields.
+     * Note: It is possible to avoid this secondary check by changing
+     * the linearization point to be a CAS of the match field (as done
+     * in one case in the Scott & Scherer DISC paper), which also
+     * increases asynchrony a bit, at the expense of poorer collision
+     * detection and inability to always reuse per-thread nodes. So
+     * the current scheme is typically a better tradeoff.
+     *
+     * On collisions, indices traverse the arena cyclically in reverse
+     * order, restarting at the maximum index (which will tend to be
+     * sparsest) when bounds change. (On expirations, indices instead
+     * are halved until reaching 0.) It is possible (and has been
+     * tried) to use randomized, prime-value-stepped, or double-hash
+     * style traversal instead of simple cyclic traversal to reduce
+     * bunching.  But empirically, whatever benefits these may have
+     * don't overcome their added overhead: We are managing operations
+     * that occur very quickly unless there is sustained contention,
+     * so simpler/faster control policies work better than more
+     * accurate but slower ones.
+     *
+     * Because we use expiration for arena size control, we cannot
+     * throw TimeoutExceptions in the timed version of the public
+     * exchange method until the arena size has shrunken to zero (or
+     * the arena isn't enabled). This may delay response to timeout
+     * but is still within spec.
+     *
+     * Essentially all of the implementation is in methods
+     * slotExchange and arenaExchange. These have similar overall
+     * structure, but differ in too many details to combine. The
+     * slotExchange method uses the single Exchanger field "slot"
+     * rather than arena array elements. However, it still needs
+     * minimal collision detection to trigger arena construction.
+     * (The messiest part is making sure interrupt status and
+     * InterruptedExceptions come out right during transitions when
+     * both methods may be called. This is done by using null return
+     * as a sentinel to recheck interrupt status.)
+     *
+     * As is too common in this sort of code, methods are monolithic
+     * because most of the logic relies on reads of fields that are
+     * maintained as local variables so can't be nicely factored --
+     * mainly, here, bulky spin->yield->block/cancel code), and
+     * heavily dependent on intrinsics (Unsafe) to use inlined
+     * embedded CAS and related memory access operations (that tend
+     * not to be as readily inlined by dynamic compilers when they are
+     * hidden behind other methods that would more nicely name and
+     * encapsulate the intended effects). This includes the use of
+     * putOrderedX to clear fields of the per-thread Nodes between
+     * uses. Note that field Node.item is not declared as volatile
+     * even though it is read by releasing threads, because they only
+     * do so after CAS operations that must precede access, and all
+     * uses by the owning thread are otherwise acceptably ordered by
+     * other operations. (Because the actual points of atomicity are
+     * slot CASes, it would also be legal for the write to Node.match
+     * in a release to be weaker than a full volatile write. However,
+     * this is not done because it could allow further postponement of
+     * the write, delaying progress.)
+     */
+
+    /**
+     * The byte distance (as a shift value) between any two used slots
+     * in the arena.  1 << ASHIFT should be at least cacheline size.
+     */
+    private static final int ASHIFT = 7;
+
+    /**
+     * The maximum supported arena index. The maximum allocatable
+     * arena size is MMASK + 1. Must be a power of two minus one, less
+     * than (1<<(31-ASHIFT)). The cap of 255 (0xff) more than suffices
+     * for the expected scaling limits of the main algorithms.
+     */
+    private static final int MMASK = 0xff;
+
+    /**
+     * Unit for sequence/version bits of bound field. Each successful
+     * change to the bound also adds SEQ.
+     */
+    private static final int SEQ = MMASK + 1;
+
+    /** The number of CPUs, for sizing and spin control */
+    private static final int NCPU = Runtime.getRuntime().availableProcessors();
+
+    /**
+     * The maximum slot index of the arena: The number of slots that
+     * can in principle hold all threads without contention, or at
+     * most the maximum indexable value.
+     */
+    static final int FULL = (NCPU >= (MMASK << 1)) ? MMASK : NCPU >>> 1;
+
+    /**
+     * The bound for spins while waiting for a match. The actual
+     * number of iterations will on average be about twice this value
+     * due to randomization. Note: Spinning is disabled when NCPU==1.
+     */
+    private static final int SPINS = 1 << 10;
+
+    /**
+     * Value representing null arguments/returns from public
+     * methods. Needed because the API originally didn't disallow null
+     * arguments, which it should have.
+     */
+    private static final Object NULL_ITEM = new Object();
+
+    /**
+     * Sentinel value returned by internal exchange methods upon
+     * timeout, to avoid need for separate timed versions of these
+     * methods.
+     */
+    private static final Object TIMED_OUT = new Object();
+
+    /**
+     * Nodes hold partially exchanged data, plus other per-thread
+     * bookkeeping. Padded via @sun.misc.Contended to reduce memory
+     * contention.
+     */
+    @sun.misc.Contended static final class Node {
+        int index;              // Arena index
+        int bound;              // Last recorded value of Exchanger.bound
+        int collides;           // Number of CAS failures at current bound
+        int hash;               // Pseudo-random for spins
+        Object item;            // This thread's current item
+        volatile Object match;  // Item provided by releasing thread
+        volatile Thread parked; // Set to this thread when parked, else null
+    }
+
+    /** The corresponding thread local class */
+    static final class Participant extends ThreadLocal<Node> {
+        public Node initialValue() { return new Node(); }
+    }
+
+    /**
+     * Per-thread state
+     */
+    private final Participant participant;
+
+    /**
+     * Elimination array; null until enabled (within slotExchange).
+     * Element accesses use emulation of volatile gets and CAS.
+     */
+    private volatile Node[] arena;
+
+    /**
+     * Slot used until contention detected.
+     */
+    private volatile Node slot;
+
+    /**
+     * The index of the largest valid arena position, OR'ed with SEQ
+     * number in high bits, incremented on each update.  The initial
+     * update from 0 to SEQ is used to ensure that the arena array is
+     * constructed only once.
+     */
+    private volatile int bound;
+
+    /**
+     * Exchange function when arenas enabled. See above for explanation.
+     *
+     * @param item the (non-null) item to exchange
+     * @param timed true if the wait is timed
+     * @param ns if timed, the maximum wait time, else 0L
+     * @return the other thread's item; or null if interrupted; or
+     * TIMED_OUT if timed and timed out
+     */
+    private final Object arenaExchange(Object item, boolean timed, long ns) {
+        Node[] a = arena;
+        Node p = participant.get();
+        for (int i = p.index;;) {                      // access slot at i
+            int b, m, c; long j;                       // j is raw array offset
+            Node q = (Node)U.getObjectVolatile(a, j = (i << ASHIFT) + ABASE);
+            if (q != null && U.compareAndSwapObject(a, j, q, null)) {
+                Object v = q.item;                     // release
+                q.match = item;
+                Thread w = q.parked;
+                if (w != null)
+                    U.unpark(w);
+                return v;
+            }
+            else if (i <= (m = (b = bound) & MMASK) && q == null) {
+                p.item = item;                         // offer
+                if (U.compareAndSwapObject(a, j, null, p)) {
+                    long end = (timed && m == 0) ? System.nanoTime() + ns : 0L;
+                    Thread t = Thread.currentThread(); // wait
+                    for (int h = p.hash, spins = SPINS;;) {
+                        Object v = p.match;
+                        if (v != null) {
+                            U.putOrderedObject(p, MATCH, null);
+                            p.item = null;             // clear for next use
+                            p.hash = h;
+                            return v;
+                        }
+                        else if (spins > 0) {
+                            h ^= h << 1; h ^= h >>> 3; h ^= h << 10; // xorshift
+                            if (h == 0)                // initialize hash
+                                h = SPINS | (int)t.getId();
+                            else if (h < 0 &&          // approx 50% true
+                                     (--spins & ((SPINS >>> 1) - 1)) == 0)
+                                Thread.yield();        // two yields per wait
+                        }
+                        else if (U.getObjectVolatile(a, j) != p)
+                            spins = SPINS;       // releaser hasn't set match yet
+                        else if (!t.isInterrupted() && m == 0 &&
+                                 (!timed ||
+                                  (ns = end - System.nanoTime()) > 0L)) {
+                            U.putObject(t, BLOCKER, this); // emulate LockSupport
+                            p.parked = t;              // minimize window
+                            if (U.getObjectVolatile(a, j) == p)
+                                U.park(false, ns);
+                            p.parked = null;
+                            U.putObject(t, BLOCKER, null);
+                        }
+                        else if (U.getObjectVolatile(a, j) == p &&
+                                 U.compareAndSwapObject(a, j, p, null)) {
+                            if (m != 0)                // try to shrink
+                                U.compareAndSwapInt(this, BOUND, b, b + SEQ - 1);
+                            p.item = null;
+                            p.hash = h;
+                            i = p.index >>>= 1;        // descend
+                            if (Thread.interrupted())
+                                return null;
+                            if (timed && m == 0 && ns <= 0L)
+                                return TIMED_OUT;
+                            break;                     // expired; restart
+                        }
+                    }
+                }
+                else
+                    p.item = null;                     // clear offer
+            }
+            else {
+                if (p.bound != b) {                    // stale; reset
+                    p.bound = b;
+                    p.collides = 0;
+                    i = (i != m || m == 0) ? m : m - 1;
+                }
+                else if ((c = p.collides) < m || m == FULL ||
+                         !U.compareAndSwapInt(this, BOUND, b, b + SEQ + 1)) {
+                    p.collides = c + 1;
+                    i = (i == 0) ? m : i - 1;          // cyclically traverse
+                }
+                else
+                    i = m + 1;                         // grow
+                p.index = i;
+            }
+        }
+    }
+
+    /**
+     * Exchange function used until arenas enabled. See above for explanation.
+     *
+     * @param item the item to exchange
+     * @param timed true if the wait is timed
+     * @param ns if timed, the maximum wait time, else 0L
+     * @return the other thread's item; or null if either the arena
+     * was enabled or the thread was interrupted before completion; or
+     * TIMED_OUT if timed and timed out
+     */
+    private final Object slotExchange(Object item, boolean timed, long ns) {
+        Node p = participant.get();
+        Thread t = Thread.currentThread();
+        if (t.isInterrupted()) // preserve interrupt status so caller can recheck
+            return null;
+
+        for (Node q;;) {
+            if ((q = slot) != null) {
+                if (U.compareAndSwapObject(this, SLOT, q, null)) {
+                    Object v = q.item;
+                    q.match = item;
+                    Thread w = q.parked;
+                    if (w != null)
+                        U.unpark(w);
+                    return v;
+                }
+                // create arena on contention, but continue until slot null
+                if (NCPU > 1 && bound == 0 &&
+                    U.compareAndSwapInt(this, BOUND, 0, SEQ))
+                    arena = new Node[(FULL + 2) << ASHIFT];
+            }
+            else if (arena != null)
+                return null; // caller must reroute to arenaExchange
+            else {
+                p.item = item;
+                if (U.compareAndSwapObject(this, SLOT, null, p))
+                    break;
+                p.item = null;
+            }
+        }
+
+        // await release
+        int h = p.hash;
+        long end = timed ? System.nanoTime() + ns : 0L;
+        int spins = (NCPU > 1) ? SPINS : 1;
+        Object v;
+        while ((v = p.match) == null) {
+            if (spins > 0) {
+                h ^= h << 1; h ^= h >>> 3; h ^= h << 10;
+                if (h == 0)
+                    h = SPINS | (int)t.getId();
+                else if (h < 0 && (--spins & ((SPINS >>> 1) - 1)) == 0)
+                    Thread.yield();
+            }
+            else if (slot != p)
+                spins = SPINS;
+            else if (!t.isInterrupted() && arena == null &&
+                     (!timed || (ns = end - System.nanoTime()) > 0L)) {
+                U.putObject(t, BLOCKER, this);
+                p.parked = t;
+                if (slot == p)
+                    U.park(false, ns);
+                p.parked = null;
+                U.putObject(t, BLOCKER, null);
+            }
+            else if (U.compareAndSwapObject(this, SLOT, p, null)) {
+                v = timed && ns <= 0L && !t.isInterrupted() ? TIMED_OUT : null;
+                break;
+            }
+        }
+        U.putOrderedObject(p, MATCH, null);
+        p.item = null;
+        p.hash = h;
+        return v;
+    }
+
+    /**
+     * Creates a new Exchanger.
+     */
+    public Exchanger() {
+        participant = new Participant();
+    }
+
+    /**
+     * Waits for another thread to arrive at this exchange point (unless
+     * the current thread is {@linkplain Thread#interrupt interrupted}),
+     * and then transfers the given object to it, receiving its object
+     * in return.
+     *
+     * <p>If another thread is already waiting at the exchange point then
+     * it is resumed for thread scheduling purposes and receives the object
+     * passed in by the current thread.  The current thread returns immediately,
+     * receiving the object passed to the exchange by that other thread.
+     *
+     * <p>If no other thread is already waiting at the exchange then the
+     * current thread is disabled for thread scheduling purposes and lies
+     * dormant until one of two things happens:
+     * <ul>
+     * <li>Some other thread enters the exchange; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread.
+     * </ul>
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * for the exchange,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * @param x the object to exchange
+     * @return the object provided by the other thread
+     * @throws InterruptedException if the current thread was
+     *         interrupted while waiting
+     */
+    @SuppressWarnings("unchecked")
+    public V exchange(V x) throws InterruptedException {
+        Object v;
+        Object item = (x == null) ? NULL_ITEM : x; // translate null args
+        if ((arena != null ||
+             (v = slotExchange(item, false, 0L)) == null) &&
+            ((Thread.interrupted() || // disambiguates null return
+              (v = arenaExchange(item, false, 0L)) == null)))
+            throw new InterruptedException();
+        return (v == NULL_ITEM) ? null : (V)v;
+    }
+
+    /**
+     * Waits for another thread to arrive at this exchange point (unless
+     * the current thread is {@linkplain Thread#interrupt interrupted} or
+     * the specified waiting time elapses), and then transfers the given
+     * object to it, receiving its object in return.
+     *
+     * <p>If another thread is already waiting at the exchange point then
+     * it is resumed for thread scheduling purposes and receives the object
+     * passed in by the current thread.  The current thread returns immediately,
+     * receiving the object passed to the exchange by that other thread.
+     *
+     * <p>If no other thread is already waiting at the exchange then the
+     * current thread is disabled for thread scheduling purposes and lies
+     * dormant until one of three things happens:
+     * <ul>
+     * <li>Some other thread enters the exchange; or
+     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
+     * the current thread; or
+     * <li>The specified waiting time elapses.
+     * </ul>
+     * <p>If the current thread:
+     * <ul>
+     * <li>has its interrupted status set on entry to this method; or
+     * <li>is {@linkplain Thread#interrupt interrupted} while waiting
+     * for the exchange,
+     * </ul>
+     * then {@link InterruptedException} is thrown and the current thread's
+     * interrupted status is cleared.
+     *
+     * <p>If the specified waiting time elapses then {@link
+     * TimeoutException} is thrown.  If the time is less than or equal
+     * to zero, the method will not wait at all.
+     *
+     * @param x the object to exchange
+     * @param timeout the maximum time to wait
+     * @param unit the time unit of the {@code timeout} argument
+     * @return the object provided by the other thread
+     * @throws InterruptedException if the current thread was
+     *         interrupted while waiting
+     * @throws TimeoutException if the specified waiting time elapses
+     *         before another thread enters the exchange
+     */
+    @SuppressWarnings("unchecked")
+    public V exchange(V x, long timeout, TimeUnit unit)
+        throws InterruptedException, TimeoutException {
+        Object v;
+        Object item = (x == null) ? NULL_ITEM : x;
+        long ns = unit.toNanos(timeout);
+        if ((arena != null ||
+             (v = slotExchange(item, true, ns)) == null) &&
+            ((Thread.interrupted() ||
+              (v = arenaExchange(item, true, ns)) == null)))
+            throw new InterruptedException();
+        if (v == TIMED_OUT)
+            throw new TimeoutException();
+        return (v == NULL_ITEM) ? null : (V)v;
+    }
+
+    // Unsafe mechanics
+    private static final sun.misc.Unsafe U;
+    private static final long BOUND;
+    private static final long SLOT;
+    private static final long MATCH;
+    private static final long BLOCKER;
+    private static final int ABASE;
+    static {
+        int s;
+        try {
+            U = sun.misc.Unsafe.getUnsafe();
+            Class<?> ek = Exchanger.class;
+            Class<?> nk = Node.class;
+            Class<?> ak = Node[].class;
+            Class<?> tk = Thread.class;
+            BOUND = U.objectFieldOffset
+                (ek.getDeclaredField("bound"));
+            SLOT = U.objectFieldOffset
+                (ek.getDeclaredField("slot"));
+            MATCH = U.objectFieldOffset
+                (nk.getDeclaredField("match"));
+            BLOCKER = U.objectFieldOffset
+                (tk.getDeclaredField("parkBlocker"));
+            s = U.arrayIndexScale(ak);
+            // ABASE absorbs padding in front of element 0
+            ABASE = U.arrayBaseOffset(ak) + (1 << ASHIFT);
+
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+        if ((s & (s-1)) != 0 || s > (1 << ASHIFT))
+            throw new Error("Unsupported array scale");
+    }
+
+}
+ ```
 #### 4.10-Fork/Join框架，分而治之
-
+- 概念：主要用于将一个大任务分割成若干小任务，最后将小任务的执行结果汇总得到大任务的执行结果。
+- 原理：[工作窃取算法](https://www.cnblogs.com/senlinyang/p/7885964.html)
+    - 总体原理描述：
+    - Fork原理
+    - Join原理
+    - 工作窃取算法
+- 场景：
+- 源码：
 #### 4.11-ThreadLocal
 - ThreadLocal作用：用于实现线程私有变量，该变量将一直存在与线程中，与方法调用无关，直到线程销毁，如此一来，我们可以在线程的所有方法中通过ThreadLocal来使用这个变量，这个变量的生命周期将会是整个线程周期，除非手动调用remove操作清除变量。
-- ThreadLocal结构：ThreadLocal有一个静态内部类ThreadLocalMap，这个Map被Thread所持有，即每个线程天然持有一个ThreadLocal.ThreadLocalMap对象；ThreadLocalMap内部使用一个Entry来存储线程变量，其中以一个弱引用ThreadLocal对象作为键，以线程变量作为值。每个线程可以设置多个线程变量，只是需要为每个线程变量创建一个ThreadLocal对象。这些线程变量将全部存储在线程的私有属性ThreadLocalMap中。
+- ThreadLocal结构：**ThreadLocal有一个静态内部类ThreadLocalMap，这个Map被Thread所持有，即每个线程天然持有一个ThreadLocal.ThreadLocalMap对象；ThreadLocalMap内部使用一个Entry来存储线程变量，其中以一个弱引用ThreadLocal对象作为键，以线程变量作为值。每个线程可以设置多个线程变量，只是需要为每个线程变量创建一个ThreadLocal对象。这些线程变量将全部存储在线程的私有属性ThreadLocalMap中**。
 - ThreadLocal用法：一般将ThreadLocal作为共享变量，或单独成类，或作为成员属性，主要目的就是为了实现多线程共用，虽然ThreadLocal实例被多线程共用，但是针对每个线程而言，其设置的线程变量都保存在自身内部的ThreadLcoalMap中，它是线程私有的，每个线程都有，那么也就实现了线程安全性，此时在多个线程中作为键的ThreadLocal会是同一个。那么是什么样的变量需要使用ThreadLocal来进行存储呢？当遇到需要在整个线程中多处使用的变量时，可以将其保存到ThreadLcoal，更重要的是针对那些不便于传递的变量，可以保存到ThreadLcoal中。
-- ThreadLocal问题：存在可能内存泄漏的问题，主要是忘记remove操作就会导致设置的变量值被持有引用，生存到线程销毁。ThreadLocalMap的键是弱引用的，会在下一次GC时被清理，但是值并不会被自动清理，由其在现场池的情况下，后续不再执行set操作，那么这个值将会一直与线程共存亡，造成内存泄漏。
+- ThreadLocal问题：存在可能内存泄漏的问题，主要是忘记remove操作就会导致设置的变量值被持有引用，生存到线程销毁。ThreadLocalMap的键是弱引用的，会在下一次GC时被清理，但是值并不会被自动清理，由其在使用线程池的情况下，后续不再执行set操作，那么这个值将会一直与线程共存亡，造成内存泄漏。
 - ThreadLocal常用方法：
     - void set(T value)：将指定的值value以当前ThreadLocal实例为键保存到当前线程的threadlocals中。
     - T get()：获取当前线程threadlocals中以当前ThreadLocal实例为键的Entry键值对中的值。
@@ -1697,9 +3188,9 @@ public class DeadLock{
 - TCP协议：可靠的传输控制协议
 - UDP协议：不可靠的数据报传输协议
 - HTTP协议：超文本传输协议
-- HTTPS协议：
+- HTTPS协议：安全的超文本传输协议
 - [三次握手与四次挥手](https://cloud.tencent.com/developer/news/257281)：
-    - 三次握手：
+  - 三次握手：
         - 第一次：源端发起连接SYN请求报文：`SYN=1,seq=x`,源端进入SYN_SENT状态，等待目的端响应（源端确认自己的发送能力）
         - 第二次：目的端收到请求进行响应，发送SYN+ACK报文：`SYN=1,ACK=1,seq=y,ack=x+1`,目的端进入SYN_RECV状态，等待源端的响应（目的端确认对方的发送能力，自己的接收能力）
         - 第三次：源端收到请求进行响应，发送ACK报文：`ACK=1,seq=x+1,ack=y+1`,然后源端进入ESTABLISHED状态，目的端收到响应收也进入ESTABLISHED状态（源端确认自己的接受能力、对方的接收能力和发送能力；目的端确认对方的接收能力，三次之后，双方均知道自己和对方具有发送和接收的能力，那么连接就建立起来了）
@@ -1707,7 +3198,7 @@ public class DeadLock{
         - 第一次：源端发起FIN报文：`FIN=1,seq=u`,源端进入FIN_WAIT_1状态，停止向目的端发送数据
         - 第二次：目的端收到断开请求进行响应，发送ACK报文：`ACK=1,seq=v,ack=u+1`,目的端进入CLOSE_WAIT状态,此时源端不再往目的端发送数据，但目的端可以继续往源端发送数据
         - 第三次：目的端发送FIN+ACK报文：`FIN=1,ACK=1,seq=w,ack=u+1`,目的端进入LAST_ACK状态，不再往源端发送数据
-        - 第四次：源端收到报文后，发出ACK报文：`ACK=1,seq=u+1,ack=w+1`,目的端接收到响应直接关闭连接，源端进入TIME_WAIT状态，并等待2MSL(最长报文端寿命)后关闭连接，挥手结束。
+        - 第四次：源端收到报文后，发出ACK报文：`ACK=1,seq=u+1,ack=w+1`,目的端接收到响应直接关闭连接，源端进入TIME_WAIT状态，并等待2MSL(最长报文端寿命)后关闭连接，挥手结束。  
 ![TCP三次握手](Images/TCP三次握手.jpg)
 ![TCP四次挥手](Images/TCP四次挥手.jpg)
 - 流量控制和拥塞控制
@@ -1759,7 +3250,7 @@ public class DeadLock{
 #### 5.9-进程间通讯的方式
 
 #### 5.10-什么是CDN？如果实现？
-
+- CDN是静态资源服务器
 #### 5.11-DNS？
 - 什么是DNS：DNS是域名解析系统，主要用于将域名解析为IP地址
 - 记录类型:A记录、CNAME记录、AAAA记录等
