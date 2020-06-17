@@ -3111,12 +3111,13 @@ public class Exchanger<V> {
 #### 4.11-ThreadLocal
 - ThreadLocal作用：用于实现线程私有变量，该变量将一直存在与线程中，与方法调用无关，直到线程销毁，如此一来，我们可以在线程的所有方法中通过ThreadLocal来使用这个变量，这个变量的生命周期将会是整个线程周期，除非手动调用remove操作清除变量。
 - ThreadLocal结构：**ThreadLocal有一个静态内部类ThreadLocalMap，这个Map被Thread所持有，即每个线程天然持有一个ThreadLocal.ThreadLocalMap对象；ThreadLocalMap内部使用一个Entry来存储线程变量，其中以一个弱引用ThreadLocal对象作为键，以线程变量作为值。每个线程可以设置多个线程变量，只是需要为每个线程变量创建一个ThreadLocal对象。这些线程变量将全部存储在线程的私有属性ThreadLocalMap中**。
-- ThreadLocal用法：一般将ThreadLocal作为共享变量，或单独成类，或作为成员属性，主要目的就是为了实现多线程共用，虽然ThreadLocal实例被多线程共用，但是针对每个线程而言，其设置的线程变量都保存在自身内部的ThreadLcoalMap中，它是线程私有的，每个线程都有，那么也就实现了线程安全性，此时在多个线程中作为键的ThreadLocal会是同一个。那么是什么样的变量需要使用ThreadLocal来进行存储呢？当遇到需要在整个线程中多处使用的变量时，可以将其保存到ThreadLcoal，更重要的是针对那些不便于传递的变量，可以保存到ThreadLcoal中。
+- ThreadLocal用法：一般将ThreadLocal作为共享变量，或单独成类，或作为成员属性，主要目的就是为了实现多线程共用，虽然ThreadLocal实例被多线程共用，但是针对每个线程而言，其设置的线程变量都保存在自身内部的ThreadLcoalMap中，它是线程私有的，每个线程都有，那么也就实现了线程安全性，此时在多个线程中作为键的ThreadLocal会是同一个类的实例。那么是什么样的变量需要使用ThreadLocal来进行存储呢？当遇到需要在整个线程中多处使用的变量时，可以将其保存到ThreadLcoal，更重要的是针对那些不便于传递的变量，可以保存到ThreadLcoal中。
 - ThreadLocal问题：存在可能内存泄漏的问题，主要是忘记remove操作就会导致设置的变量值被持有引用，生存到线程销毁。ThreadLocalMap的键是弱引用的，会在下一次GC时被清理，但是值并不会被自动清理，由其在使用线程池的情况下，后续不再执行set操作，那么这个值将会一直与线程共存亡，造成内存泄漏。
 - ThreadLocal常用方法：
     - void set(T value)：将指定的值value以当前ThreadLocal实例为键保存到当前线程的threadlocals中。
     - T get()：获取当前线程threadlocals中以当前ThreadLocal实例为键的Entry键值对中的值。
     - void remove()：清除当前线程threadlocals中以当前ThreadLocal实例为键的Entry键值对。
+- ThreadLocal原理：其实原理很简单，在Java中，线程是由Thread类定义的，每一个线程就是一个Thread实例，
 - ThreadLocal.ThreadLocalMap：
     - 初始容量：16
     - 扩容阈值：容量的2/3
@@ -3183,6 +3184,7 @@ public class DeadLock{
 - [AbstractQueuedSynchronizer源码解读](https://www.cnblogs.com/leesf456/p/5350186.html)
 - [LockSupport]()
 - [Condition源码解读]()
+- [ThreadLocal源码解读]()
 ### 5-Java网络编程
 #### 5.1-tcp、udp、http、https等常用协议
 - TCP协议：可靠的传输控制协议
@@ -4715,6 +4717,44 @@ Spring Session提供了多种方式来存储Session信息，包括redis、mongo�
 - [InnoDB数据页结构](https://mp.weixin.qq.com/s/GYRuFhty5gDLAmDXw7AluA)
 - [MySQL的索引](https://mp.weixin.qq.com/s/9gloKNtZrYlGsBODCckQrw)
 - [MySQL的索引（中）](https://mp.weixin.qq.com/s/ktEBA03Kip4bYYkp2ktiIQ)
+#### 数据类型
+1. 数值类型
+    - 小整数值：TINYINT(n) 占位:1 byte,范围:(-128，127)或(0，255)
+    - 小整数值：SMALLINT(n) 占位:2 byte,范围:(-32768，32767)或(0，65535)
+    - 中整数值：MEDIUMINT(n) 占位:3 byte,范围:(-8388608，8388607)或(0，16777215)
+    - 整数值：INT或INTEGER(n) 占位:4 byte,范围:(-2147483648，2147483647)或(0，4294967295)
+    - 大整数值：BIGINT(n) 占位:8 byte,范围:(-9223372036854775808，9223372036854775807)或(0，18446744073709551615)
+    - 单精度浮点值：FLOAT(m,d) 占位:4 byte,范围:(-3.402823466E+38，-1.175494351E-38)，0，(1.175494351E-38，3.40282346351E+38)或0，(1.175494351E-38，3.402823466E+38)
+    - 双精度浮点值：DOUBLE(m,d) 占位:8 byte,范围:(-1.7976931348623157E+308，-2.2250738585072014E-308)，0，(2.2250738585072014E-308，1.7976931348623157E+308)或0，(2.2250738585072014E-308，1.7976931348623157E+308)
+    - 浮点值：DECIMAL(m,d) 占位:对DECIMAL(M,D) ，如果M>D，为M+2否则为D+2
+2. 日期类型
+    - DATE(日期) 占位:3 byte,范围:1000-01-01/9999-12-31,格式:YYYY-MM-DD
+    - TIME(时间) 占位:3 byte,范围:'-838:59:59'/'838:59:59',格式:HH:MM:SS
+    - YEAR(年) 占位:1 byte,范围:	1901/2155,格式:YYYY
+    - DATETIME(混合日期和时间值) 占位:8 byte,范围:1000-01-01 00:00:00/9999-12-31 23:59:59,格式:YYYY-MM-DD HH:MM:SS
+    - TIMESTAMP(混合日期和时间值) 占位:8 byte,范围:1970-01-01 00:00:00/2038 结束时间是第 2147483647 秒，北京时间 2038-1-19 11:14:07，格林尼治时间 2038年1月19日 凌晨 03:14:07,格式:YYYYMMDD HHMMSS
+3. 字符串类型
+    - CHAR：定长字符串，0-255 bytes
+    - VARCHAR：	变长字符串，0-65535 bytes
+    - TINYBLOB：	不超过 255 个字符的二进制字符串，0-255 bytes
+    - TINYTEXT：短文本字符串，0-255 bytes
+    - BLOB：二进制形式的长文本数据，0-65 535 bytes
+    - TEXT：长文本数据，0-65 535 bytes
+    - MEDIUMBLOB：二进制形式的中等长度文本数据，0-16 777 215 bytes
+    - MEDIUMTEXT：中等长度文本数据，0-16 777 215 bytes
+    - LONGBLOB：二进制形式的极大文本数据，0-4 294 967 295 bytes
+    - LONGTEXT：极大文本数据，0-4 294 967 295 bytes
+> 注意：
+> 1. 数值型后面也可以设置N值，其中整型配置N表示整数的位数长度，FLOAT和DOUBLE后面可设置两个值M和D(类似于DECIMAL)，前者表示整数位数+小数位数，后者仅表示小数位数
+> 2. 字符串类型后面配置的n值表示字符串的设定最大长度，如果不设置，即为范围内的最大长度。
+> 3. CHAR与VARCHAR不同之处在于前者指定长度N后，实际占用即为设定的长度，但后者设定N后，如果实际字符串长度M小于N，将只会占用M长度，较为节省空间；这里的N其实表示的是字符个数
+#### 约束
+##### 主键约束
+##### 外键约束
+##### 唯一约束
+##### 检查约束
+##### 非空约束
+##### 默认值约束
 #### 存储引擎
 - MyISAM：默认的MySQL插件式存储引擎，它是在Web、数据仓储和其他应用环境下最常使用的存储引擎之一。注意，通过更改STORAGE_ENGINE配置变量，能够方便地更改MySQL服务器的默认存储引擎。
 - InnoDB：用于事务处理应用程序，具有众多特性，包括ACID事务支持。(提供行级锁),支持B+树索引、全文索引、哈希索引（哈希索引由存储引擎自动优化创建，无法人为干涉）
